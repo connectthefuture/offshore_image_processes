@@ -59,6 +59,20 @@ if dircnt > 5:
 
 #  2  ########## Send Zipped files with ftp ###################################
 import ftplib
+import os,sys,re
+
+
+username   = "bf"
+password   = "B1002#@F"
+ftpurl     = "prepressoutsourcing.com"
+remotepath = 'Drop'
+fullftp    = os.path.join(ftpurl, remotepath)
+
+files = []
+ftp = ftplib.FTP(ftpurl)
+ftp.login(username, password)
+
+
 ziptosend               = zipname
 colorstyles_sent        = zlist
 colorstyles_sent_dt_key = zdict
