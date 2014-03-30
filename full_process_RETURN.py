@@ -102,15 +102,17 @@ def subproc_pad_to_x480(file,destdir):
         "400x480",
         '-background',
         'white',
-        '+repage', 
         '-gravity',
-        'center', 
-        '-background',
-        'white',
-        '-trim',
-        '+repage', 
+        'center',
+        '-trim', 
+        '-gravity',
+        'center',
         '-extent', 
         "400x480",
+        '+repage', 
+        '-background',
+        'white',
+        '+repage',  
         '-colorspace',
         'sRGB',
         '-unsharp',
@@ -155,7 +157,7 @@ archdir      = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Arch
 # 1 #  Download all zips on remote dir via FTP
 #####################################################################################################################
 
-ftp_download_allzips(returndir)
+#ftp_download_allzips(returndir)
 
 ######################################################################################################################
 ## 2 # After download list zip files dloaded and unzip
