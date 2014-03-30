@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+#!/usr/bin/env python
 import zipfile,sys,datetime,os,re
 regex=re.compile(r'^[^\.].+?[jpng]{3}$')
 todaysdate = str(datetime.date.today())
@@ -24,7 +27,7 @@ dircnt = len(os.listdir(rootdir))
 
 
 if __name__ == '__main__':
-    if dircnt > 1:
+    if dircnt > 501:
         os.chdir(rootdir)
         #zipf = os.path.join(rootdir.replace('1_Sending','2_Returned'), filename)
         zipf = os.path.join(rootdir, filename)

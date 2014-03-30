@@ -22,7 +22,7 @@ for filename in filenames:
     f = zipf.open(filename)
     contents = f.read()
     writefile = os.path.join(zipdir,filename)
-    with open(writefile, 'wb') as wfile:
+    with open(writefile, 'w') as wfile:
         wfile.write(contents)
 
 #####################################################################################################################

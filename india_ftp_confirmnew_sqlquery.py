@@ -4,7 +4,7 @@ import os,sys,re
 files = []
 ftp = ftplib.FTP("prepressoutsourcing.com")
 ftp.login("bf", "B1002#@F")
-remotepath=('Pick/')
+remotepath=('Drop/')
 
 try:
     files = ftp.nlst(remotepath)
@@ -15,5 +15,7 @@ except ftplib.error_perm, resp:
         raise
 
 for f in files:
-    if sql_testOffshoreSend('batch_{}'.format(f)):        
+    batchdir = f.split('/')[-1][:12]
+    print batchdir
+    if sql_testOffshoreSend(batchdir):        
         print os.path.abspath(f).split('/')[-1]

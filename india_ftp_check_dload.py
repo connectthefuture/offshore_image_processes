@@ -1,10 +1,16 @@
 import ftplib
 import os,sys,re
 
+username   = "bf"
+password   = "B1002#@F"
+ftpurl     = "prepressoutsourcing.com"
+remotepath = 'Pick/'
+
+
 files = []
-ftp = ftplib.FTP("prepressoutsourcing.com")
-ftp.login("bf", "B1002#@F")
-remotepath=('Pick/')
+ftp = ftplib.FTP(ftpurl)
+ftp.login(username, password)
+
 
 try:
     files = ftp.nlst(remotepath)
@@ -15,4 +21,4 @@ except ftplib.error_perm, resp:
         raise
 
 for f in files:
-    print os.path.abspath(f)
+    print f
