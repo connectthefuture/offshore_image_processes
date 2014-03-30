@@ -66,13 +66,56 @@ for file in files:
 ##### Unzip downloaded file##########################################################################################
 #####################################################################################################################
 
-regex_zipfilename=re.compile(r'^[^\.].+?[zipZIP]{3}$')
-regex_zipfilepath=re.compile(r'^/.+?[zipZIP]{3}$')
+regex_zipfilename = re.compile(r'^[^\.].+?[zipZIP]{3}$')
+regex_zipfilepath = re.compile(r'^/.+?[zipZIP]{3}$')
 
 todaysdate = str(datetime.date.today())
 
 
 #colorstyle = filepath.split('/')[-1][:9]
 #if re.findall(regex_colorstyle, colorstyle):
+ftp = ftplib.FTP(ftpurl)
+ftp.login(username, password)
+ftp.cwd(remotepath)
 
+
+filenames = []
+ftp.retrlines('NLST', filenames.append)
+
+print filenames
+
+## if filenames is a dir decend into dirand list again till there are files found then dload
+if len(filenames) == 1:
+    ftp.cwd(filenames.pop())
+    filenames = []
+    ftp.retrlines('NLST', filenames.append)
+
+print filenames
+
+#rootdir = sys.argv[1]
+#returndir = '/mnt/srv/media/Post_Complete/Complete_Archive/SendReceive_BGRemoval/2_Returned'
+returndir = '/Users/JCut/Dropbox/DEVROOT/srv/media/Post_Complete/Complete_Archive/SendReceive_BGRemoval/2_Returned'
+
+for filename in filenames:
+    local_filename = os.path.join(returndir,filename)
+    file = open(local_filename, 'wb')
+    ftp.retrbinary('RETR '+ filename, file.write)
+
+    file.close()
+
+ftp.close()
+
+
+######### find out how many zips dloaded then extract pngs from zip
+zipfiles_returned = []
+for z in os.listdir(returndir):
+    if re.findall(regex_zipfilepath, z):
+        zipfiles_returned.append(z)
+
+if len(zipfiles_returned) == 1:
+    zipreturned = zipfiles_returned.pop()
+    unzip_dir_savefiles(zipreturned)
+else:
+    for z in zipreturned:
+        unzip_dir_savefiles(z)
 
