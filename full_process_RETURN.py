@@ -218,12 +218,15 @@ while len(extracted_pngs) >= 1:
 #####################################################################################################################
 # 5 # Upload all  _l.jpg @ 400x480 located in the 3_LisPage... folder
 #####################################################################################################################
-
 listpage_jpgs_toload = []
 for f in glob.glob(os.path.join(listpagedir, '*_l.jpg')):
     listpage_jpgs_toload.append(os.path.abspath(f))
     print f
 
+
+#####################################################################################################################
+# 6 # After Uploading from 3_ dir, Archive all the _LP files in dated dir under archive/PNG/etc.....
+#####################################################################################################################
 ## Gather all _LP files and store in dated dir under 4_Archive/PNG/<todays date>
 archive_ready = []
 for f in glob.glob(os.path.join(archdir, '*/*_LP.png')):
