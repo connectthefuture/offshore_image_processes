@@ -157,7 +157,7 @@ archdir      = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Arch
 # 1 #  Download all zips on remote dir via FTP
 #####################################################################################################################
 
-#ftp_download_allzips(returndir)
+ftp_download_allzips(returndir)
 
 ######################################################################################################################
 ## 2 # After download list zip files dloaded and unzip
