@@ -87,24 +87,40 @@ def subproc_pad_to_x480(file,destdir):
     fname = file.split("/")[-1].split('.')[0].replace('_LP','_l').lower()
     ext = file.split(".")[-1]
     outfile = os.path.join(destdir, fname + ".jpg")    
-    try:            
-        subprocess.call([
-            "convert",
-            file,
-            "-format",
-            "jpg",
-            "-resize",
-            "350x432",
-            "-background",
-            "white",
-            "-gravity",
-            "center",
-            "-extent",
-            "400x480",
-            outfile,
-        ])
-    except:
-        print "Failed: {0}".format(file)
+    
+    #try:            
+    subprocess.call([
+        "convert", 
+        file, 
+        '-format', 
+        'jpg',
+#        '-crop',
+#        str(
+#        subprocess.call(['convert', file, '-virtual-pixel', 'edge', '-blur', '0x15', '-fuzz 1%', '-trim', '-format', '%wx%h%O', 'info:'], stdin=None, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=False))
+#        ,
+        '-resize',
+        "400x480",
+        '-background',
+        'white',
+        '+repage', 
+        '-gravity',
+        'center', 
+        '-background',
+        'white',
+        '-trim',
+        '+repage', 
+        '-extent', 
+        "400x480",
+        '-colorspace',
+        'sRGB',
+        '-unsharp',
+        '50', 
+        '-quality',
+        '100', 
+        outfile,
+    ])
+    #except IOError:
+    #    print "Failed: {0}".format(outfile)
     return outfile
 #####################################################################################################################
 #####################################################################################################################
@@ -128,18 +144,18 @@ archdir      = '/Users/JCut/Dropbox/DEVROOT/srv/media/Post_Complete/Complete_Arc
 #####################################################################################################################
 
 #ftp_download_allzips(returndir)
-
-#####################################################################################################################
-# 2 # After download list zip files dloaded and unzip
-#####################################################################################################################
-#cc='/Users/JCut/Dropbox/DEVROOT/srv/media/Post_Complete/Complete_Archive/SendReceive_BGRemoval/2_Returned/batch_2014-03-29.zip'
-
-## Grab all downloaded zips in a list prior to extracting pngs
+#
+######################################################################################################################
+## 2 # After download list zip files dloaded and unzip
+######################################################################################################################
+##cc='/Users/JCut/Dropbox/DEVROOT/srv/media/Post_Complete/Complete_Archive/SendReceive_BGRemoval/2_Returned/batch_2014-03-29.zip'
+#
+### Grab all downloaded zips in a list prior to extracting pngs
 #zipfiles_dload = []
 #for z in glob.glob(os.path.join(returndir, '*.zip')):
 #    zipfiles_dload.append(os.path.abspath(z))
-#
-### unzip to
+##
+#### unzip 
 #while len(zipfiles_dload) >= 1:
 #    zipreturned = os.path.abspath(zipfiles_dload.pop())
 #    parentdir   = '/'.join(zipreturned.split('/')[:-1])
@@ -208,3 +224,18 @@ while len(extracted_pngs) >= 1:
 listpage_jpgs_toload = []
 for f in glob.glob(os.path.join(listpagedir, '*_l.jpg')):
     listpage_jpgs_toload.append(os.path.abspath(f))
+    print f
+
+## Gather all _LP files and store in dated dir under 4_Archive/PNG/<todays date>
+archive_ready = []
+for f in glob.glob(os.path.join(archdir, '*/*_LP.png')):
+    archive_ready.append(os.path.abspath(f))
+    archivedir = os.path.join(archdir, 'PNG', todaysdate + '_uploaded')
+    try:
+        os.makedirs(archivedir)
+    except:
+        print "Failed makedirs for Archiving"
+    try:
+        shutil.move(f, archivedir)
+    except shutil.Error:
+        os.rename(f, os.path.join(archivedir, f.split('/')[-1]))
