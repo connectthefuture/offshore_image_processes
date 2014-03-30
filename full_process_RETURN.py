@@ -239,3 +239,5 @@ for f in glob.glob(os.path.join(archdir, '*/*_LP.png')):
         shutil.move(f, archivedir)
     except shutil.Error:
         os.rename(f, os.path.join(archivedir, f.split('/')[-1]))
+        
+        
