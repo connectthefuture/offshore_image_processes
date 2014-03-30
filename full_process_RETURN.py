@@ -135,43 +135,41 @@ regex_zipfilepath = re.compile(r'^/.+?[zipZIP]{3}$')
 
 todaysdate = str(datetime.date.today())
 
-returndir    = '/Users/JCut/Dropbox/DEVROOT/srv/media/Post_Complete/Complete_Archive/SendReceive_BGRemoval/2_Returned'
-listpagedir  = '/Users/JCut/Dropbox/DEVROOT/srv/media/Post_Complete/Complete_Archive/SendReceive_BGRemoval/3_ListPage_to_Load'
-archdir      = '/Users/JCut/Dropbox/DEVROOT/srv/media/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive'
+returndir    = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/2_Returned'
+listpagedir  = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/3_ListPage_to_Load'
+archdir      = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive'
 
 #####################################################################################################################
 # 1 #  Download all zips on remote dir via FTP
 #####################################################################################################################
 
-#ftp_download_allzips(returndir)
-#
+ftp_download_allzips(returndir)
+
 ######################################################################################################################
 ## 2 # After download list zip files dloaded and unzip
-######################################################################################################################
-##cc='/Users/JCut/Dropbox/DEVROOT/srv/media/Post_Complete/Complete_Archive/SendReceive_BGRemoval/2_Returned/batch_2014-03-29.zip'
-#
+#######################################################################################################################
 ### Grab all downloaded zips in a list prior to extracting pngs
-#zipfiles_dload = []
-#for z in glob.glob(os.path.join(returndir, '*.zip')):
-#    zipfiles_dload.append(os.path.abspath(z))
-##
-#### unzip 
-#while len(zipfiles_dload) >= 1:
-#    zipreturned = os.path.abspath(zipfiles_dload.pop())
-#    parentdir   = '/'.join(zipreturned.split('/')[:-1])
-#    zipname     = zipreturned.split('/')[-1].split('.')[0]
-#    extractdir  = os.path.join(parentdir, zipname)
-#    
-#    ## Make new dir named as zipfile name without ext to extract zip contents to
-#    try:
-#        os.mkdir(extractdir)
-#    except:# SystemError:
-#        pass
-#    
-#    if os.path.isfile(zipreturned):
-#        print "ZZZ",zipreturned, extractdir, zipname
-#        unzip_dir_savefiles(zipreturned, extractdir)
-#        os.remove(zipreturned)
+zipfiles_dload = []
+for z in glob.glob(os.path.join(returndir, '*.zip')):
+    zipfiles_dload.append(os.path.abspath(z))
+#
+### unzip 
+while len(zipfiles_dload) >= 1:
+    zipreturned = os.path.abspath(zipfiles_dload.pop())
+    parentdir   = '/'.join(zipreturned.split('/')[:-1])
+    zipname     = zipreturned.split('/')[-1].split('.')[0]
+    extractdir  = os.path.join(parentdir, zipname)
+    
+    ## Make new dir named as zipfile name without ext to extract zip contents to
+    try:
+        os.mkdir(extractdir)
+    except:# SystemError:
+        pass
+    
+    if os.path.isfile(zipreturned):
+        print "ZZZ",zipreturned, extractdir, zipname
+        unzip_dir_savefiles(zipreturned, extractdir)
+        os.remove(zipreturned)
 
 
 #####################################################################################################################
