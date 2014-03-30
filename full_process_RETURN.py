@@ -84,9 +84,9 @@ def unzip_dir_savefiles(zipin, extractdir):
 def subproc_pad_to_x480(file,destdir):
     import subprocess, os
     
-    fname = file.split(".")[0]
+    fname = file.split("/")[-1].split('.')[0].replace('_LP','_l').lower()
     ext = file.split(".")[-1]
-    outfile = os.path.join(destdir, fname + "_" + "l" + ".jpg")    
+    outfile = os.path.join(destdir, fname + ".jpg")    
     try:            
         subprocess.call([
             "convert",
@@ -127,7 +127,7 @@ archdir      = '/Users/JCut/Dropbox/DEVROOT/srv/media/Post_Complete/Complete_Arc
 # 1 #  Download all zips on remote dir via FTP
 #####################################################################################################################
 
-ftp_download_allzips(returndir)
+#ftp_download_allzips(returndir)
 
 #####################################################################################################################
 # 2 # After download list zip files dloaded and unzip
@@ -135,26 +135,27 @@ ftp_download_allzips(returndir)
 #cc='/Users/JCut/Dropbox/DEVROOT/srv/media/Post_Complete/Complete_Archive/SendReceive_BGRemoval/2_Returned/batch_2014-03-29.zip'
 
 ## Grab all downloaded zips in a list prior to extracting pngs
-zipfiles_dload = []
-for z in glob.glob(os.path.join(returndir, '*.zip')):
-    zipfiles_dload.append(os.path.abspath(z))
-
-## unzip
-while len(zipfiles_dload) >= 1:
-    zipreturned = os.path.abspath(zipfiles_dload.pop())
-    parentdir   = '/'.join(zipreturned.split('/')[:-1])
-    zipname     = zipreturned.split('/')[-1].split('.')[0]
-    extractdir  = os.path.join(parentdir, zipname)
-    
-    ## Make new dir named as zipfile name without ext to extract zip contents to
-    try:
-        os.mkdir(extractdir)
-    except:# SystemError:
-        pass
-    
-    if os.path.isfile(zipreturned):
-        print "ZZZ",zipreturned, extractdir, zipname
-        unzip_dir_savefiles(zipreturned, extractdir)
+#zipfiles_dload = []
+#for z in glob.glob(os.path.join(returndir, '*.zip')):
+#    zipfiles_dload.append(os.path.abspath(z))
+#
+### unzip to
+#while len(zipfiles_dload) >= 1:
+#    zipreturned = os.path.abspath(zipfiles_dload.pop())
+#    parentdir   = '/'.join(zipreturned.split('/')[:-1])
+#    zipname     = zipreturned.split('/')[-1].split('.')[0]
+#    extractdir  = os.path.join(parentdir, zipname)
+#    
+#    ## Make new dir named as zipfile name without ext to extract zip contents to
+#    try:
+#        os.mkdir(extractdir)
+#    except:# SystemError:
+#        pass
+#    
+#    if os.path.isfile(zipreturned):
+#        print "ZZZ",zipreturned, extractdir, zipname
+#        unzip_dir_savefiles(zipreturned, extractdir)
+#        os.remove(zipreturned)
 
 
 #####################################################################################################################
@@ -170,20 +171,21 @@ while len(extracted_pngs) >= 1:
     parentdir          = '/'.join(extractedpng.split('/')[:-1])
     filename           = extractedpng.split('/')[-1]
     colorstyle         = extractedpng.split('/')[-1].split('.')[0]
-    pngarchived        = extractedpng.replace('.png', '_LP.png').replace('2_Returned','4_Archive')
-    pngarchived_pardir = pngarchived.splitlines()[0]
+    pngarchived_pardir = '/'.join(extractedpng.split('/')[:-1]).replace('2_Returned','4_Archive')
+    pngarchived_fname  = extractedpng.split('/')[-1].replace('.png', '_LP.png')
+    pngarchived_path   = os.path.join(pngarchived_pardir, pngarchived_fname)
     
     try:
         os.makedirs(pngarchived_pardir)
     except:
         print "Failed makedirs"
 
-    if os.path.isfile(pngarchived):
+    if os.path.isfile(pngarchived_path):
         pass
     else:
-        shutil.move(extractedpng, pngarchived)
-        subproc_pad_to_x480(pngarchived,listpagedir)
-        #shutil.copy2(pngarchived,listpagedir)
+        shutil.move(extractedpng, pngarchived_path)
+        subproc_pad_to_x480(pngarchived_path,listpagedir)
+        #shutil.copy2(pngarchived_path,listpagedir)
 
 
 #####################################################################################################################
