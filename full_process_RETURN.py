@@ -79,7 +79,7 @@ def unzip_dir_savefiles(zipin, extractdir):
     return zipin
 
 #####################################################################################################################
-# 3 and 4 # Magick Crop and save as 400x480 _l.jpg ########################################################################
+# 3 and 4 # Magick Crop and save as 400x480 _l.jpg ##################################################################
 #####################################################################################################################
 def subproc_pad_to_x480(file,destdir):
     import subprocess, os
@@ -122,7 +122,19 @@ def subproc_pad_to_x480(file,destdir):
     #except IOError:
     #    print "Failed: {0}".format(outfile)
     return outfile
+
 #####################################################################################################################
+# 5 # Upload stripped bg _l.jpg files to ImageDrop ##################################################################
+#####################################################################################################################
+def upload_to_imagedrop(file):
+    import ftplib
+    session = ftplib.FTP('file3.bluefly.corp', 'imagedrop', 'imagedrop0')
+    fileread = open(file, 'rb')
+    filename = str(file.split('/')[-1])
+    session.cwd("ImageDrop/")
+    session.storbinary('STOR ' + filename, fileread, 8*1024)
+    fileread.close()
+    session.quit() 
 #####################################################################################################################
 #####################################################################################################################
 #####################################################################################################################
@@ -221,7 +233,10 @@ while len(extracted_pngs) >= 1:
 listpage_jpgs_toload = []
 for f in glob.glob(os.path.join(listpagedir, '*_l.jpg')):
     listpage_jpgs_toload.append(os.path.abspath(f))
-    print f
+#    try:
+#        upload_to_imagedrop(f)
+#    except:
+#        print "Failed", f
 
 
 #####################################################################################################################
