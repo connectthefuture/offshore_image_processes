@@ -14,7 +14,7 @@ def ftp_download_allzips(returndir):
     #colorstyle = filepath.split('/')[-1][:9]
     #if re.findall(regex_colorstyle, colorstyle):
     username   = "bf"
-    password   = "B1002#@F"
+    password   = "B14300F"
     ftpurl     = "prepressoutsourcing.com"
     remotepath = 'Pick'
     fullftp    = os.path.join(ftpurl, remotepath)
