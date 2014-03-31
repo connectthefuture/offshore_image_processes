@@ -64,7 +64,7 @@ regex_india_postzipdir = re.compile(r'^/mnt/Post_Complete/Complete_Archive/SendR
 
 regex_l_uploading = re.compile(r'^/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/3_ListPage_to_Load/.*?[0-9]{9}_l\.[jpgJPG]{3}$')
 
-regex_arch_l_uploded = re.compile(r'^/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive/JPG/[0-9]{9}_[LP]\.[jpgJPG]{3}$')
+regex_arch_l_uploded = re.compile(r'^/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive/LIST_PAGE_LOADED/[0-9]{9}_[Ll]\.[jpgJPG]{3}$')
 regex_arch_postzip = re.compile(r'^/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive/ZIP/batch_[0-9]{6}\.[zipZIP]{3}$')
 regex_arch_archpng = re.compile(r'^/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive/PNG/[0-9]{9}_[LP]\.[pngPNG]{3}$')
 regex_india_postzipdir = re.compile(r'^/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive/.*?/?batch_[0-9]{6}/[0-9]{9}_?L?P?.[pngPNG]{3}$')
@@ -162,34 +162,32 @@ for k,v in fulldict.iteritems():
         if re.findall(regex_india_prezipdir, sqlinsert_choose_test):
             #print "PREZIPDIR"
             #if os.path.isfile(v['file_path_prezip']):
-            connection.execute("""INSERT INTO offshore_zip (colorstyle, file_path_pre, file_path_zip) VALUES (%s, %s, %s)
-            ON DUPLICATE KEY UPDATE 
-                        file_path_pre        = VALUES(file_path_pre), 
-                        file_path_post       = VALUES(file_path_zip); 
-                        """, v['colorstyle'], v['file_path_pre'], k)
-            print "Successful Insert offshore_Zip --> {0}".format(k)
+#            connection.execute("""INSERT INTO offshore_zip (colorstyle, file_path_pre, file_path_zip) VALUES (%s, %s, %s)
+#            ON DUPLICATE KEY UPDATE 
+#                        file_path_pre        = VALUES(file_path_pre), 
+#                        file_path_post       = VALUES(file_path_zip); 
+#                        """, v['colorstyle'], v['file_path_pre'], k)
+#            print "Successful Insert offshore_Zip --> {0}".format(k)
             
-            connection.execute("""INSERT INTO offshore_status (colorstyle, file_path_pre, file_path_post) VALUES (%s, %s, %s)
+            connection.execute("""INSERT INTO offshore_status (colorstyle, file_path_pre) VALUES (%s, %s)
             ON DUPLICATE KEY UPDATE 
-                        file_path_pre        = VALUES(file_path_pre), 
-                        file_path_post       = VALUES(file_path_post); 
-                        """, v['colorstyle'], v['file_path_pre'],k)
+                        file_path_pre        = VALUES(file_path_pre); 
+                        """, v['colorstyle'], v['file_path_pre'])
             print "Successful Insert to offshore_Status --> {0}".format(k)
             #else:
                 #print "File Doesnt Exist --> {0}".format(v['file_path_prezip'])
 
 ## zip returned and ready to convert to _l and load
-        elif re.findall(regex_india_postzip, sqlinsert_choose_test):
+        elif re.findall(regex_arch_l_uploded, sqlinsert_choose_test):
             #print "POSTZIP"
         #if os.path.isfile(v['file_path_postzip']):
-            connection.execute("""INSERT INTO offshore_zip (colorstyle, file_path_pre, file_path_post, file_path_zip) VALUES (%s, %s, %s)
+            connection.execute("""INSERT INTO offshore_zip (colorstyle, file_path_post, file_path_zip) VALUES (%s, %s, %s)
             ON DUPLICATE KEY UPDATE 
-                        file_path_pre        = VALUES(file_path_pre), 
                         file_path_post       = VALUES(file_path_post), 
                         file_path_zip        = VALUES(file_path_zip); 
                         """, v['colorstyle'], v['file_path_post'],  k)
             print "Successful Insert offshore_Zip --> {0}".format(k)
-            connection.execute("""INSERT INTO offshore_status (colorstyle,  file_path_post) VALUES (%s, %s)
+            connection.execute("""INSERT INTO offshore_status (colorstyle, file_path_post) VALUES (%s, %s)
             ON DUPLICATE KEY UPDATE 
                             file_path_post       = VALUES(file_path_post); 
                             """, v['colorstyle'],  k)
@@ -201,11 +199,10 @@ for k,v in fulldict.iteritems():
         elif re.findall(regex_india_ready, sqlinsert_choose_test):
             
             #if os.path.isfile(v['file_path_pre']):
-            connection.execute("""INSERT INTO offshore_status (colorstyle, file_path_pre, file_path_post) VALUES (%s, %s, %s)
+            connection.execute("""INSERT INTO offshore_status (colorstyle, file_path_pre) VALUES (%s, %s)
             ON DUPLICATE KEY UPDATE 
-                            file_path_pre        = VALUES(file_path_pre), 
-                            file_path_post       = VALUES(file_path_post); 
-                            """, v['colorstyle'], v['file_path_pre'], v['file_path_archpng'])
+                            file_path_pre        = VALUES(file_path_pre); 
+                            """, v['colorstyle'], v['file_path_pre'])
             print "Successful Insert to offshore_Status --> {0}".format(k)
             connection.execute("""INSERT INTO offshore_zip (colorstyle, file_path_pre) VALUES (%s, %s)
             ON DUPLICATE KEY UPDATE 
@@ -216,24 +213,24 @@ for k,v in fulldict.iteritems():
             #    print "Error entering --> {0}\t File doesnt seem to Exist".format(v['file_path_pre'])
 
 ### Returned files Archived after _l file created and loaded   
-        elif re.findall(regex_india_postzipdir,sqlinsert_choose_test):
-            finaltest = sqlinsert_choose_test.replace('.png', '_LP.png').replace('_LP_LP.png','_LP.png')
-            if os.path.isfile(finaltest):
-                pass
-            else:
-                os.rename(sqlinsert_choose_test, finaltest)
-            
-            if os.path.isfile(finaltest):
-                connection.execute("""INSERT INTO offshore_status (colorstyle, file_path_post) VALUES (%s, %s)
-                ON DUPLICATE KEY UPDATE 
-                            file_path_post       = VALUES(file_path_post); 
-                            """, v['colorstyle'], finaltest)
-                print "Successful Insert to offshore_Status --> {0}".format(finaltest)
-                connection.execute("""INSERT INTO offshore_zip (colorstyle, file_path_post) VALUES (%s, %s)
-                ON DUPLICATE KEY UPDATE 
-                            file_path_post       = VALUES(file_path_post); 
-                            """, v['colorstyle'], finaltest)
-                print "Successful Insert to offshore_Status --> {0}".format(finaltest)            
+#        elif re.findall(regex_india_postzipdir,sqlinsert_choose_test):
+#            finaltest = sqlinsert_choose_test.replace('.png', '_LP.png').replace('_LP_LP.png','_LP.png')
+#            if os.path.isfile(finaltest):
+#                pass
+#            else:
+#                os.rename(sqlinsert_choose_test, finaltest)
+#            
+#            if os.path.isfile(finaltest):
+#                connection.execute("""INSERT INTO offshore_status (colorstyle, file_path_post) VALUES (%s, %s)
+#                ON DUPLICATE KEY UPDATE 
+#                            file_path_post       = VALUES(file_path_post); 
+#                            """, v['colorstyle'], finaltest)
+#                print "Successful Insert to offshore_Status --> {0}".format(finaltest)
+#                connection.execute("""INSERT INTO offshore_zip (colorstyle, file_path_post) VALUES (%s, %s)
+#                ON DUPLICATE KEY UPDATE 
+#                            file_path_post       = VALUES(file_path_post); 
+#                            """, v['colorstyle'], finaltest)
+#                print "Successful Insert to offshore_Status --> {0}".format(finaltest)            
         
         else:
             print "Database Table not Found for Inserting {0}".format(k)
