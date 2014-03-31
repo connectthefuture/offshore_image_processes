@@ -29,7 +29,7 @@ def zipdir(path, zip):
 def upload_to_imagedrop(file):
     import ftplib
     username   = "bf"
-    password   = "B1002#@F"
+    password   = "B14300F"
     ftpurl     = "prepressoutsourcing.com"
     remotepath = 'Drop/'
     fullftp    = os.path.join(ftpurl, remotepath)
@@ -101,4 +101,3 @@ if dircnt > 250:
     os.rename(ziptosend, ziptosend.replace('1_Sending','4_Archive/ZIP'))
 
 ##TODO:upload ziptosend to  remote zip via ftp then send inserts colorstyles_sent_dt_key to offshore_to_send and offshore_zip
-

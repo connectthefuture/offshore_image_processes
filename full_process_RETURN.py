@@ -14,7 +14,7 @@ def ftp_download_allzips(returndir):
     #colorstyle = filepath.split('/')[-1][:9]
     #if re.findall(regex_colorstyle, colorstyle):
     username   = "bf"
-    password   = "B1002#@F"
+    password   = "B14300F"
     ftpurl     = "prepressoutsourcing.com"
     remotepath = 'Pick'
     fullftp    = os.path.join(ftpurl, remotepath)
@@ -240,7 +240,11 @@ while len(extracted_pngs) >= 1:
 listpage_jpgs_toload = []
 for f in glob.glob(os.path.join(listpagedir, '*_l.jpg')):
     listpage_jpgs_toload.append(os.path.abspath(f))
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> 5af63bea19ed4bf66377f5bc70bb1fa55608ca84
     try:
         upload_to_imagedrop(f)
         os.rename(f, f.replace('3_ListPage_to_Load', '4_Archive/JPG/LIST_PAGE_LOADED'))
