@@ -181,12 +181,12 @@ for k,v in fulldict.iteritems():
         elif re.findall(regex_arch_l_uploded, sqlinsert_choose_test):
             #print "POSTZIP"
         #if os.path.isfile(v['file_path_postzip']):
-            connection.execute("""INSERT INTO offshore_zip (colorstyle, file_path_post, file_path_zip) VALUES (%s, %s, %s)
-            ON DUPLICATE KEY UPDATE 
-                        file_path_post       = VALUES(file_path_post), 
-                        file_path_zip        = VALUES(file_path_zip); 
-                        """, v['colorstyle'], k,  v['file_path_post'])
-            print "Successful Insert offshore_Zip --> {0}".format(k)
+#            connection.execute("""INSERT INTO offshore_zip (colorstyle, file_path_post, file_path_zip) VALUES (%s, %s, %s)
+#            ON DUPLICATE KEY UPDATE 
+#                        file_path_post       = VALUES(file_path_post), 
+#                        file_path_zip        = VALUES(file_path_zip); 
+#                        """, v['colorstyle'], k,  v['file_path_post'])
+#            print "Successful Insert offshore_Zip --> {0}".format(k)
             connection.execute("""INSERT INTO offshore_status (colorstyle, file_path_post) VALUES (%s, %s)
             ON DUPLICATE KEY UPDATE 
                             file_path_post       = VALUES(file_path_post); 
@@ -204,11 +204,11 @@ for k,v in fulldict.iteritems():
                             file_path_pre        = VALUES(file_path_pre); 
                             """, v['colorstyle'], k)  #v['file_path_pre'])
             print "Successful Insert to offshore_Status --> {0}".format(k)
-            connection.execute("""INSERT INTO offshore_zip (colorstyle, file_path_pre) VALUES (%s, %s)
-            ON DUPLICATE KEY UPDATE 
-                            file_path_pre        = VALUES(file_path_pre), 
-                            """, v['colorstyle'], k)  ##v['file_path_pre'])
-            print "Successful Insert to offshore_Status --> {0}".format(k)
+#            connection.execute("""INSERT INTO offshore_zip (colorstyle, file_path_pre) VALUES (%s, %s)
+#            ON DUPLICATE KEY UPDATE 
+#                            file_path_pre        = VALUES(file_path_pre), 
+#                            """, v['colorstyle'], k)  ##v['file_path_pre'])
+#            print "Successful Insert to offshore_Status --> {0}".format(k)
             #else:
             #    print "Error entering --> {0}\t File doesnt seem to Exist".format(v['file_path_pre'])
 
