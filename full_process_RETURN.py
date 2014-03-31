@@ -94,44 +94,41 @@ def subproc_pad_to_x480(file,destdir):
         file, 
         '-format', 
         'jpg',
-#        '-crop',
-#        str(
-#        subprocess.call(['convert', file, '-virtual-pixel', 'edge', '-blur', '0x15', '-fuzz 1%', '-trim', '-format', '%wx%h%O', 'info:'], stdin=None, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=False))
-#        ,
-        '-resize',
-        "450x540",
-        '-background',
-        'white',
-        '-gravity',
-        'center',
-        '-bordercolor',
-        'white',
-        '-border',
-        '1',
-        '-fuzz',
-        '1%',
+        '-crop',
+        str(
+        subprocess.call(['convert', file, '-virtual-pixel', 'edge', '-blur', '0x15', '-fuzz', '1%', '-trim', '-format', '%wx%h%O', 'info:'], stdin=None, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=False))
+        ,
+        '-colorspace',
+        'RGB',
         '-trim', 
-        '+repage',
         '-resize',
-        "400x", 
-        '-gravity',
-        'center',
+        "360x420",
         '-background',
         'white',
+        '-gravity',
+        'center',
+        '-trim', 
+        '-gravity',
+        'center',
         '-extent', 
         "400x480",
-        '+repage',  
+#        '+repage', 
+#        '-background',
+#        'white',
+#        '+repage',  
         '-colorspace',
         'sRGB',
         '-unsharp',
-        '50', 
+        '.7x2.8', 
         '-quality',
-        '100', 
+        '100',
+        #'-strip', 
         outfile,
     ])
     #except IOError:
     #    print "Failed: {0}".format(outfile)
     return outfile
+
 
 #####################################################################################################################
 # 5 # Upload stripped bg _l.jpg files to ImageDrop ##################################################################
