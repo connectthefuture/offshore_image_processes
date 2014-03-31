@@ -19,6 +19,7 @@ def zipdir(path, zip):
                 if re.findall(regex_colorstyle, colorstyle):
                     zipstyleslist.append(colorstyle)
                     zip.write(os.path.relpath(filepath))
+                    os.rename(filepath, filepath.replace('1_Sending/', '4_Archive/PNG_SENT/'))
     sentdate_dict[todaysdate] = zipstyleslist
     return zipstyleslist, sentdate_dict
 
@@ -82,21 +83,22 @@ ftpurl     = "prepressoutsourcing.com"
 remotepath = 'Drop'
 fullftp    = os.path.join(ftpurl, remotepath)
 
-files = []
-ftp = ftplib.FTP(ftpurl)
-ftp.login(username, password)
+if dircnt > 250:
+    files = []
+    ftp = ftplib.FTP(ftpurl)
+    ftp.login(username, password)
 
 
-ziptosend               = zipname
-colorstyles_sent        = zlist
-colorstyles_sent_dt_key = zdict
+    ziptosend               = zipname
+    colorstyles_sent        = zlist
+    colorstyles_sent_dt_key = zdict
 
 
-print ziptosend
-print colorstyles_sent_dt_key
+    print ziptosend
+    print colorstyles_sent_dt_key
 
-# 2 # Upload to india
-upload_to_imagedrop(ziptosend)
+    # 2 # Upload to india
+    upload_to_imagedrop(ziptosend)
 
 ##TODO:upload ziptosend to  remote zip via ftp then send inserts colorstyles_sent_dt_key to offshore_to_send and offshore_zip
 
