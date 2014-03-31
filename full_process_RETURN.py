@@ -240,12 +240,12 @@ while len(extracted_pngs) >= 1:
 listpage_jpgs_toload = []
 for f in glob.glob(os.path.join(listpagedir, '*_l.jpg')):
     listpage_jpgs_toload.append(os.path.abspath(f))
-    
-#    try:
-#        upload_to_imagedrop(f)
-#        os.rename(f, f.replace('3_ListPage_to_Load', '4_Archive/JPG/LIST_PAGE_LOADED'))
-#    except:
-#        print "Failed", f
+
+    try:
+        upload_to_imagedrop(f)
+        os.rename(f, f.replace('3_ListPage_to_Load', '4_Archive/JPG/LIST_PAGE_LOADED'))
+    except:
+        print "Failed", f
 
 #####################################################################################################################
 # 6 # After Uploading from 3_ dir, Archive all the _LP files in dated dir under archive/PNG/etc.....
