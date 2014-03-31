@@ -55,7 +55,7 @@ rootdir = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval'
 walkedout = recursive_dirlist(rootdir)
 
 regex = re.compile(r'^/.+?\.[a-zA-Z2]{3}$')
-regex_india_ready = re.compile(r'^/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/1_Sending/.*?[0-9]{9}\.[pngPNG]{3}$')
+regex_india_ready = re.compile(r'^/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/1_Sending/.*?/?[0-9]{9}\.[pngPNG]{3}$')
 regex_india_prezipdir = re.compile(r'^/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/1_Sending/batch_[0-9]{6}/.*?\.[pngPNG]{3}$')
 regex_india_prezip = re.compile(r'^/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/1_Sending/batch_[0-9]{6}\.[zipZIP]{3}$')
 
@@ -185,7 +185,7 @@ for k,v in fulldict.iteritems():
             ON DUPLICATE KEY UPDATE 
                         file_path_post       = VALUES(file_path_post), 
                         file_path_zip        = VALUES(file_path_zip); 
-                        """, v['colorstyle'], v['file_path_post'],  k)
+                        """, v['colorstyle'], k,  v['file_path_post'])
             print "Successful Insert offshore_Zip --> {0}".format(k)
             connection.execute("""INSERT INTO offshore_status (colorstyle, file_path_post) VALUES (%s, %s)
             ON DUPLICATE KEY UPDATE 
@@ -202,12 +202,12 @@ for k,v in fulldict.iteritems():
             connection.execute("""INSERT INTO offshore_status (colorstyle, file_path_pre) VALUES (%s, %s)
             ON DUPLICATE KEY UPDATE 
                             file_path_pre        = VALUES(file_path_pre); 
-                            """, v['colorstyle'], v['file_path_pre'])
+                            """, v['colorstyle'], k])  #v['file_path_pre'])
             print "Successful Insert to offshore_Status --> {0}".format(k)
             connection.execute("""INSERT INTO offshore_zip (colorstyle, file_path_pre) VALUES (%s, %s)
             ON DUPLICATE KEY UPDATE 
                             file_path_pre        = VALUES(file_path_pre), 
-                            """, v['colorstyle'], v['file_path_pre'])
+                            """, v['colorstyle'], k])  ##v['file_path_pre'])
             print "Successful Insert to offshore_Status --> {0}".format(k)
             #else:
             #    print "Error entering --> {0}\t File doesnt seem to Exist".format(v['file_path_pre'])
