@@ -128,7 +128,8 @@ for line in walkedout:
 
 ## Write CSV List to dated file for Import to MySQL
 #csv_write_datedOutfile(datastrings)
-
+import datetime
+todaysdate = datetime.date.today()
 #Iterate through Dict of Walked Directory, then Import to MySql DB
 import sqlalchemy
 ## First compile the SQL Fields as key value pairs
@@ -158,27 +159,9 @@ for k,v in fulldict.iteritems():
         ## Test File path String to Determine which Table needs to be Updated Then Insert SQL statement
         sqlinsert_choose_test = k
 
-##zip ready to send
-        if re.findall(regex_india_prezipdir, sqlinsert_choose_test):
-            #print "PREZIPDIR"
-            #if os.path.isfile(v['file_path_prezip']):
-#            connection.execute("""INSERT INTO offshore_zip (colorstyle, file_path_pre, file_path_zip) VALUES (%s, %s, %s)
-#            ON DUPLICATE KEY UPDATE 
-#                        file_path_pre        = VALUES(file_path_pre), 
-#                        file_path_post       = VALUES(file_path_zip); 
-#                        """, v['colorstyle'], v['file_path_pre'], k)
-#            print "Successful Insert offshore_Zip --> {0}".format(k)
-            
-            connection.execute("""INSERT INTO offshore_status (colorstyle, file_path_pre) VALUES (%s, %s)
-            ON DUPLICATE KEY UPDATE 
-                        file_path_pre        = VALUES(file_path_pre); 
-                        """, v['colorstyle'], k)
-            print "Successful Insert to offshore_Status --> {0}".format(k)
-            #else:
-                #print "File Doesnt Exist --> {0}".format(v['file_path_prezip'])
 
 ## zip returned and ready to convert to _l and load
-        elif re.findall(regex_arch_l_uploded, sqlinsert_choose_test):
+        if re.findall(regex_arch_l_uploded, sqlinsert_choose_test):
             #print "POSTZIP"
         #if os.path.isfile(v['file_path_postzip']):
 #            connection.execute("""INSERT INTO offshore_zip (colorstyle, file_path_post, file_path_zip) VALUES (%s, %s, %s)
@@ -187,10 +170,11 @@ for k,v in fulldict.iteritems():
 #                        file_path_zip        = VALUES(file_path_zip); 
 #                        """, v['colorstyle'], k,  v['file_path_post'])
 #            print "Successful Insert offshore_Zip --> {0}".format(k)
-            connection.execute("""INSERT INTO offshore_status (colorstyle, file_path_post) VALUES (%s, %s)
+            connection.execute("""INSERT INTO offshore_status (colorstyle, file_path_post, return_dt) VALUES (%s, %s, %s)
             ON DUPLICATE KEY UPDATE 
-                            file_path_post       = VALUES(file_path_post); 
-                            """, v['colorstyle'], k)
+                            file_path_post = VALUES(file_path_post)
+                            return_dt      = VALUES(return_dt); 
+                            """, v['colorstyle'], k, todaysdate)
             print "Successful Insert to offshore_Status --> {0}".format(k)
         #else:
         #     print "File Doesnt Exist --> {0}".format(v['file_path_postzip'])
@@ -199,10 +183,11 @@ for k,v in fulldict.iteritems():
         elif re.findall(regex_india_ready, sqlinsert_choose_test):
             
             #if os.path.isfile(v['file_path_pre']):
-            connection.execute("""INSERT INTO offshore_status (colorstyle, file_path_pre) VALUES (%s, %s)
+            connection.execute("""INSERT INTO offshore_status (colorstyle, file_path_pre, send_dt) VALUES (%s, %s, %s)
             ON DUPLICATE KEY UPDATE 
-                            file_path_pre        = VALUES(file_path_pre); 
-                            """, v['colorstyle'], k)  #v['file_path_pre'])
+                            file_path_pre        = VALUES(file_path_pre)
+                            send_dt              = VALUES(send_dt); 
+                            """, v['colorstyle'], k, todaysdate)  #v['file_path_pre'])
             print "Successful Insert to offshore_Status --> {0}".format(k)
 #            connection.execute("""INSERT INTO offshore_zip (colorstyle, file_path_pre) VALUES (%s, %s)
 #            ON DUPLICATE KEY UPDATE 
@@ -212,26 +197,6 @@ for k,v in fulldict.iteritems():
             #else:
             #    print "Error entering --> {0}\t File doesnt seem to Exist".format(v['file_path_pre'])
 
-### Returned files Archived after _l file created and loaded   
-#        elif re.findall(regex_india_postzipdir,sqlinsert_choose_test):
-#            finaltest = sqlinsert_choose_test.replace('.png', '_LP.png').replace('_LP_LP.png','_LP.png')
-#            if os.path.isfile(finaltest):
-#                pass
-#            else:
-#                os.rename(sqlinsert_choose_test, finaltest)
-#            
-#            if os.path.isfile(finaltest):
-#                connection.execute("""INSERT INTO offshore_status (colorstyle, file_path_post) VALUES (%s, %s)
-#                ON DUPLICATE KEY UPDATE 
-#                            file_path_post       = VALUES(file_path_post); 
-#                            """, v['colorstyle'], finaltest)
-#                print "Successful Insert to offshore_Status --> {0}".format(finaltest)
-#                connection.execute("""INSERT INTO offshore_zip (colorstyle, file_path_post) VALUES (%s, %s)
-#                ON DUPLICATE KEY UPDATE 
-#                            file_path_post       = VALUES(file_path_post); 
-#                            """, v['colorstyle'], finaltest)
-#                print "Successful Insert to offshore_Status --> {0}".format(finaltest)            
-        
         else:
             print "Database Table not Found for Inserting {0}".format(k)
 
