@@ -172,7 +172,7 @@ for k,v in fulldict.iteritems():
             connection.execute("""INSERT INTO offshore_status (colorstyle, file_path_pre) VALUES (%s, %s)
             ON DUPLICATE KEY UPDATE 
                         file_path_pre        = VALUES(file_path_pre); 
-                        """, v['colorstyle'], v['file_path_pre'])
+                        """, v['colorstyle'], k)
             print "Successful Insert to offshore_Status --> {0}".format(k)
             #else:
                 #print "File Doesnt Exist --> {0}".format(v['file_path_prezip'])
@@ -190,7 +190,7 @@ for k,v in fulldict.iteritems():
             connection.execute("""INSERT INTO offshore_status (colorstyle, file_path_post) VALUES (%s, %s)
             ON DUPLICATE KEY UPDATE 
                             file_path_post       = VALUES(file_path_post); 
-                            """, v['colorstyle'],  k)
+                            """, v['colorstyle'], k)
             print "Successful Insert to offshore_Status --> {0}".format(k)
         #else:
         #     print "File Doesnt Exist --> {0}".format(v['file_path_postzip'])
@@ -202,12 +202,12 @@ for k,v in fulldict.iteritems():
             connection.execute("""INSERT INTO offshore_status (colorstyle, file_path_pre) VALUES (%s, %s)
             ON DUPLICATE KEY UPDATE 
                             file_path_pre        = VALUES(file_path_pre); 
-                            """, v['colorstyle'], k])  #v['file_path_pre'])
+                            """, v['colorstyle'], k)  #v['file_path_pre'])
             print "Successful Insert to offshore_Status --> {0}".format(k)
             connection.execute("""INSERT INTO offshore_zip (colorstyle, file_path_pre) VALUES (%s, %s)
             ON DUPLICATE KEY UPDATE 
                             file_path_pre        = VALUES(file_path_pre), 
-                            """, v['colorstyle'], k])  ##v['file_path_pre'])
+                            """, v['colorstyle'], k)  ##v['file_path_pre'])
             print "Successful Insert to offshore_Status --> {0}".format(k)
             #else:
             #    print "Error entering --> {0}\t File doesnt seem to Exist".format(v['file_path_pre'])
