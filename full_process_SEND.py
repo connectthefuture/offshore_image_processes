@@ -23,10 +23,24 @@ def zipdir(path, zip):
     return zipstyleslist, sentdate_dict
 
 #####################################################
+# 2 # Upload to prepress etc. FTP
+#####################################################################################################################
+def upload_to_imagedrop(file):
+    import ftplib
+    username   = "bf"
+    password   = "B1002#@F"
+    ftpurl     = "prepressoutsourcing.com"
+    remotepath = 'Drop/'
+    fullftp    = os.path.join(ftpurl, remotepath)
 
-
-
-
+    session = ftplib.FTP(ftpurl, username, password)
+    fileread = open(file, 'rb')
+    filename = str(file.split('/')[-1])
+    session.cwd(remotepath)
+    session.storbinary('STOR ' + filename, fileread, 8*1024)
+    fileread.close()
+    session.quit() 
+#############################
 #####################################################################################################################
 #####################################################################################################################
 #####################################################################################################################
@@ -81,6 +95,8 @@ colorstyles_sent_dt_key = zdict
 print ziptosend
 print colorstyles_sent_dt_key
 
+# 2 # Upload to india
+upload_to_imagedrop(ziptosend)
 
 ##TODO:upload ziptosend to  remote zip via ftp then send inserts colorstyles_sent_dt_key to offshore_to_send and offshore_zip
 
