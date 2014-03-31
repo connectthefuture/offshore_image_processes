@@ -47,7 +47,7 @@ def upload_to_imagedrop(file):
 #####################################################################################################################
 ################### 1) Crate Zip if 500+ pngs to send  ##############################################################
 ################### 2) Send Zipped files with ftp   #################################################################
-################### 3)    ###########################################################################################
+################### 3) Archive zip  #################################################################################
 ################### 4)    ###########################################################################################
 #####################################################################################################################
 #####################################################################################################################
@@ -72,7 +72,7 @@ if dircnt > 250:
     zipf.close()
 
 
-#  2  ########## Send Zipped files with ftp ###################################
+#  2  ########## Send Zipped files with ftp --> previous Args remain active and used ###################################
 import ftplib
 import os,sys,re
 
@@ -88,17 +88,17 @@ if dircnt > 250:
     ftp = ftplib.FTP(ftpurl)
     ftp.login(username, password)
 
-
     ziptosend               = zipname
     colorstyles_sent        = zlist
     colorstyles_sent_dt_key = zdict
-
 
     print ziptosend
     print colorstyles_sent_dt_key
 
     # 2 # Upload to india
     upload_to_imagedrop(ziptosend)
+    # 3 # Move Zip to archive after sent
+    os.rename(ziptosend, ziptosend.replace('1_Sending','4_Archive/ZIP'))
 
 ##TODO:upload ziptosend to  remote zip via ftp then send inserts colorstyles_sent_dt_key to offshore_to_send and offshore_zip
 
