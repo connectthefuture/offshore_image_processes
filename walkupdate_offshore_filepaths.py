@@ -62,7 +62,7 @@ regex_india_prezip = re.compile(r'^/mnt/Post_Complete/Complete_Archive/SendRecei
 regex_india_postzip = re.compile(r'^/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/2_Returned/batch_[0-9]{6}\.[zipZIP]{3}$')
 regex_india_postzipdir = re.compile(r'^/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/2_Returned/batch_[0-9]{6}/.*?\.[pngPNG]{3}$')
 
-regex_m_uploading = re.compile(r'^/Volumes/Post_Complete/Complete_Archive/SendReceive_BGRemoval/3_ListPage_to_Load/[0-9]{9}_m\.[jpgJPG]{3}$')
+regex_m_uploading = re.compile(r'^/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/3_ListPage_to_Load/[0-9]{9}_m\.[jpgJPG]{3}$')
 
 regex_arch_m_uploaded = re.compile(r'^/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive/LIST_PAGE_LOADED/[0-9]{9}_[LlMm]\.[jpgJPG]{3}$')
 regex_arch_postzip = re.compile(r'^/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive/ZIP/batch_[0-9]{6}\.[zipZIP]{3}$')
