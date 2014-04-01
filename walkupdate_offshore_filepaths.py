@@ -62,16 +62,16 @@ regex_india_prezip = re.compile(r'^/mnt/Post_Complete/Complete_Archive/SendRecei
 regex_india_postzip = re.compile(r'^/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/2_Returned/batch_[0-9]{6}\.[zipZIP]{3}$')
 regex_india_postzipdir = re.compile(r'^/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/2_Returned/batch_[0-9]{6}/.*?\.[pngPNG]{3}$')
 
-regex_l_uploading = re.compile(r'^/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/3_ListPage_to_Load/.*?[0-9]{9}_l\.[jpgJPG]{3}$')
+regex_m_uploading = re.compile(r'^/Volumes/Post_Complete/Complete_Archive/SendReceive_BGRemoval/3_ListPage_to_Load/[0-9]{9}_m\.[jpgJPG]{3}$')
 
-regex_arch_l_uploded = re.compile(r'^/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive/LIST_PAGE_LOADED/[0-9]{9}_[Ll]\.[jpgJPG]{3}$')
+regex_arch_m_uploaded = re.compile(r'^/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive/LIST_PAGE_LOADED/[0-9]{9}_[LlMm]\.[jpgJPG]{3}$')
 regex_arch_postzip = re.compile(r'^/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive/ZIP/batch_[0-9]{6}\.[zipZIP]{3}$')
 regex_arch_archpng = re.compile(r'^/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive/PNG/[0-9]{9}_[LP]\.[pngPNG]{3}$')
 regex_india_postzipdir = re.compile(r'^/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive/.*?/?batch_[0-9]{6}/[0-9]{9}_?L?P?.[pngPNG]{3}$')
 #regex = re.compile(r'.+?/.[jpgJPG]{3}$')
 offshore_senddir1     = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/1_Sending'
 offshore_returndir2   = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/2_Returned'
-offshore_largejpgdir3 = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/3_ListPage_to_Load'
+offshore_margejpgdir3 = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/3_ListPage_to_Load'
 offshore_archdir4     = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive'
 
 datastrings = []
@@ -160,8 +160,8 @@ for k,v in fulldict.iteritems():
         sqlinsert_choose_test = k
 
 
-## zip returned and ready to convert to _l and load
-        if re.findall(regex_arch_l_uploded, sqlinsert_choose_test):
+## zip returned and ready to convert to _m and load
+        if re.findall(regex_arch_m_uploaded, sqlinsert_choose_test):
             #print "POSTZIP"
         #if os.path.isfile(v['file_path_postzip']):
 #            connection.execute("""INSERT INTO offshore_zip (colorstyle, file_path_post, file_path_zip) VALUES (%s, %s, %s)
