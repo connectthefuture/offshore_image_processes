@@ -111,7 +111,7 @@ for style in styles_to_send:
     colorstyle_file = colorstyle + ".png"
     remotedir = "/mnt/images/images"
     remotepath = os.path.join(remotedir, hashdir, colorstyle_file)
-    destpath = os.path.join(destdir, colorstyle_file)
+    destpath = os.path.join(rootdir, colorstyle_file)
 
     getbinary_ftp_netsrv101(remotepath, outfile=destpath)
 
