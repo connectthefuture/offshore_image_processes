@@ -119,7 +119,7 @@ def subproc_pad_to_x480(file,destdir):
         '-colorspace',
         'sRGB',
         '-unsharp',
-        '.7x2.8', 
+        '2x1.3', 
         '-quality',
         '100',
         #'-strip', 
