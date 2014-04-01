@@ -3,9 +3,6 @@ import zipfile,sys,datetime,os,re
 
 todaysdate = str(datetime.date.today())
 #todaysdate = '2014-01-27'
-todaysfolder = "{0}{1}{2}_BC_SET_B".format(todaysdate[5:7],todaysdate[8:10],todaysdate[2:4])
-todaysParent = "{0}_{1}".format(todaysdate[5:7],todaysdate[:4])
-
 
 def zipdir(path, zip):
     sentdate_dict = {}
@@ -48,8 +45,73 @@ def upload_to_imagedrop(file):
 ################### 1) Crate Zip if 500+ pngs to send  ##############################################################
 ################### 2) Send Zipped files with ftp   #################################################################
 ################### 3) Archive zip  #################################################################################
-################### 4)    ###########################################################################################
+################### 0) Query db get 500 to send from netsrv101    ###################################################
 #####################################################################################################################
+### 0 ###
+## Path to file below is from the mountpoint on FTP, ie /mnt/images..
+## Download via FTP
+def getbinary_ftp_netsrv101(remote_pathtofile, outfile=None):
+    # fetch a binary file
+    import ftplib
+    ftpdown = ftplib.FTP("netsrv101.l3.bluefly.com")
+    ftpdown.login("imagedrop", "imagedrop0")
+    if outfile is None:
+        outfile = sys.stdout
+    destfile = open(outfile, "wb")
+    ftpdown.retrbinary("RETR " + remote_pathtofile, destfile.write, 8*1024)
+    destfile.close()
+
+###
+## Query db for 500 not sent files return colorstyles 
+def sqlQuery_500_imgready_notsent():
+    import sqlalchemy
+    mysql_engine_www = sqlalchemy.create_engine('mysql+mysqldb://root:mysql@prodimages.ny.bluefly.com:3301/www_django')
+    connection = mysql_engine_www.connect()
+    
+    querymake_500notsent = """SELECT colorstyle FROM offshore_status WHERE image_ready_dt IS NOT NULL AND (send_dt IS NULL AND return_dt IS NULL) ORDER BY image_ready_dt DESC LIMIT 0,500;"""
+    
+    result = connection.execute(querymake_500notsent)
+    colorstyles_list = []
+    for row in result:
+        colorstyles_list.append(row['colorstyle'])
+    connection.close()
+    
+    return set(sorted(colorstyles_list))
+
+###
+## 4 Last Step is updating the db with what was sent
+### Update send dt based on 500 limit query to send    
+def sqlQuery_500_set_senddt(colorstyles_list):
+    import sqlalchemy
+    mysql_engine_www = sqlalchemy.create_engine('mysql+mysqldb://root:mysql@prodimages.ny.bluefly.com:3301/www_django')
+    connection = mysql_engine_www.connect()
+    for style in colorstyles_list:
+    try:
+        connection.execute("""
+                UPDATE offshore_status (colorstyle) 
+                VALUES (%s) 
+                SET send_dt=DATE_FORMAT(NOW(),'%Y-%m-%d');
+                """, style)
+    except sqlalchemy.exc.IntegrityError:
+        print "Duplicate Entry {0}".format(k)
+    connection.close()
+#####################################################################################################################
+# RUN 0 Process #####################################################################################################
+#####################################################################################################################
+styles_to_send = sqlQuery_500_imgready_notsent()
+for style in styles_to_send:
+    colorstyle = style
+    hashdir = colorstyle[:4]
+    colorstyle_file = colorstyle + ".png"
+    remotedir = "/mnt/images/images"
+    remotepath = os.path.join(remotedir, hashdir, colorstyle_file)
+    destpath = os.path.join(destdir, colorstyle_file)
+
+    getbinary_ftp_netsrv101(remotepath, outfile=destpath)
+
+##   
+### After sending zip use the styles_to_send variable list and update the send_dt
+##
 #####################################################################################################################
 #####################################################################################################################
 # 1 #
@@ -85,7 +147,7 @@ ftpurl     = "prepressoutsourcing.com"
 remotepath = 'Drop'
 fullftp    = os.path.join(ftpurl, remotepath)
 
-if dircnt > 250:
+if dircnt > 20:
     files = []
     ftp = ftplib.FTP(ftpurl)
     ftp.login(username, password)
@@ -103,3 +165,6 @@ if dircnt > 250:
     os.rename(ziptosend, ziptosend.replace('1_Sending','4_Archive/ZIP_SENT'))
 
 ##TODO:upload ziptosend to  remote zip via ftp then send inserts colorstyles_sent_dt_key to offshore_to_send and offshore_zip
+# 4 # Update offshore_status with todays date as sent
+for style in styles_to_send:
+    sqlQuery_500_set_senddt(style)
