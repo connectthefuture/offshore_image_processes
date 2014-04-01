@@ -98,6 +98,12 @@ def sqlQuery_500_set_senddt(colorstyles_list):
 #####################################################################################################################
 # RUN 0 Process #####################################################################################################
 #####################################################################################################################
+rootdir = ''
+try:
+    rootdir = sys.argv[1]
+except:
+    rootdir = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/1_Sending'
+
 styles_to_send = sqlQuery_500_imgready_notsent()
 for style in styles_to_send:
     colorstyle = style
@@ -118,12 +124,6 @@ for style in styles_to_send:
 ## Check Root dir sys.argv[1], for 500 files then create a zip called batch_<todays date yyyy-mm-dd>
 regex            = re.compile(r'^[^\.].+?[^Zz]..$')
 regex_colorstyle = re.compile(r'^[0-9]{9}$')
-
-rootdir = ''
-try:
-    rootdir = sys.argv[1]
-except:
-    rootdir = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/1_Sending'
 
 ## unique datetime with microseconds for unique folder names
 todaysdirdate = datetime.datetime.strftime(datetime.datetime.now(),'%Y-%m-%d_%f')
