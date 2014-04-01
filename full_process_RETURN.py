@@ -219,7 +219,8 @@ while len(extracted_pngs) >= 1:
         shutil.move(extractedpng, pngarchived_path)
         subproc_pad_to_x480(pngarchived_path,listpagedir)
         #shutil.copy2(pngarchived_path,listpagedir)
-
+## Remove empty dir after padding etc
+if len(os.listdir(parentdir)) == 0: os.rmdir(parentdir)
 
 #####################################################################################################################
 # 4 # Generate new list page jpgs, _l.jpg @ 400x480 from PNGs located in the 3_LisPage... folder
