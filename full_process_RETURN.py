@@ -290,8 +290,8 @@ for f in glob.glob(os.path.join(archdir, '*/*_LP.png')):
     # 7 # Update offshore_status with todays date as sent
     #####################################################
     try:
-        sqlQuery_500_set_returndt(style)
+        sqlQuery_500_set_returndt(colorstyle)
     except:
-        print "Failed Entrering Return dt for --> {0}".format(style)
+        print "Failed Entrering Return dt for --> {0}".format(colorstyle)
     #####################################################
     #####################################################

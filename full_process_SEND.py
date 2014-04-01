@@ -133,7 +133,7 @@ dircnt   = len(os.listdir(rootdir))
 zipname  = os.path.join(rootdir, filename)
 
 
-if dircnt > 250:
+if dircnt > 20:
     os.chdir(rootdir)
     zipf = zipfile.ZipFile(zipname, 'w')
     zlist, zdict = zipdir(rootdir, zipf)
