@@ -58,7 +58,7 @@ def getbinary_ftp_netsrv101(remote_pathtofile, outfile=None):
     if outfile is None:
         outfile = sys.stdout
     destfile = open(outfile, "wb")
-    ftpdown.retrbinary("RETR " + remote_pathtofile, destfile.write, 8*1024)
+    ftpdown.retrbinary("RETR " + remote_pathtofile, destfile.write)  #, 8*1024)
     destfile.close()
 
 ###
