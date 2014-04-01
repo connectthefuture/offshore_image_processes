@@ -84,7 +84,7 @@ def unzip_dir_savefiles(zipin, extractdir):
 def subproc_pad_to_x480(file,destdir):
     import subprocess, os
     
-    fname = file.split("/")[-1].split('.')[0].replace('_LP','_l').lower()
+    fname = file.split("/")[-1].split('.')[0].replace('_LP','_m').lower()
     ext = file.split(".")[-1]
     outfile = os.path.join(destdir, fname + ".jpg")    
     
