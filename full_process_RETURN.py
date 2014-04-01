@@ -260,13 +260,12 @@ if len(os.listdir(parentdir)) == 0: os.rmdir(parentdir)
 listpage_jpgs_toload = []
 for f in glob.glob(os.path.join(listpagedir, '*_m.jpg')):
     listpage_jpgs_toload.append(os.path.abspath(f))
-
-
     try:
         upload_to_imagedrop(f)
         os.rename(f, f.replace('3_ListPage_to_Load', '4_Archive/JPG/LIST_PAGE_LOADED'))
-    except:
+    except ftplib.error_temp:
         print "Failed", f
+        os.rename(f, f.replace('3_ListPage_to_Load', 'X_Errors'))
 
 #####################################################################################################################
 # 6 # After Uploading from 3_ dir, Archive all the _LP files in dated dir under archive/PNG/etc.....
