@@ -57,10 +57,12 @@ def upload_to_imagedrop(file):
 regex            = re.compile(r'^[^\.].+?[^Zz]..$')
 regex_colorstyle = re.compile(r'^[0-9]{9}$')
 
-
 rootdir = sys.argv[1]
 
-filename = "batch_" + todaysdate + ".zip"
+## unique datetime with microseconds for unique folder names
+todaysdirdate = datetime.datetime.strftime(datetime.datetime.now(),'%Y-%m-%d_%f')
+
+filename = "batch_" + todaysdirdate + ".zip"
 dircnt   = len(os.listdir(rootdir))
 zipname  = os.path.join(rootdir, filename)
 
@@ -78,7 +80,7 @@ import os,sys,re
 
 
 username   = "bf"
-password   = "B1002#@F"
+password   = "B14300F"
 ftpurl     = "prepressoutsourcing.com"
 remotepath = 'Drop'
 fullftp    = os.path.join(ftpurl, remotepath)
@@ -98,6 +100,6 @@ if dircnt > 250:
     # 2 # Upload to india
     upload_to_imagedrop(ziptosend)
     # 3 # Move Zip to archive after sent
-    os.rename(ziptosend, ziptosend.replace('1_Sending','4_Archive/ZIP'))
+    os.rename(ziptosend, ziptosend.replace('1_Sending','4_Archive/ZIP_SENT'))
 
 ##TODO:upload ziptosend to  remote zip via ftp then send inserts colorstyles_sent_dt_key to offshore_to_send and offshore_zip
