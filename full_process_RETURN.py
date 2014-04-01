@@ -264,7 +264,10 @@ for f in glob.glob(os.path.join(listpagedir, '*_m.jpg')):
         upload_to_imagedrop(f)
         os.rename(f, f.replace('3_ListPage_to_Load', '4_Archive/JPG/LIST_PAGE_LOADED'))
     except ftplib.error_temp:
-        print "Failed", f
+        print "Failed FTP error", f
+        os.rename(f, f.replace('3_ListPage_to_Load', 'X_Errors'))
+    except EOFError:
+        print "Failed EOF error", f
         os.rename(f, f.replace('3_ListPage_to_Load', 'X_Errors'))
 
 #####################################################################################################################
