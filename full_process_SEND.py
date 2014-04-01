@@ -86,14 +86,14 @@ def sqlQuery_500_set_senddt(colorstyles_list):
     mysql_engine_www = sqlalchemy.create_engine('mysql+mysqldb://root:mysql@prodimages.ny.bluefly.com:3301/www_django')
     connection = mysql_engine_www.connect()
     for style in colorstyles_list:
-    try:
-        connection.execute("""
-                UPDATE offshore_status (colorstyle) 
-                VALUES (%s) 
-                SET send_dt=DATE_FORMAT(NOW(),'%Y-%m-%d');
-                """, style)
-    except sqlalchemy.exc.IntegrityError:
-        print "Duplicate Entry {0}".format(k)
+        try:
+            connection.execute("""
+                    UPDATE offshore_status (colorstyle) 
+                    VALUES (%s) 
+                    SET send_dt=DATE_FORMAT(NOW(),'%Y-%m-%d');
+                    """, style)
+        except sqlalchemy.exc.IntegrityError:
+            print "Duplicate Entry {0}".format(k)
     connection.close()
 #####################################################################################################################
 # RUN 0 Process #####################################################################################################

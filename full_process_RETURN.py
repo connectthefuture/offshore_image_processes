@@ -147,6 +147,21 @@ def upload_to_imagedrop(file):
     fileread.close()
     session.quit() 
 #####################################################################################################################
+# 7 # After Upload set return_dt on offshore_status #################################################################
+#####################################################################################################################
+def sqlQuery_500_set_returndt(style):
+    import sqlalchemy
+    mysql_engine_www = sqlalchemy.create_engine('mysql+mysqldb://root:mysql@prodimages.ny.bluefly.com:3301/www_django')
+    connection = mysql_engine_www.connect()
+    try:
+        connection.execute("""
+                UPDATE offshore_status (colorstyle) 
+                VALUES (%s) 
+                SET return_dt=DATE_FORMAT(NOW(),'%Y-%m-%d');
+                """, style)
+    except sqlalchemy.exc.IntegrityError:
+        print "Duplicate Entry {0}".format(style)
+    connection.close()
 #####################################################################################################################
 #####################################################################################################################
 ## RUN ##
@@ -261,6 +276,7 @@ archive_ready = []
 for f in glob.glob(os.path.join(archdir, '*/*_LP.png')):
     archive_ready.append(os.path.abspath(f))
     archivedir = os.path.join(archdir, 'PNG', todaysdate + '_uploaded')
+    colorstyle = f.split('/')[-1][:9]
     try:
         os.makedirs(archivedir)
     except:
@@ -269,5 +285,13 @@ for f in glob.glob(os.path.join(archdir, '*/*_LP.png')):
         shutil.move(f, archivedir)
     except shutil.Error:
         os.rename(f, os.path.join(archivedir, f.split('/')[-1]))
-        
-        
+
+    #####################################################
+    # 7 # Update offshore_status with todays date as sent
+    #####################################################
+    try:
+        sqlQuery_500_set_returndt(style)
+    except:
+        print "Failed Entrering Return dt for --> {0}".format(style)
+    #####################################################
+    #####################################################
