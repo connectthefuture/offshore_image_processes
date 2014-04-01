@@ -79,7 +79,7 @@ def unzip_dir_savefiles(zipin, extractdir):
     return zipin
 
 #####################################################################################################################
-# 3 and 4 # Magick Crop and save as 400x480 _l.jpg ##################################################################
+# 3 and 4 # Magick Crop and save as 400x480 _m.jpg ##################################################################
 #####################################################################################################################
 def subproc_pad_to_x480(file,destdir):
     import subprocess, os
@@ -135,7 +135,7 @@ def subproc_pad_to_x480(file,destdir):
 
 
 #####################################################################################################################
-# 5 # Upload stripped bg _l.jpg files to ImageDrop ##################################################################
+# 5 # Upload stripped bg _m.jpg files to ImageDrop ##################################################################
 #####################################################################################################################
 def upload_to_imagedrop(file):
     import ftplib
@@ -213,7 +213,7 @@ while len(zipfiles_dload) >= 1:
 #####################################################################################################################
 # 3 # After unzip of complete PNGs Archive and Create new List page image
 #####################################################################################################################
-## Get all extracted PNGs and rename with _LP ext and move to archive dir 4, then copy/create _l.jpg in 3_ListPage_to_Load
+## Get all extracted PNGs and rename with _LP ext and move to archive dir 4, then copy/create _m.jpg in 3_ListPage_to_Load
 extracted_pngs = []
 for f in glob.glob(os.path.join(returndir, '*/*.png')):
     extracted_pngs.append(os.path.abspath(f))
@@ -242,7 +242,7 @@ while len(extracted_pngs) >= 1:
 if len(os.listdir(parentdir)) == 0: os.rmdir(parentdir)
 
 #####################################################################################################################
-# 4 # Generate new list page jpgs, _l.jpg @ 400x480 from PNGs located in the 3_LisPage... folder
+# 4 # Generate new list page jpgs, _m.jpg @ 400x480 from PNGs located in the 3_LisPage... folder
 #####################################################################################################################
 #import subprocess
 #
@@ -255,10 +255,10 @@ if len(os.listdir(parentdir)) == 0: os.rmdir(parentdir)
 
         
 #####################################################################################################################
-# 5 # Upload all  _l.jpg @ 400x480 located in the 3_LisPage... folder
+# 5 # Upload all  _m.jpg @ 400x480 located in the 3_LisPage... folder
 #####################################################################################################################
 listpage_jpgs_toload = []
-for f in glob.glob(os.path.join(listpagedir, '*_l.jpg')):
+for f in glob.glob(os.path.join(listpagedir, '*_m.jpg')):
     listpage_jpgs_toload.append(os.path.abspath(f))
 
 
