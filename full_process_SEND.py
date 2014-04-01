@@ -119,7 +119,11 @@ for style in styles_to_send:
 regex            = re.compile(r'^[^\.].+?[^Zz]..$')
 regex_colorstyle = re.compile(r'^[0-9]{9}$')
 
-rootdir = sys.argv[1]
+rootdir = ''
+try:
+    rootdir = sys.argv[1]
+except:
+    rootdir = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/1_Sending'
 
 ## unique datetime with microseconds for unique folder names
 todaysdirdate = datetime.datetime.strftime(datetime.datetime.now(),'%Y-%m-%d_%f')
