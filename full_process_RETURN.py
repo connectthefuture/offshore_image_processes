@@ -75,6 +75,7 @@ def unzip_dir_savefiles(zipin, extractdir):
                     print 'Extracting to --> {0}/{1}'.format(extractdir, filename.split('/')[-1])
             except IOError:
                 print "IO Error -->{0}".format(filename)
+                #os.rename(filename, filename.replace('2_Returned', 'X_Errors'))
                 pass
     return zipin
 
