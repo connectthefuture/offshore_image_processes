@@ -120,7 +120,7 @@ for style in styles_to_send:
         print "Got File via FTP", colorstyle
     except ftplib.error_temp:
         print "Failed FTP Lib error", colorstyle
-        time.sleep(.5)
+        #time.sleep(.5)
         try:
             getbinary_ftp_netsrv101(remotepath, outfile=destpath)
             print "Second Try Got File via FTP", colorstyle
