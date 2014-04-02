@@ -117,29 +117,29 @@ for style in styles_to_send:
 
     try:
         getbinary_ftp_netsrv101(remotepath, outfile=destpath)
-        print "Got File via FTP", f
+        print "Got File via FTP", colorstyle
     except ftplib.error_temp:
-        print "Failed FTP Lib error", f
+        print "Failed FTP Lib error", colorstyle
         time.sleep(7)
         try:
             getbinary_ftp_netsrv101(remotepath, outfile=destpath)
-            print "Second Try Got File via FTP", f
+            print "Second Try Got File via FTP", colorstyle
         except:
             pass
     except EOFError:
-        print "Failed EOF error", f
+        print "Failed EOF error", colorstyle
         time.sleep(7)
         try:
             getbinary_ftp_netsrv101(remotepath, outfile=destpath)
-            print "Second Try Got File via FTP", f
+            print "Second Try Got File via FTP", colorstyle
         except:
             pass
     except:
-        print "Failed Connect error", f
+        print "Failed Connect error", colorstyle
         time.sleep(7)
         try:
             getbinary_ftp_netsrv101(remotepath, outfile=destpath)
-            print "Second Try Got File via FTP", f
+            print "Second Try Got File via FTP", colorstyle
         except:
             pass
 
