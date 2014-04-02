@@ -161,7 +161,7 @@ dircnt   = len(os.listdir(rootdir))
 zipname  = os.path.join(rootdir, filename)
 
 
-if dircnt > 2:
+if dircnt >= 2:
     os.chdir(rootdir)
     zipf = zipfile.ZipFile(zipname, 'w')
     try:
@@ -181,7 +181,7 @@ ftpurl     = "prepressoutsourcing.com"
 remotepath = 'Drop'
 fullftp    = os.path.join(ftpurl, remotepath)
 
-if dircnt > 2:
+if dircnt >= 1:
     files = []
     ftp = ftplib.FTP(ftpurl)
     ftp.login(username, password)
