@@ -23,7 +23,7 @@ def zipdir(path, zip):
 #####################################################
 # 2 # Upload to prepress etc. FTP
 #####################################################################################################################
-def upload_to_imagedrop(file):
+def upload_to_india(file):
     import ftplib
     username   = "bf"
     password   = "B14300F"
@@ -165,7 +165,7 @@ if dircnt > 20:
     print colorstyles_sent_dt_key
 
     # 2 # Upload to india
-    upload_to_imagedrop(ziptosend)
+    upload_to_india(ziptosend)
     # 3 # Move Zip to archive after sent
     os.rename(ziptosend, ziptosend.replace('1_Sending','4_Archive/ZIP_SENT'))
 
