@@ -23,3 +23,6 @@ except:
 # disconnect from server
 db.close()
 
+listpg='/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive/JPG/LIST_PAGE_LOADED/330904601_m.jpg'
+pngorigsent='/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive/PNG_SENT/327964701.png'
+pngreturn='/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive/PNG/2014-04-01_uploaded/328384001_LP.png'

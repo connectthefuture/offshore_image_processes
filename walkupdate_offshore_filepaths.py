@@ -66,8 +66,8 @@ regex_m_uploading = re.compile(r'^/mnt/Post_Complete/Complete_Archive/SendReceiv
 
 regex_arch_m_uploaded = re.compile(r'^/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive/JPG/LIST_PAGE_LOADED/[0-9]{9}_[LlMm]\.[jpgJPG]{3}$')
 regex_arch_postzip = re.compile(r'^/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive/ZIP/batch_[0-9_-]{6,22}\.[zipZIP]{3}$')
-regex_arch_newpng = re.compile(r'^/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive/PNG_SENT/.*?/[0-9]{9}_[LP]\.[pngPNG]{3}$')
-regex_arch_origpng = re.compile(r'^/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive/PNG_SENT/.*?/[0-9]{9}_[LP]\.[pngPNG]{3}$')
+regex_arch_newpng = re.compile(r'^/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive/PNG/?.*?/[0-9]{9}_LP\.[pngPNG]{3}$')
+regex_arch_origpng = re.compile(r'^/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive/PNG_SENT/?.*?/[0-9]{9}\.[pngPNG]{3}$')
 
 regex_india_postzipdir = re.compile(r'^/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive/.*?/?batch_[0-9]{6}/[0-9]{9}_?L?P?.[pngPNG]{3}$')
 #regex = re.compile(r'.+?/.[jpgJPG]{3}$')
