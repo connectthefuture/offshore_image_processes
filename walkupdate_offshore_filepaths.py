@@ -134,7 +134,6 @@ for line in walkedout:
 #csv_write_datedOutfile(datastrings)
 import datetime
 todaysdate = datetime.date.today()
-todaysdate = todaysdate.strftime('%Y-%m-%d')
 #Iterate through Dict of Walked Directory, then Import to MySql DB
 import sqlalchemy
 ## First compile the SQL Fields as key value pairs
@@ -179,7 +178,7 @@ for k,v in fulldict.iteritems():
 #            print "Successful Insert offshore_Zip --> {0}".format(k)
             connection.execute("""INSERT INTO offshore_status (colorstyle, file_path_post, return_dt) VALUES (%s, %s, %s)
             ON DUPLICATE KEY UPDATE 
-                            file_path_post = VALUES(file_path_post) 
+                            file_path_post = VALUES(file_path_post), 
                             return_dt      = VALUES(return_dt); 
                             """, v['colorstyle'], k, todaysdate)
             print "Successful Insert to offshore_Status --> {0}".format(k)
@@ -192,7 +191,7 @@ for k,v in fulldict.iteritems():
             #if os.path.isfile(v['file_path_pre']):
             connection.execute("""INSERT INTO offshore_status (colorstyle, file_path_pre, send_dt) VALUES (%s, %s, %s)
             ON DUPLICATE KEY UPDATE 
-                            file_path_pre        = VALUES(file_path_pre)
+                            file_path_pre        = VALUES(file_path_pre),
                             send_dt              = VALUES(send_dt); 
                             """, v['colorstyle'], k, todaysdate)  #v['file_path_pre'])
             print "Successful Insert to offshore_Status --> {0}".format(k)
