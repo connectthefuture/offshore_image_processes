@@ -106,6 +106,7 @@ except:
     rootdir = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/1_Sending'
 
 styles_to_send = sqlQuery_500_imgready_notsent()
+import time
 for style in styles_to_send:
     colorstyle = style
     hashdir = colorstyle[:4]
@@ -114,7 +115,33 @@ for style in styles_to_send:
     remotepath = os.path.join(remotedir, hashdir, colorstyle_file)
     destpath = os.path.join(rootdir, colorstyle_file)
 
-    getbinary_ftp_netsrv101(remotepath, outfile=destpath)
+    try:
+        getbinary_ftp_netsrv101(remotepath, outfile=destpath)
+        print "Got File via FTP", f
+    except ftplib.error_temp:
+        print "Failed FTP Lib error", f
+        time.sleep(7)
+        try:
+            getbinary_ftp_netsrv101(remotepath, outfile=destpath)
+            print "Second Try Got File via FTP", f
+        except:
+            pass
+    except EOFError:
+        print "Failed EOF error", f
+        time.sleep(7)
+        try:
+            getbinary_ftp_netsrv101(remotepath, outfile=destpath)
+            print "Second Try Got File via FTP", f
+        except:
+            pass
+    except:
+        print "Failed Connect error", f
+        time.sleep(7)
+        try:
+            getbinary_ftp_netsrv101(remotepath, outfile=destpath)
+            print "Second Try Got File via FTP", f
+        except:
+            pass
 
 ##   
 ### After sending zip use the styles_to_send variable list and update the send_dt
