@@ -259,6 +259,7 @@ if len(os.listdir(parentdir)) == 0: os.rmdir(parentdir)
 # 5 # Upload all  _m.jpg @ 400x480 located in the 3_LisPage... folder
 #####################################################################################################################
 listpage_jpgs_toload = []
+import time
 for f in glob.glob(os.path.join(listpagedir, '*_m.jpg')):
     listpage_jpgs_toload.append(os.path.abspath(f))
     try:
@@ -270,6 +271,10 @@ for f in glob.glob(os.path.join(listpagedir, '*_m.jpg')):
     except EOFError:
         print "Failed EOF error", f
         os.rename(f, f.replace('3_ListPage_to_Load', 'X_Errors'))
+    except:
+        print "Failed Connect error", f
+        os.rename(f, f.replace('3_ListPage_to_Load', 'X_Errors'))
+        time.sleep(7)
 
 #####################################################################################################################
 # 6 # After Uploading from 3_ dir, Archive all the _LP files in dated dir under archive/PNG/etc.....
