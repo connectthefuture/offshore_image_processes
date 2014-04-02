@@ -5,6 +5,7 @@ todaysdate = str(datetime.date.today())
 #todaysdate = '2014-01-27'
 
 def zipdir(path, zip):
+    import re,zipfile,os
     sentdate_dict = {}
     zipstyleslist = []
     for root, dirs, files in os.walk(path):
@@ -169,7 +170,7 @@ zipname  = os.path.join(rootdir, filename)
 
 if dircnt >= 2:
     os.chdir(rootdir)
-    zipf = zipfile.ZipFile(zipname, 'w')
+    zipf = zipfile.ZipFile(zipname, 'w', allowZip64=True)
     try:
         zlist, zdict = zipdir(rootdir, zipf)
     except zipfile.LargeZipFile:

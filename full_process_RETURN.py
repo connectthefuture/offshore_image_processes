@@ -303,20 +303,53 @@ listpage_jpgs_toload = []
 import time, ftplib
 for f in glob.glob(os.path.join(listpagedir, '*_m.jpg')):
     listpage_jpgs_toload.append(os.path.abspath(f))
+    
     try:
         upload_to_imagedrop(f)
         os.rename(f, f.replace('3_ListPage_to_Load', '4_Archive/JPG/LIST_PAGE_LOADED'))
     except ftplib.error_temp:
         print "Failed FTP error", f
-        os.rename(f, f.replace('3_ListPage_to_Load', 'X_Errors'))
+        time.sleep(.2)
+        try:
+            upload_to_imagedrop(f)
+            print "Second Try Got File via FTP", f
+            os.rename(f, f.replace('3_ListPage_to_Load', '4_Archive/JPG/LIST_PAGE_LOADED'))
+        except:
+            try:
+                os.rename(f, f.replace('3_ListPage_to_Load', 'X_Errors'))
+            except OSError:
+                print "Final Try Connect error", f
+                pass
+            
     except EOFError:
         print "Failed EOF error", f
-        os.rename(f, f.replace('3_ListPage_to_Load', 'X_Errors'))
+        time.sleep(.2)
+        try:
+            upload_to_imagedrop(f)
+            print "Second Try Got File via FTP", f
+            os.rename(f, f.replace('3_ListPage_to_Load', '4_Archive/JPG/LIST_PAGE_LOADED'))
+        except:
+            try:
+                os.rename(f, f.replace('3_ListPage_to_Load', 'X_Errors'))
+            except OSError:
+                print "Final Try Connect error", f
+                pass
+    
     except:
         print "Failed Connect error", f
-        os.rename(f, f.replace('3_ListPage_to_Load', 'X_Errors'))
-        time.sleep(2)
-
+#        os.rename(f, f.replace('3_ListPage_to_Load', 'X_Errors'))
+        time.sleep(1)
+        try:
+            upload_to_imagedrop(f)
+            print "Final Try Got File via FTP", f
+            os.rename(f, f.replace('3_ListPage_to_Load', '4_Archive/JPG/LIST_PAGE_LOADED'))
+            time.sleep(.2)
+        except:
+            try:
+                os.rename(f, f.replace('3_ListPage_to_Load', 'X_Errors'))
+            except OSError:
+                print "Final Try Connect error", f
+                pass
 #####################################################################################################################
 # 6 # After Uploading from 3_ dir, Archive all the _LP files in dated dir under archive/PNG/etc.....
 #####################################################################################################################
