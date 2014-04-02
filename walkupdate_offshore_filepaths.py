@@ -64,9 +64,11 @@ regex_india_postzipdir = re.compile(r'^/mnt/Post_Complete/Complete_Archive/SendR
 
 regex_m_uploading = re.compile(r'^/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/3_ListPage_to_Load/[0-9]{9}_m\.[jpgJPG]{3}$')
 
-regex_arch_m_uploaded = re.compile(r'^/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive/LIST_PAGE_LOADED/[0-9]{9}_[LlMm]\.[jpgJPG]{3}$')
-regex_arch_postzip = re.compile(r'^/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive/ZIP/batch_[0-9]{6}\.[zipZIP]{3}$')
-regex_arch_archpng = re.compile(r'^/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive/PNG/[0-9]{9}_[LP]\.[pngPNG]{3}$')
+regex_arch_m_uploaded = re.compile(r'^/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive/JPG/LIST_PAGE_LOADED/[0-9]{9}_[LlMm]\.[jpgJPG]{3}$')
+regex_arch_postzip = re.compile(r'^/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive/ZIP/batch_[0-9_-]{6,22}\.[zipZIP]{3}$')
+regex_arch_newpng = re.compile(r'^/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive/PNG_SENT/.*?/[0-9]{9}_[LP]\.[pngPNG]{3}$')
+regex_arch_origpng = re.compile(r'^/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive/PNG_SENT/.*?/[0-9]{9}_[LP]\.[pngPNG]{3}$')
+
 regex_india_postzipdir = re.compile(r'^/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive/.*?/?batch_[0-9]{6}/[0-9]{9}_?L?P?.[pngPNG]{3}$')
 #regex = re.compile(r'.+?/.[jpgJPG]{3}$')
 offshore_senddir1     = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/1_Sending'
@@ -95,6 +97,7 @@ for line in walkedout:
             file_path_prezip   = os.path.join(offshore_senddir1, zip_groupdir + ext)
             file_path_postzip  = os.path.join(offshore_archdir4, archivedir, zip_groupdir + ext)
             file_path_archpng  = os.path.join(offshore_archdir4, "PNG", colorstyle + "_LP.png")
+            file_path_archorigpng  = os.path.join(offshore_archdir4, "PNG_SENT", colorstyle + ".png")
 #            try:
 #                photo_date = get_exif(file_path)['DateTimeOriginal'][:10]
 #            except KeyError:
@@ -110,6 +113,7 @@ for line in walkedout:
             datastringsdict_tmp['file_path_prezip'] = file_path_prezip
             datastringsdict_tmp['file_path_postzip'] = file_path_postzip
             datastringsdict_tmp['file_path_archpng'] = file_path_archpng
+            datastringsdict_tmp['file_path_archorigpng'] = file_path_archorigpng
             datastringsdict_tmp['colorstyle'] = colorstyle
             datastringsdict_tmp['archivedir'] = archivedir
             datastringsdict_tmp['zip_groupdir'] = zip_groupdir
@@ -145,6 +149,8 @@ for k,v in datastringsdict.iteritems():
     dfill['file_path_prezip'] = v['file_path_prezip']
     dfill['file_path_postzip'] = v['file_path_postzip']
     dfill['file_path_archpng'] = v['file_path_archpng']
+    dfill['file_path_archorigpng'] = v['file_path_archorigpng']
+
     fulldict[k] = dfill
 
 print fulldict.items()
@@ -180,7 +186,7 @@ for k,v in fulldict.iteritems():
         #     print "File Doesnt Exist --> {0}".format(v['file_path_postzip'])
 
 ### Png ready to be packed and sent once quota reached
-        elif re.findall(regex_india_ready, sqlinsert_choose_test):
+        elif re.findall(regex_arch_origpng, sqlinsert_choose_test):
             
             #if os.path.isfile(v['file_path_pre']):
             connection.execute("""INSERT INTO offshore_status (colorstyle, file_path_pre, send_dt) VALUES (%s, %s, %s)
@@ -197,6 +203,17 @@ for k,v in fulldict.iteritems():
             #else:
             #    print "Error entering --> {0}\t File doesnt seem to Exist".format(v['file_path_pre'])
 
+        elif re.findall(regex_arch_postzip, sqlinsert_choose_test):
+            if os.path.isfile(v['file_path_postzip']):
+                connection.execute("""INSERT INTO offshore_zip (colorstyle, file_path_pre, file_path_post, file_path_zip) VALUES (%s, %s, %s, %s)
+                ON DUPLICATE KEY UPDATE 
+                            file_path_pre         = VALUES(file_path_pre),
+                            file_path_post        = VALUES(file_path_post),  
+                            file_path_zip         = VALUES(file_path_zip); 
+                            """, v['colorstyle'],   v['file_path_archorigpng'], v['file_path_archpng'], k)
+                print "Successful Insert offshore_Zip --> {0}".format(k)
+
+        
         else:
             print "Database Table not Found for Inserting {0}".format(k)
 
