@@ -53,13 +53,14 @@ def upload_to_imagedrop(file):
 def getbinary_ftp_netsrv101(remote_pathtofile, outfile=None):
     # fetch a binary file
     import ftplib
-    ftpdown = ftplib.FTP("netsrv101.l3.bluefly.com", "imagedrop", "imagedrop0")
+    session = ftplib.FTP("netsrv101.l3.bluefly.com", "imagedrop", "imagedrop0")
     if outfile is None:
         outfile = sys.stdout
     destfile = open(outfile, "wb")
     print remote_pathtofile
-    ftpdown.retrbinary("RETR " + remote_pathtofile, destfile.write, 8*1024)
+    session.retrbinary("RETR " + remote_pathtofile, destfile.write, 8*1024)
     destfile.close()
+    session.quit()
 
 ###
 ## Query db for 500 not sent files return colorstyles 
