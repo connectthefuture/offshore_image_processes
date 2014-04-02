@@ -106,7 +106,7 @@ except:
     rootdir = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/1_Sending'
 
 styles_to_send = sqlQuery_500_imgready_notsent()
-import time
+import time, ftplib
 for style in styles_to_send:
     colorstyle = style
     hashdir = colorstyle[:4]

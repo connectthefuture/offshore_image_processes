@@ -259,7 +259,7 @@ if len(os.listdir(parentdir)) == 0: os.rmdir(parentdir)
 # 5 # Upload all  _m.jpg @ 400x480 located in the 3_LisPage... folder
 #####################################################################################################################
 listpage_jpgs_toload = []
-import time
+import time, ftplib
 for f in glob.glob(os.path.join(listpagedir, '*_m.jpg')):
     listpage_jpgs_toload.append(os.path.abspath(f))
     try:
