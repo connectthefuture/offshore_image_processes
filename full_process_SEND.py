@@ -88,10 +88,16 @@ def sqlQuery_400_set_senddt(colorstyles_list):
     connection = mysql_engine_www.connect()
     for style in colorstyles_list:
         try:
+#            connection.execute("""
+#                    UPDATE offshore_status (colorstyle) VALUES (%s) 
+#                    SET send_dt=DATE_FORMAT(NOW(),'%Y-%m-%d');
+#                    """, style)
+#
             connection.execute("""
-                    UPDATE offshore_status (colorstyle) 
+                    INSERT INTO offshore_status (colorstyle) 
                     VALUES (%s) 
-                    SET send_dt=DATE_FORMAT(NOW(),'%Y-%m-%d');
+                    ON DUPLICATE KEY UPDATE 
+                    send_dt    = VALUES (DATE_FORMAT(NOW(),'%Y-%m-%d'))
                     """, style)
         except sqlalchemy.exc.IntegrityError:
             print "Duplicate Entry {0}".format(k)
@@ -200,5 +206,4 @@ if dircnt >= 1:
 
 ##TODO:upload ziptosend to  remote zip via ftp then send inserts colorstyles_sent_dt_key to offshore_to_send and offshore_zip
 # 4 # Update offshore_status with todays date as sent
-for style in styles_to_send:
-    sqlQuery_400_set_senddt(style)
+sqlQuery_400_set_senddt(styles_to_send)
