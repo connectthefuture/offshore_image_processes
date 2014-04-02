@@ -274,7 +274,7 @@ for f in glob.glob(os.path.join(listpagedir, '*_m.jpg')):
     except:
         print "Failed Connect error", f
         os.rename(f, f.replace('3_ListPage_to_Load', 'X_Errors'))
-        time.sleep(7)
+        time.sleep(2)
 
 #####################################################################################################################
 # 6 # After Uploading from 3_ dir, Archive all the _LP files in dated dir under archive/PNG/etc.....
