@@ -315,8 +315,11 @@ for f in glob.glob(os.path.join(listpagedir, '*_m.jpg')):
             print "Second Try Got File via FTP", f
             os.rename(f, f.replace('3_ListPage_to_Load', '4_Archive/JPG/LIST_PAGE_LOADED'))
         except:
-            os.rename(f, f.replace('3_ListPage_to_Load', 'X_Errors'))
-            pass
+            try:
+                os.rename(f, f.replace('3_ListPage_to_Load', 'X_Errors'))
+            except OSError:
+                print "Final Try Connect error", f
+                pass
             
     except EOFError:
         print "Failed EOF error", f
@@ -326,12 +329,15 @@ for f in glob.glob(os.path.join(listpagedir, '*_m.jpg')):
             print "Second Try Got File via FTP", f
             os.rename(f, f.replace('3_ListPage_to_Load', '4_Archive/JPG/LIST_PAGE_LOADED'))
         except:
-            os.rename(f, f.replace('3_ListPage_to_Load', 'X_Errors'))
-            pass
+            try:
+                os.rename(f, f.replace('3_ListPage_to_Load', 'X_Errors'))
+            except OSError:
+                print "Final Try Connect error", f
+                pass
     
     except:
         print "Failed Connect error", f
-        os.rename(f, f.replace('3_ListPage_to_Load', 'X_Errors'))
+#        os.rename(f, f.replace('3_ListPage_to_Load', 'X_Errors'))
         time.sleep(1)
         try:
             upload_to_imagedrop(f)
@@ -339,9 +345,11 @@ for f in glob.glob(os.path.join(listpagedir, '*_m.jpg')):
             os.rename(f, f.replace('3_ListPage_to_Load', '4_Archive/JPG/LIST_PAGE_LOADED'))
             time.sleep(.2)
         except:
-            os.rename(f, f.replace('3_ListPage_to_Load', 'X_Errors'))
-            print "Final Try Connect error", f
-            pass
+            try:
+                os.rename(f, f.replace('3_ListPage_to_Load', 'X_Errors'))
+            except OSError:
+                print "Final Try Connect error", f
+                pass
 #####################################################################################################################
 # 6 # After Uploading from 3_ dir, Archive all the _LP files in dated dir under archive/PNG/etc.....
 #####################################################################################################################
