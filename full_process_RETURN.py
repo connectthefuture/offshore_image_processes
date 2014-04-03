@@ -331,8 +331,7 @@ while len(extracted_pngs) >= 1:
         shutil.move(extractedpng, pngarchived_path)
         subproc_pad_to_x480(pngarchived_path,listpagedir)
         subproc_pad_to_x240(pngarchived_path,listpagedir)
-        shutil.copy(pngarchived_path, listpagedir)
-
+        shutil.copy(pngarchived_path, os.path.join(listpagedir, filename))
 ## Remove empty dir after padding etc
 if len(os.listdir(parentdir)) == 0: os.rmdir(parentdir)
 
