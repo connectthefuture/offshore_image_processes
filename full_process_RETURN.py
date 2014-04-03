@@ -85,7 +85,7 @@ def unzip_dir_savefiles(zipin, extractdir):
 def subproc_pad_to_x480(file,destdir):
     import subprocess, os
     
-    fname = file.split("/")[-1].split('.')[0].replace('_LP','_m').lower()
+    fname = file.split("/")[-1].split('.')[0].replace('_LP','_l').lower()
     ext = file.split(".")[-1]
     outfile = os.path.join(destdir, fname + ".jpg")    
     
@@ -135,6 +135,57 @@ def subproc_pad_to_x480(file,destdir):
     return outfile
 
 
+def subproc_pad_to_x240(file,destdir):
+    import subprocess, os
+    
+    fname = file.split("/")[-1].split('.')[0].replace('_LP','_m').lower()
+    ext = file.split(".")[-1]
+    outfile = os.path.join(destdir, fname + ".jpg")    
+    
+    #try:            
+    subprocess.call([
+        "convert", 
+        file, 
+        '-format', 
+        'jpg',
+        '-crop',
+        str(
+        subprocess.call(['convert', file, '-virtual-pixel', 'edge', '-blur', '0x15', '-fuzz', '1%', '-trim', '-format', '%wx%h%O', 'info:'], stdin=None, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=False))
+        ,
+        '-colorspace',
+        'LAB',
+        "-filter",
+        "LanczosSharp",
+#        '-trim', 
+        '-resize',
+        "300x360",
+        '-background',
+        'white',
+#        '-gravity',
+#        'center',
+#        '-trim', 
+#        '-gravity',
+#        'center',
+        '-extent', 
+        "300x360",
+#        '+repage', 
+#        '-background',
+#        'white',
+#        '+repage',
+        '-colorspace',
+        'sRGB',
+        "-channel",
+        "RGBA",  
+#        "-unsharp", 
+#        "0x0.75+0.75+0.008",
+        '-quality',
+        '100',
+        #'-strip', 
+        outfile,
+    ])
+    #except IOError:
+    #    print "Failed: {0}".format(outfile)
+    return outfile
 #####################################################################################################################
 # 5 # Upload stripped bg _m.jpg files to ImageDrop ##################################################################
 #####################################################################################################################
@@ -166,7 +217,7 @@ def sqlQuery_500_set_returndt(style):
 #####################################################################################################################
 ## 8 ## Clear List page cdn with edgecast and style number, no version needed on List page for now
 ##
-def edgecast_clear_listpage_only(colorstyle):
+def edgecast_clear_primary_only(colorstyle):
     import pycurl,json,sys,os
     token = "9af6d09a-1250-4766-85bd-29cebf1c984f"
     account = "4936"
@@ -279,7 +330,7 @@ while len(extracted_pngs) >= 1:
     else:
         shutil.move(extractedpng, pngarchived_path)
         subproc_pad_to_x480(pngarchived_path,listpagedir)
-
+        subproc_pad_to_x240(pngarchived_path,listpagedir)
 ## Remove empty dir after padding etc
 if len(os.listdir(parentdir)) == 0: os.rmdir(parentdir)
 
@@ -299,10 +350,10 @@ if len(os.listdir(parentdir)) == 0: os.rmdir(parentdir)
 #####################################################################################################################
 # 5 # Upload all  _m.jpg @ 400x480 located in the 3_LisPage... folder
 #####################################################################################################################
-listpage_jpgs_toload = []
+bgremoved_toload = []
 import time, ftplib
-for f in glob.glob(os.path.join(listpagedir, '*_m.jpg')):
-    listpage_jpgs_toload.append(os.path.abspath(f))
+for f in glob.glob(os.path.join(listpagedir, '*.??g')):
+    bgremoved_toload.append(os.path.abspath(f))
     
     try:
         upload_to_imagedrop(f)
@@ -378,6 +429,6 @@ for f in glob.glob(os.path.join(archdir, '*/*_LP.png')):
     #####################################################
     #####################################################
     try:
-        edgecast_clear_listpage_only(colorstyle)
+        edgecast_clear_primary_only(colorstyle)
     except:
         pass
