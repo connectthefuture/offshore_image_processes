@@ -331,6 +331,8 @@ while len(extracted_pngs) >= 1:
         shutil.move(extractedpng, pngarchived_path)
         subproc_pad_to_x480(pngarchived_path,listpagedir)
         subproc_pad_to_x240(pngarchived_path,listpagedir)
+        shutil.copy(pngarchived_path, listpagedir)
+
 ## Remove empty dir after padding etc
 if len(os.listdir(parentdir)) == 0: os.rmdir(parentdir)
 
@@ -401,6 +403,13 @@ for f in glob.glob(os.path.join(listpagedir, '*.??g')):
             except OSError:
                 print "Final Try Connect error", f
                 pass
+                
+                
+### 5a ## Delete the copy of the png from the LIST PAGE LOADED dir used only to upload, stored as _LP.png
+uploaded_jpgs_arch  = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive/JPG/LIST_PAGE_LOADED'
+for pngdelete in glob.glob(os.path.join(uploaded_jpgs_arch, '*.png')):
+    os.remove(pngdelete)
+#######
 #####################################################################################################################
 # 6 # After Uploading from 3_ dir, Archive all the _LP files in dated dir under archive/PNG/etc.....
 #####################################################################################################################
