@@ -217,7 +217,7 @@ def sqlQuery_500_set_returndt(style):
 #####################################################################################################################
 ## 8 ## Write styles to clear to csv, which will be use to Clear List page cdn with edgecast and style number, no version needed on List page for now
 #####################################################################################################################
-def csv_write_datedCacheClearList(lines, destdir=None):
+def csv_write_datedCacheClearList(styleslist, destdir=None):
     import csv,datetime,os
     dt = str(datetime.datetime.now())
     today = dt.split(' ')[0]
@@ -226,7 +226,7 @@ def csv_write_datedCacheClearList(lines, destdir=None):
     f = os.path.join(destdir, today + '_clearedgecast.csv')
     with open(f, 'ab+') as csvwritefile:
         writer = csv.writer(csvwritefile, delimiter='\n', quotechar="'", quoting=csv.QUOTE_MINIMAL)
-        for line in lines:
+        for line in styleslist:
             writer.writerow([line])
 ###########################
 ### Not used Currently
