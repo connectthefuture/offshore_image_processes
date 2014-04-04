@@ -215,8 +215,22 @@ def sqlQuery_500_set_returndt(style):
         print "Duplicate Entry {0}".format(style)
     connection.close()
 #####################################################################################################################
-## 8 ## Clear List page cdn with edgecast and style number, no version needed on List page for now
-##
+## 8 ## Write styles to clear to csv, which will be use to Clear List page cdn with edgecast and style number, no version needed on List page for now
+#####################################################################################################################
+def csv_write_datedCacheClearList(lines, destdir=None):
+    import csv,datetime,os
+    dt = str(datetime.datetime.now())
+    today = dt.split(' ')[0]
+    if not destdir:
+        destdir = os.path.expanduser('~')
+    f = os.path.join(destdir, today + '_clearedgecast.csv')
+    with open(f, 'ab+') as csvwritefile:
+        writer = csv.writer(csvwritefile, delimiter='\n', quotechar="'", quoting=csv.QUOTE_MINIMAL)
+        for line in lines:
+            writer.writerow([line])
+###########################
+### Not used Currently
+###########################
 def edgecast_clear_primary_only(colorstyle):
     import pycurl,json,sys,os
     token = "9af6d09a-1250-4766-85bd-29cebf1c984f"
@@ -436,7 +450,11 @@ for f in glob.glob(os.path.join(archdir, '*/*_LP.png')):
         print "Failed Entrering Return dt for --> {0}".format(colorstyle)
     #####################################################
     #####################################################
-    try:
-        edgecast_clear_primary_only(colorstyle)
-    except:
-        pass
+    # try:
+    #
+    #     #edgecast_clear_primary_only(colorstyle)
+    # except:
+    #     pass
+
+### 8ish ## Write styles to Clear at end of day through separate Edgecast script
+csv_write_datedCacheClearList(archive_ready,destdir=archdir)
