@@ -84,7 +84,8 @@ def sqlQuery_1000_imgready_notsent():
 ## 4 Last Step is updating the db with what was sent
 ### Update send dt based on 1000 limit query to send    
 def sqlQuery_set_senddt(colorstyles_list):
-    import sqlalchemy
+    import sqlalchemy, datetime
+    todaysdate_senddt = str(datetime.date.today())
     mysql_engine_www = sqlalchemy.create_engine('mysql+mysqldb://root:mysql@prodimages.ny.bluefly.com:3301/www_django')
     connection = mysql_engine_www.connect()
     for style in colorstyles_list:
@@ -93,7 +94,7 @@ def sqlQuery_set_senddt(colorstyles_list):
             #         UPDATE offshore_status (colorstyle) VALUES (%s)
             #         SET send_dt=DATE_FORMAT(NOW(),'%Y-%m-%d');
             #         """, style)
-            sql = "UPDATE offshore_status SET send_dt='{0}' WHERE colorstyle='{1}'".format(todaysdate, style)
+            sql = "UPDATE offshore_status SET send_dt='{0}' WHERE colorstyle='{1}'".format(todaysdate_senddt, style)
             connection.execute(sql)
             # connection.execute("""
             #         INSERT INTO offshore_status (colorstyle)

@@ -203,11 +203,11 @@ def upload_to_imagedrop(file):
 #####################################################################################################################
 def sqlQuery_set_returndt(style):
     import sqlalchemy, datetime
-    todaysdate = str(datetime.date.today())
+    todaysdate_returndt = str(datetime.date.today())
     mysql_engine_www = sqlalchemy.create_engine('mysql+mysqldb://root:mysql@prodimages.ny.bluefly.com:3301/www_django')
     connection = mysql_engine_www.connect()
     try:
-        sql = "UPDATE offshore_status SET return_dt='{0}' WHERE colorstyle='{1}'".format(todaysdate, style)
+        sql = "UPDATE offshore_status SET return_dt='{0}' WHERE colorstyle='{1}'".format(todaysdate_returndt, style)
         connection.execute(sql)
         # connection.execute("""
         #         UPDATE offshore_status (colorstyle)
