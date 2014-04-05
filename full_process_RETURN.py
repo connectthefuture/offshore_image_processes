@@ -35,11 +35,11 @@ def ftp_download_allzips(returndir):
             raise
     
     ## if filenames is a dir decend into dirand list again till there are files found then dload or fo straught to dload
-    if len(filenames) == 1:
-        dname = filenames.pop()
-        ftp.cwd(dname)
-        filenames = []
-        ftp.retrlines('NLST', filenames.append)
+    #if len(filenames) == 1:
+        #dname = filenames.pop()
+        #ftp.cwd(dname)
+    filenames = []
+    ftp.retrlines('NLST', filenames.append)
 
     ##dload
     for filename in filenames:
