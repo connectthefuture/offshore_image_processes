@@ -83,25 +83,26 @@ def sqlQuery_1000_imgready_notsent():
 ###
 ## 4 Last Step is updating the db with what was sent
 ### Update send dt based on 1000 limit query to send    
-def sqlQuery_1000_set_senddt(colorstyles_list):
+def sqlQuery_set_senddt(colorstyles_list):
     import sqlalchemy
     mysql_engine_www = sqlalchemy.create_engine('mysql+mysqldb://root:mysql@prodimages.ny.bluefly.com:3301/www_django')
     connection = mysql_engine_www.connect()
     for style in colorstyles_list:
         try:
-#            connection.execute("""
-#                    UPDATE offshore_status (colorstyle) VALUES (%s) 
-#                    SET send_dt=DATE_FORMAT(NOW(),'%Y-%m-%d');
-#                    """, style)
-#
-            connection.execute("""
-                    INSERT INTO offshore_status (colorstyle) 
-                    VALUES (%s) 
-                    ON DUPLICATE KEY UPDATE 
-                    send_dt    = VALUES (DATE_FORMAT(NOW(),'%Y-%m-%d'))
-                    """, style)
+            # connection.execute("""
+            #         UPDATE offshore_status (colorstyle) VALUES (%s)
+            #         SET send_dt=DATE_FORMAT(NOW(),'%Y-%m-%d');
+            #         """, style)
+            sql = "UPDATE offshore_status SET send_dt='{0}' WHERE colorstyle='{1}'".format(todaysdate, style)
+            connection.execute(sql)
+            # connection.execute("""
+            #         INSERT INTO offshore_status (colorstyle)
+            #         VALUES (%s)
+            #         ON DUPLICATE KEY UPDATE
+            #         send_dt    = VALUES (DATE_FORMAT(NOW(),'%Y-%m-%d'))
+            #         """, style)
         except sqlalchemy.exc.IntegrityError:
-            print "Duplicate Entry {0}".format(k)
+            print "Duplicate Entry {0}".format(style)
     connection.close()
 #####################################################################################################################
 # RUN 0 Process #####################################################################################################
@@ -207,4 +208,4 @@ if dircnt >= 1:
 
 ##TODO:upload ziptosend to  remote zip via ftp then send inserts colorstyles_sent_dt_key to offshore_to_send and offshore_zip
 # 4 # Update offshore_status with todays date as sent
-sqlQuery_1000_set_senddt(styles_to_send)
+sqlQuery_set_senddt(styles_to_send)

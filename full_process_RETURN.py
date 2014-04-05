@@ -201,16 +201,19 @@ def upload_to_imagedrop(file):
 #####################################################################################################################
 # 7 # After Upload set return_dt on offshore_status #################################################################
 #####################################################################################################################
-def sqlQuery_500_set_returndt(style):
-    import sqlalchemy
+def sqlQuery_set_returndt(style):
+    import sqlalchemy, datetime
+    todaysdate = str(datetime.date.today())
     mysql_engine_www = sqlalchemy.create_engine('mysql+mysqldb://root:mysql@prodimages.ny.bluefly.com:3301/www_django')
     connection = mysql_engine_www.connect()
     try:
-        connection.execute("""
-                UPDATE offshore_status (colorstyle) 
-                VALUES (%s) 
-                SET return_dt=DATE_FORMAT(NOW(),'%Y-%m-%d');
-                """, style)
+        sql = "UPDATE offshore_status SET return_dt='{0}' WHERE colorstyle='{1}'".format(todaysdate, style)
+        connection.execute(sql)
+        # connection.execute("""
+        #         UPDATE offshore_status (colorstyle)
+        #         VALUES (%s)
+        #         SET return_dt=DATE_FORMAT(NOW(),'%Y-%m-%d');
+        #         """, style)
     except sqlalchemy.exc.IntegrityError:
         print "Duplicate Entry {0}".format(style)
     connection.close()
@@ -445,7 +448,7 @@ for f in glob.glob(os.path.join(archdir, '*/*_LP.png')):
     # 7 # Update offshore_status with todays date as sent
     #####################################################
     try:
-        sqlQuery_500_set_returndt(colorstyle)
+        sqlQuery_set_returndt(colorstyle)
     except:
         print "Failed Entrering Return dt for --> {0}".format(colorstyle)
     #####################################################
