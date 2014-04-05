@@ -90,18 +90,8 @@ def sqlQuery_set_senddt(colorstyles_list):
     connection = mysql_engine_www.connect()
     for style in colorstyles_list:
         try:
-            # connection.execute("""
-            #         UPDATE offshore_status (colorstyle) VALUES (%s)
-            #         SET send_dt=DATE_FORMAT(NOW(),'%Y-%m-%d');
-            #         """, style)
             sql = "UPDATE offshore_status SET send_dt='{0}' WHERE colorstyle='{1}'".format(todaysdate_senddt, style)
             connection.execute(sql)
-            # connection.execute("""
-            #         INSERT INTO offshore_status (colorstyle)
-            #         VALUES (%s)
-            #         ON DUPLICATE KEY UPDATE
-            #         send_dt    = VALUES (DATE_FORMAT(NOW(),'%Y-%m-%d'))
-            #         """, style)
         except sqlalchemy.exc.IntegrityError:
             print "Duplicate Entry {0}".format(style)
     connection.close()
