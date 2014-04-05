@@ -176,24 +176,32 @@ for k,v in fulldict.iteritems():
 #                        file_path_zip        = VALUES(file_path_zip); 
 #                        """, v['colorstyle'], k,  v['file_path_post'])
 #            print "Successful Insert offshore_Zip --> {0}".format(k)
-            connection.execute("""INSERT INTO offshore_status (colorstyle, file_path_post, return_dt) VALUES (%s, %s, %s)
-            ON DUPLICATE KEY UPDATE 
-                            file_path_post = VALUES(file_path_post), 
-                            return_dt      = VALUES(return_dt); 
-                            """, v['colorstyle'], k, todaysdate)
+#             connection.execute("""INSERT INTO offshore_status (colorstyle, file_path_post, return_dt) VALUES (%s, %s, %s)
+#             ON DUPLICATE KEY UPDATE
+#                             file_path_post = VALUES(file_path_post),
+#                             return_dt      = VALUES(return_dt);
+#                             """, v['colorstyle'], k, todaysdate)
+            sql = "UPDATE offshore_status SET file_path_pre ='{0}' AND SET send_dt='{1}' WHERE colorstyle='{2}'".format(v['file_path_post'],
+                                                                                                                        todaysdate,
+                                                                                                                        v['colorstyle'])
+            connection.execute(sql)
             print "Successful Insert to offshore_Status --> {0}".format(k)
         #else:
         #     print "File Doesnt Exist --> {0}".format(v['file_path_postzip'])
 
 ### Png ready to be packed and sent once quota reached
         elif re.findall(regex_arch_origpng, sqlinsert_choose_test):
-            
+            sql = "UPDATE offshore_status SET file_path_pre ='{0}' AND SET send_dt='{1}' WHERE colorstyle='{2}'".format(v['file_path_pre'],
+                                                                                                                        todaysdate,
+                                                                                                                        v['colorstyle'])
+
             #if os.path.isfile(v['file_path_pre']):
-            connection.execute("""INSERT INTO offshore_status (colorstyle, file_path_pre, send_dt) VALUES (%s, %s, %s)
-            ON DUPLICATE KEY UPDATE 
-                            file_path_pre        = VALUES(file_path_pre),
-                            send_dt              = VALUES(send_dt); 
-                            """, v['colorstyle'], k, todaysdate)  #v['file_path_pre'])
+            # connection.execute("""INSERT INTO offshore_status (colorstyle, file_path_pre, send_dt) VALUES (%s, %s, %s)
+            # ON DUPLICATE KEY UPDATE
+            #                 file_path_pre        = VALUES(file_path_pre),
+            #                 send_dt              = VALUES(send_dt);
+            #                 """, v['colorstyle'], k, todaysdate)  #v['file_path_pre'])
+            connection.execute(sql)
             print "Successful Insert to offshore_Status --> {0}".format(k)
 #            connection.execute("""INSERT INTO offshore_zip (colorstyle, file_path_pre) VALUES (%s, %s)
 #            ON DUPLICATE KEY UPDATE 
@@ -202,7 +210,6 @@ for k,v in fulldict.iteritems():
 #            print "Successful Insert to offshore_Status --> {0}".format(k)
             #else:
             #    print "Error entering --> {0}\t File doesnt seem to Exist".format(v['file_path_pre'])
-
         elif re.findall(regex_arch_postzip, sqlinsert_choose_test):
             if os.path.isfile(v['file_path_postzip']):
                 connection.execute("""INSERT INTO offshore_zip (colorstyle, file_path_pre, file_path_post, file_path_zip) VALUES (%s, %s, %s, %s)
