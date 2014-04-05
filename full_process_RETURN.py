@@ -461,7 +461,7 @@ for f in glob.glob(os.path.join(archdir, '*/*_LP.png')):
 
 ### 8ish ## Write styles to Clear at end of day through separate Edgecast script
 cacheclear_csvarch  = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive/CSV'
-csv_write_datedCacheClearList(archive_ready,destdir=cacheclear_csvarch)
+csv_write_datedCacheClearList(archive_ready.split('/')[-1][:9],destdir=cacheclear_csvarch)
 
 ### For now copy all png in error dir to my DropFinalFiles only dir which will create and load in reg processing scripts
 for f in glob.glob(os.path.join(errordir, '*.png')):
