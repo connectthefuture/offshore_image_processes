@@ -457,4 +457,6 @@ for f in glob.glob(os.path.join(archdir, '*/*_LP.png')):
     #     pass
 
 ### 8ish ## Write styles to Clear at end of day through separate Edgecast script
-csv_write_datedCacheClearList(archive_ready,destdir=archdir)
+cacheclear_csvarch  = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive/CSV'
+csv_write_datedCacheClearList(archive_ready,destdir=cacheclear_csvarch)
+
