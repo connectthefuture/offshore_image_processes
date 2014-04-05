@@ -465,4 +465,7 @@ csv_write_datedCacheClearList(archive_ready,destdir=cacheclear_csvarch)
 
 ### For now copy all png in error dir to my DropFinalFiles only dir which will create and load in reg processing scripts
 for f in glob.glob(os.path.join(errordir, '*.png')):
-    shutil.copy(f, '/mnt/Post_Complete/Complete_to_Load/Drop_FinalFilesOnly/JohnBragato')
+    try:
+        shutil.copy(f, '/mnt/Post_Complete/Complete_to_Load/Drop_FinalFilesOnly/JohnBragato')
+    except:
+        pass
