@@ -286,7 +286,7 @@ todaysdate = str(datetime.date.today())
 returndir    = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/2_Returned'
 listpagedir  = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/3_ListPage_to_Load'
 archdir      = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive'
-
+errordir     = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/X_Errors'
 #####################################################################################################################
 # 1 #  Download all zips on remote dir via FTP
 #####################################################################################################################
@@ -463,3 +463,6 @@ for f in glob.glob(os.path.join(archdir, '*/*_LP.png')):
 cacheclear_csvarch  = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive/CSV'
 csv_write_datedCacheClearList(archive_ready,destdir=cacheclear_csvarch)
 
+### For now copy all png in error dir to my DropFinalFiles only dir which will create and load in reg processing scripts
+for f in glob.glob(os.path.join(errordir, '*.png')):
+    shutil.copy(f, '/mnt/Post_Complete/Complete_to_Load/Drop_FinalFilesOnly/JohnBragato')
