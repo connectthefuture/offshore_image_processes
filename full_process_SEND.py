@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import zipfile,sys,datetime,os,re
 
 todaysdate = str(datetime.date.today())
@@ -70,7 +71,7 @@ def sqlQuery_1000_imgready_notsent():
     mysql_engine_www = sqlalchemy.create_engine('mysql+mysqldb://root:mysql@prodimages.ny.bluefly.com:3301/www_django')
     connection = mysql_engine_www.connect()
     
-    querymake_1000notsent = """SELECT colorstyle FROM offshore_status WHERE image_ready_dt IS NOT NULL AND (send_dt IS NULL AND return_dt IS NULL) ORDER BY image_ready_dt DESC LIMIT 0,1000;"""
+    querymake_1000notsent = """SELECT colorstyle FROM offshore_status WHERE image_ready_dt IS NOT NULL AND (send_dt IS NULL AND return_dt IS NULL) ORDER BY image_ready_dt DESC LIMIT 0,600;"""
     
     result = connection.execute(querymake_1000notsent)
     colorstyles_list = []
@@ -159,16 +160,24 @@ filename = "batch_" + todaysdirdate + ".zip"
 dircnt   = len(os.listdir(rootdir))
 zipname  = os.path.join(rootdir, filename)
 
-
-if dircnt >= 2:
+zipfilelist = []
+zipfilelist.append(zipname)
+zipcount = 1
+while len(os.listdir(rootdir)) >= 1:
     os.chdir(rootdir)
-    zipf = zipfile.ZipFile(zipname, 'w', allowZip64=True)
+    zipf = zipfile.ZipFile(zipname, 'w') ####allowZip64=True)
     try:
         zlist, zdict = zipdir(rootdir, zipf)
     except zipfile.LargeZipFile:
         zipf.close()
+        if len(os.listdir(rootdir)) >= 1:
+            zipcount = + 1
+            zipname = os.path.join(rootdir, filename).replace('.zip', "_{0}.zip".format(zipcount))
+            zipfilelist.append(zipname)
+## Close Last zipfile
+zipf.close()
 
-
+##
 #  2  ########## Send Zipped files with ftp --> previous Args remain active and used ###################################
 import ftplib
 import os,sys,re
@@ -181,21 +190,20 @@ remotepath = 'Drop'
 fullftp    = os.path.join(ftpurl, remotepath)
 
 if dircnt >= 1:
-    files = []
-    ftp = ftplib.FTP(ftpurl)
-    ftp.login(username, password)
+    while len(zipfilelist) >= 1:
 
-    ziptosend               = zipname
-    colorstyles_sent        = zlist
-    colorstyles_sent_dt_key = zdict
+        files = []
+        ftp = ftplib.FTP(ftpurl)
+        ftp.login(username, password)
 
-    print ziptosend
-    print colorstyles_sent_dt_key
+        ziptosend                           = zipfilelist.pop()
+        colorstyles_sent                = zlist
+        colorstyles_sent_dt_key  = zdict
 
-    # 2 # Upload to india
-    upload_to_india(ziptosend)
-    # 3 # Move Zip to archive after sent
-    os.rename(ziptosend, ziptosend.replace('1_Sending','4_Archive/ZIP_SENT'))
+        # 2 # Upload to india
+        upload_to_india(ziptosend)
+        # 3 # Move Zip to archive after sent
+        os.rename(ziptosend, ziptosend.replace('1_Sending','4_Archive/ZIP_SENT'))
 
 ##TODO:upload ziptosend to  remote zip via ftp then send inserts colorstyles_sent_dt_key to offshore_to_send and offshore_zip
 # 4 # Update offshore_status with todays date as sent
