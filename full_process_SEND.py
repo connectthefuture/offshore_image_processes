@@ -174,6 +174,7 @@ while len(os.listdir(rootdir)) >= 1:
             zipcount = + 1
             zipname = os.path.join(rootdir, filename).replace('.zip', "_{0}.zip".format(zipcount))
             zipfilelist.append(zipname)
+        pass
 ## Close Last zipfile
 zipf.close()
 
