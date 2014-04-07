@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-#!/usr/bin/env python
-
 #todaysdate = '2014-01-27'
 #todaysfolder = "{0}{1}{2}_BC_SET_B".format(todaysdate[5:7],todaysdate[8:10],todaysdate[2:4])
 #todaysParent = "{0}_{1}".format(todaysdate[5:7],todaysdate[:4])
