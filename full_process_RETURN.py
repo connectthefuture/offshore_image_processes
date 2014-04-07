@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+#!/usr/bin/env python
 
 #todaysdate = '2014-01-27'
 #todaysfolder = "{0}{1}{2}_BC_SET_B".format(todaysdate[5:7],todaysdate[8:10],todaysdate[2:4])
@@ -198,6 +201,56 @@ def upload_to_imagedrop(file):
     session.storbinary('STOR ' + filename, fileread, 8*1024)
     fileread.close()
     session.quit() 
+
+##
+##### Upload tmp_loading dir to imagedrop via FTP using Pycurl  #####
+def pycurl_upload_imagedrop(localFilePath):
+    import pycurl, os
+    #import FileReader
+    localFileName = localFilePath.split('/')[-1]
+
+    mediaType = "8"
+    ftpURL = "ftp://file3.bluefly.corp/ImageDrop/"
+    ftpFilePath = os.path.join(ftpURL, localFileName)
+    ftpUSERPWD = "imagedrop:imagedrop0"
+
+    if localFilePath != "" and ftpFilePath != "":
+        ## Create send data
+
+        ### Send the request to Edgecast
+        c = pycurl.Curl()
+        c.setopt(pycurl.URL, ftpFilePath)
+#        c.setopt(pycurl.PORT , 21)
+        c.setopt(pycurl.USERPWD, ftpUSERPWD)
+        #c.setopt(pycurl.VERBOSE, 1)
+        c.setopt(c.CONNECTTIMEOUT, 5)
+        c.setopt(c.TIMEOUT, 8)
+        c.setopt(c.FAILONERROR, True)
+#        c.setopt(pycurl.FORBID_REUSE, 1)
+#        c.setopt(pycurl.FRESH_CONNECT, 1)
+        f = open(localFilePath, 'rb')
+        c.setopt(pycurl.INFILE, f)
+        c.setopt(pycurl.INFILESIZE, os.path.getsize(localFilePath))
+        c.setopt(pycurl.INFILESIZE_LARGE, os.path.getsize(localFilePath))
+#        c.setopt(pycurl.READFUNCTION, f.read());        
+#        c.setopt(pycurl.READDATA, f.read()); 
+        c.setopt(pycurl.UPLOAD, 1L)
+
+        try:
+            c.perform()
+            c.close()
+            print "Successfully Uploaded --> {0}".format(localFileName)
+            ## return 200
+        except pycurl.error, error:
+            errno, errstr = error
+            print 'An error occurred: ', errstr
+            try:
+                c.close()
+            except:
+                print "Couldnt Close Cnx"
+                pass
+            return errno
+
 #####################################################################################################################
 # 7 # After Upload set return_dt on offshore_status #################################################################
 #####################################################################################################################
@@ -374,7 +427,7 @@ for f in glob.glob(os.path.join(listpagedir, '*.??g')):
     bgremoved_toload.append(os.path.abspath(f))
     
     try:
-        upload_to_imagedrop(f)
+        pycurl_upload_imagedrop(f)
         os.rename(f, f.replace('3_ListPage_to_Load', '4_Archive/JPG/LIST_PAGE_LOADED'))
     except ftplib.error_temp:
         print "Failed FTP error", f
@@ -409,7 +462,7 @@ for f in glob.glob(os.path.join(listpagedir, '*.??g')):
 #        os.rename(f, f.replace('3_ListPage_to_Load', 'X_Errors'))
         time.sleep(1)
         try:
-            upload_to_imagedrop(f)
+            pycurl_upload_imagedrop(f)
             print "Final Try Got File via FTP", f
             os.rename(f, f.replace('3_ListPage_to_Load', '4_Archive/JPG/LIST_PAGE_LOADED'))
             time.sleep(.2)
