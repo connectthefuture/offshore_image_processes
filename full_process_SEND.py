@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
+#!/usr/bin/env python
 import zipfile,sys,datetime,os,re
+
 
 todaysdate = str(datetime.date.today())
 #todaysdate = '2014-01-27'
@@ -39,15 +42,15 @@ def upload_to_india(file):
     session.cwd(remotepath)
     session.storbinary('STOR ' + filename, fileread, 8*1024)
     fileread.close()
-    session.quit() 
+    session.quit()
 #############################
 #####################################################################################################################
 #####################################################################################################################
 #####################################################################################################################
-################### 1) Crate Zip if 1000+ pngs to send  ##############################################################
+################### 1) Crate Zip if 400+ pngs to send  ##############################################################
 ################### 2) Send Zipped files with ftp   #################################################################
 ################### 3) Archive zip  #################################################################################
-################### 0) Query db get 1000 to send from netsrv101    ###################################################
+################### 0) Query db get 400 to send from netsrv101    ###################################################
 #####################################################################################################################
 ### 0 ###
 ## Path to file below is from the mountpoint on FTP, ie /mnt/images..
@@ -65,25 +68,25 @@ def getbinary_ftp_netsrv101(remote_pathtofile, outfile=None):
     session.quit()
 
 ###
-## Query db for 1000 not sent files return colorstyles 
-def sqlQuery_1000_imgready_notsent():
+## Query db for 400 not sent files return colorstyles
+def sqlQuery_400_imgready_notsent():
     import sqlalchemy
     mysql_engine_www = sqlalchemy.create_engine('mysql+mysqldb://root:mysql@prodimages.ny.bluefly.com:3301/www_django')
     connection = mysql_engine_www.connect()
-    
-    querymake_1000notsent = """SELECT colorstyle FROM offshore_status WHERE image_ready_dt IS NOT NULL AND (send_dt IS NULL AND return_dt IS NULL) ORDER BY image_ready_dt DESC LIMIT 0,400;"""
-    
-    result = connection.execute(querymake_1000notsent)
+
+    querymake_400notsent = """SELECT colorstyle FROM offshore_status WHERE image_ready_dt IS NOT NULL AND (send_dt IS NULL AND return_dt IS NULL) ORDER BY image_ready_dt DESC LIMIT 0,400;"""
+
+    result = connection.execute(querymake_400notsent)
     colorstyles_list = []
     for row in result:
         colorstyles_list.append(row['colorstyle'])
     connection.close()
-    
+
     return set(sorted(colorstyles_list))
 
 ###
 ## 4 Last Step is updating the db with what was sent
-### Update send dt based on 1000 limit query to send    
+### Update send dt based on 400 limit query to send
 def sqlQuery_set_senddt(colorstyles_list):
     import sqlalchemy, datetime
     todaysdate_senddt = str(datetime.date.today())
@@ -105,7 +108,7 @@ try:
 except:
     rootdir = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/1_Sending'
 
-styles_to_send = sqlQuery_1000_imgready_notsent()
+styles_to_send = sqlQuery_400_imgready_notsent()
 import time, ftplib
 for style in styles_to_send:
     colorstyle = style
@@ -143,13 +146,13 @@ for style in styles_to_send:
         except:
             pass
 
-##   
+##
 ### After sending zip use the styles_to_send variable list and update the send_dt
 ##
 #####################################################################################################################
 #####################################################################################################################
 # 1 #
-## Check Root dir sys.argv[1], for 1000 files then create a zip called batch_<todays date yyyy-mm-dd>
+## Check Root dir sys.argv[1], for 400 files then create a zip called batch_<todays date yyyy-mm-dd>
 regex            = re.compile(r'^[^\.].+?[^Zz]..$')
 regex_colorstyle = re.compile(r'^[0-9]{9}$')
 
@@ -160,25 +163,16 @@ filename = "batch_" + todaysdirdate + ".zip"
 dircnt   = len(os.listdir(rootdir))
 zipname  = os.path.join(rootdir, filename)
 
-zipfilelist = []
-zipfilelist.append(zipname)
-zipcount = 1
-while len(os.listdir(rootdir)) >= 1:
+
+if dircnt >= 2:
     os.chdir(rootdir)
-    zipf = zipfile.ZipFile(zipname, 'w') ####allowZip64=True)
+    zipf = zipfile.ZipFile(zipname, 'w')   ##, allowZip64=True)
     try:
         zlist, zdict = zipdir(rootdir, zipf)
     except zipfile.LargeZipFile:
         zipf.close()
-        if len(os.listdir(rootdir)) >= 1:
-            zipcount = + 1
-            zipname = os.path.join(rootdir, filename).replace('.zip', "_{0}.zip".format(zipcount))
-            zipfilelist.append(zipname)
-        pass
-## Close Last zipfile
-zipf.close()
 
-##
+
 #  2  ########## Send Zipped files with ftp --> previous Args remain active and used ###################################
 import ftplib
 import os,sys,re
@@ -191,20 +185,21 @@ remotepath = 'Drop'
 fullftp    = os.path.join(ftpurl, remotepath)
 
 if dircnt >= 1:
-    while len(zipfilelist) >= 1:
+    files = []
+    ftp = ftplib.FTP(ftpurl)
+    ftp.login(username, password)
 
-        files = []
-        ftp = ftplib.FTP(ftpurl)
-        ftp.login(username, password)
+    ziptosend               = zipname
+    colorstyles_sent        = zlist
+    colorstyles_sent_dt_key = zdict
 
-        ziptosend                           = zipfilelist.pop()
-        colorstyles_sent                = zlist
-        colorstyles_sent_dt_key  = zdict
+    print ziptosend
+    print colorstyles_sent_dt_key
 
-        # 2 # Upload to india
-        upload_to_india(ziptosend)
-        # 3 # Move Zip to archive after sent
-        os.rename(ziptosend, ziptosend.replace('1_Sending','4_Archive/ZIP_SENT'))
+    # 2 # Upload to india
+    upload_to_india(ziptosend)
+    # 3 # Move Zip to archive after sent
+    os.rename(ziptosend, ziptosend.replace('1_Sending','4_Archive/ZIP_SENT'))
 
 ##TODO:upload ziptosend to  remote zip via ftp then send inserts colorstyles_sent_dt_key to offshore_to_send and offshore_zip
 # 4 # Update offshore_status with todays date as sent
