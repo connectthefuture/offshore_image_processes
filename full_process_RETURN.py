@@ -377,6 +377,7 @@ if len(zipfiles_dload) > 0:
 # 3 # After unzip of complete PNGs Archive and Create new List page image
 #####################################################################################################################
 ## Get all extracted PNGs and rename with _LP ext and move to archive dir 4, then copy/create _m.jpg in 3_ListPage_to_Load
+parentdir = ''
 extracted_pngs = []
 for f in glob.glob(os.path.join(returndir, '*/*.png')):
     extracted_pngs.append(os.path.abspath(f))
@@ -403,7 +404,8 @@ while len(extracted_pngs) >= 1:
         subproc_pad_to_x240(pngarchived_path,listpagedir)
         shutil.copy(pngarchived_path, os.path.join(listpagedir, filename))
 ## Remove empty dir after padding etc
-if len(os.listdir(parentdir)) == 0: os.rmdir(parentdir)
+if parentdir:
+    len(os.listdir(parentdir)) == 0: os.rmdir(parentdir)
 
 #####################################################################################################################
 # 4 # Generate new list page jpgs, _m.jpg @ 400x480 from PNGs located in the 3_LisPage... folder
