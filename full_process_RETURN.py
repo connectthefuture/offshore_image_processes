@@ -353,24 +353,25 @@ zipfiles_dload = []
 for z in glob.glob(os.path.join(returndir, '*.zip')):
     zipfiles_dload.append(os.path.abspath(z))
 #
-### unzip 
-while len(zipfiles_dload) >= 1:
-    zipreturned = os.path.abspath(zipfiles_dload.pop())
-    parentdir   = '/'.join(zipreturned.split('/')[:-1])
-    zipname     = zipreturned.split('/')[-1].split('.')[0]
-    extractdir  = os.path.join(parentdir, zipname)
+### unzip or pass if no zip exists 
+if len(zipfiles_dload) > 0:
+    while len(zipfiles_dload) >= 1:
+        zipreturned = os.path.abspath(zipfiles_dload.pop())
+        parentdir   = '/'.join(zipreturned.split('/')[:-1])
+        zipname     = zipreturned.split('/')[-1].split('.')[0]
+        extractdir  = os.path.join(parentdir, zipname)
+        
+        ## Make new dir named as zipfile name without ext to extract zip contents to
+        try:
+            os.mkdir(extractdir)
+        except:# SystemError:
+            pass
+        
+        if os.path.isfile(zipreturned):
+            print "ZZZ",zipreturned, extractdir, zipname
+            unzip_dir_savefiles(zipreturned, extractdir)
+            os.remove(zipreturned)
     
-    ## Make new dir named as zipfile name without ext to extract zip contents to
-    try:
-        os.mkdir(extractdir)
-    except:# SystemError:
-        pass
-    
-    if os.path.isfile(zipreturned):
-        print "ZZZ",zipreturned, extractdir, zipname
-        unzip_dir_savefiles(zipreturned, extractdir)
-        os.remove(zipreturned)
-
 
 #####################################################################################################################
 # 3 # After unzip of complete PNGs Archive and Create new List page image
@@ -521,3 +522,10 @@ for f in glob.glob(os.path.join(errordir, '*.png')):
         shutil.copy(f, '/mnt/Post_Complete/Complete_to_Load/Drop_FinalFilesOnly/JohnBragato')
     except:
         pass
+        
+## finally delete the zip file from the return dir 
+for f in glob.glob(os.path.join(returndir, '*/*.?[a-zA-Z][a-zA-Z][a-zA-Z]')):
+    if os.path.isfile(f):
+        os.remove(f)
+    elif os.path.isdir(f):
+        shutil.rmtree(os.path.abspath(f))
