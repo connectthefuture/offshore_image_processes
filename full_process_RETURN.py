@@ -38,7 +38,7 @@ def ftp_download_allzips(returndir):
     ## if filenames is a dir decend into dirand list again till there are files found then dload or fo straught to dload
     if len(filenames) == 1:
         dname = filenames.pop()
-        if not re.findall(re.compile(r'^.+?\.[ZIziJPNGjpng]{3}$'), dname)):
+        if not re.findall(re.compile(r'^.+?\.[ZIziJPNGjpng]{3}$'), dname):
             ftp.cwd(dname)
     filenames = []
     ftp.retrlines('NLST', filenames.append)
