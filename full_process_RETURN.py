@@ -405,7 +405,7 @@ while len(extracted_pngs) >= 1:
         shutil.copy(pngarchived_path, os.path.join(listpagedir, filename))
 ## Remove empty dir after padding etc
 if parentdir:
-    len(os.listdir(parentdir)) == 0: os.rmdir(parentdir)
+    if len(os.listdir(parentdir)) == 0: os.rmdir(parentdir)
 
 #####################################################################################################################
 # 4 # Generate new list page jpgs, _m.jpg @ 400x480 from PNGs located in the 3_LisPage... folder
