@@ -20,7 +20,7 @@ def ftp_download_allzips(returndir):
     remotepath = 'Pick'
     fullftp    = os.path.join(ftpurl, remotepath)
     #returndir = '/mnt/srv/media/Post_Complete/Complete_Archive/SendReceive_BGRemoval/2_Returned'
-#
+    #
     ftp = ftplib.FTP(ftpurl)
     ftp.login(username, password)
     ftp.cwd(remotepath)
@@ -105,28 +105,28 @@ def subproc_pad_to_x480(file,destdir):
         'LAB',
         "-filter",
         "LanczosSharp",
-#        '-trim', 
+        #        '-trim', 
         '-resize',
         "400x480",
         '-background',
         'white',
-#        '-gravity',
-#        'center',
-#        '-trim', 
-#        '-gravity',
-#        'center',
+        #        '-gravity',
+        #        'center',
+        #        '-trim', 
+        #        '-gravity',
+        #        'center',
         '-extent', 
         "400x480",
-#        '+repage', 
-#        '-background',
-#        'white',
-#        '+repage',
+        #        '+repage', 
+        #        '-background',
+        #        'white',
+        #        '+repage',
         '-colorspace',
         'sRGB',
         "-channel",
         "RGBA",  
-#        "-unsharp", 
-#        "0x0.75+0.75+0.008",
+        #        "-unsharp", 
+        #        "0x0.75+0.75+0.008",
         '-quality',
         '100',
         #'-strip', 
@@ -158,22 +158,22 @@ def subproc_pad_to_x240(file,destdir):
         'LAB',
         "-filter",
         "LanczosSharp",
-#        '-trim', 
+        #        '-trim', 
         '-resize',
         "300x360",
         '-background',
         'white',
-#        '-gravity',
-#        'center',
-#        '-trim', 
-#        '-gravity',
-#        'center',
+        #        '-gravity',
+        #        'center',
+        #        '-trim', 
+        #        '-gravity',
+        #        'center',
         '-extent', 
         "300x360",
-#        '+repage', 
-#        '-background',
-#        'white',
-#        '+repage',
+        #        '+repage', 
+        #        '-background',
+        #        'white',
+        #        '+repage',
         '-colorspace',
         'sRGB',
         "-channel",
@@ -219,20 +219,20 @@ def pycurl_upload_imagedrop(localFilePath):
         ### Send the request to Edgecast
         c = pycurl.Curl()
         c.setopt(pycurl.URL, ftpFilePath)
-#        c.setopt(pycurl.PORT , 21)
+        #        c.setopt(pycurl.PORT , 21)
         c.setopt(pycurl.USERPWD, ftpUSERPWD)
         #c.setopt(pycurl.VERBOSE, 1)
         c.setopt(c.CONNECTTIMEOUT, 5)
         c.setopt(c.TIMEOUT, 8)
         c.setopt(c.FAILONERROR, True)
-#        c.setopt(pycurl.FORBID_REUSE, 1)
-#        c.setopt(pycurl.FRESH_CONNECT, 1)
+        #        c.setopt(pycurl.FORBID_REUSE, 1)
+        #        c.setopt(pycurl.FRESH_CONNECT, 1)
         f = open(localFilePath, 'rb')
         c.setopt(pycurl.INFILE, f)
         c.setopt(pycurl.INFILESIZE, os.path.getsize(localFilePath))
         c.setopt(pycurl.INFILESIZE_LARGE, os.path.getsize(localFilePath))
-#        c.setopt(pycurl.READFUNCTION, f.read());        
-#        c.setopt(pycurl.READDATA, f.read()); 
+        #        c.setopt(pycurl.READFUNCTION, f.read());        
+        #        c.setopt(pycurl.READDATA, f.read()); 
         c.setopt(pycurl.UPLOAD, 1L)
 
         try:
@@ -259,7 +259,7 @@ def sqlQuery_set_returndt(style):
     mysql_engine_www = sqlalchemy.create_engine('mysql+mysqldb://root:mysql@prodimages.ny.bluefly.com:3301/www_django')
     connection = mysql_engine_www.connect()
     try:
-        sql = "UPDATE offshore_status SET return_dt='{0}' WHERE colorstyle='{1}'".format(todaysdate_returndt, style)
+        sql = "UPDATE offshore_status SET return_dt='{0}' WHERE colorstyle='{1}' AND return_dt is null".format(todaysdate_returndt, style)
         connection.execute(sql)
         # connection.execute("""
         #         UPDATE offshore_status (colorstyle)
@@ -282,7 +282,11 @@ def csv_write_datedCacheClearList(styleslist, destdir=None):
     with open(f, 'ab+') as csvwritefile:
         writer = csv.writer(csvwritefile, delimiter='\n', quotechar="'", quoting=csv.QUOTE_MINIMAL)
         for line in styleslist:
-            writer.writerow([line])
+            try:
+                writer.writerow([line])
+            except IndexError():
+                pass
+
 ###########################
 ### Not used Currently
 ###########################
@@ -379,8 +383,12 @@ if len(zipfiles_dload) > 0:
 ## Get all extracted PNGs and rename with _LP ext and move to archive dir 4, then copy/create _m.jpg in 3_ListPage_to_Load
 parentdir = ''
 extracted_pngs = []
-for f in glob.glob(os.path.join(returndir, '*/*.png')):
+edgecast_clear_list = []
+for f in glob.glob(os.path.join(returndir, '*.png')):
     extracted_pngs.append(os.path.abspath(f))
+    edgecast_clear_list.append(os.path.abspath(f))
+
+edgecast_clear_list = list(sorted(set(edgecast_clear_list)))
 
 while len(extracted_pngs) >= 1:
     extractedpng       = os.path.abspath(extracted_pngs.pop())
@@ -485,15 +493,16 @@ for pngdelete in glob.glob(os.path.join(uploaded_jpgs_arch, '*.png')):
 # 6 # After Uploading from 3_ dir, Archive all the _LP files in dated dir under archive/PNG/etc.....
 #####################################################################################################################
 ## Gather all _LP files and store in dated dir under 4_Archive/PNG/<todays date>
-archive_ready = []
-for f in glob.glob(os.path.join(archdir, '*/*_LP.png')):
-    archive_ready.append(os.path.abspath(f))
-    archivedir = os.path.join(archdir, 'PNG', todaysdate + '_uploaded')
-    colorstyle = f.split('/')[-1][:9]
-    try:
-        os.makedirs(archivedir)
-    except:
-        print "Failed makedirs for Archiving"
+## Make the archive dir for the _LP files
+archivedir = os.path.join(archdir, 'PNG', todaysdate + '_uploaded')
+colorstyle = f.split('/')[-1][:9]
+try:
+    os.makedirs(archivedir)
+except:
+    print "Failed makedirs for Archiving"
+
+## Build list  and move files to archive and update DB
+for f in glob.glob(os.path.join(archdir, '*/*/*_LP.png')):
     try:
         shutil.move(f, archivedir)
     except shutil.Error:
@@ -516,7 +525,10 @@ for f in glob.glob(os.path.join(archdir, '*/*_LP.png')):
 
 ### 8ish ## Write styles to Clear at end of day through separate Edgecast script
 cacheclear_csvarch  = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive/CSV'
-csv_write_datedCacheClearList(archive_ready[:].split('/')[-1][:9],destdir=cacheclear_csvarch)
+print edgecast_clear_list
+
+toclear = [ fname[:].split('/')[-1][:9] for fname in edgecast_clear_list ]
+csv_write_datedCacheClearList(toclear, destdir=cacheclear_csvarch)
 
 ### For now copy all png in error dir to my DropFinalFiles only dir which will create and load in reg processing scripts
 for f in glob.glob(os.path.join(errordir, '*.png')):
