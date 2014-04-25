@@ -33,7 +33,7 @@ def upload_to_india(file):
     username   = "bf"
     password   = "B14300F"
     ftpurl     = "prepressoutsourcing.com"
-    remotepath = 'Drop/'
+    remotepath = 'Drop/ImagesToDo'
     fullftp    = os.path.join(ftpurl, remotepath)
 
     session = ftplib.FTP(ftpurl, username, password)
@@ -47,10 +47,10 @@ def upload_to_india(file):
 #####################################################################################################################
 #####################################################################################################################
 #####################################################################################################################
-################### 1) Crate Zip if 400+ pngs to send  ##############################################################
+################### 1) Crate Zip if 1000+ pngs to send  ##############################################################
 ################### 2) Send Zipped files with ftp   #################################################################
 ################### 3) Archive zip  #################################################################################
-################### 0) Query db get 400 to send from netsrv101    ###################################################
+################### 0) Query db get 1000 to send from netsrv101    ###################################################
 #####################################################################################################################
 ### 0 ###
 ## Path to file below is from the mountpoint on FTP, ie /mnt/images..
@@ -68,15 +68,15 @@ def getbinary_ftp_netsrv101(remote_pathtofile, outfile=None):
     session.quit()
 
 ###
-## Query db for 400 not sent files return colorstyles
-def sqlQuery_400_imgready_notsent():
+## Query db for 1000 not sent files return colorstyles
+def sqlQuery_1000_imgready_notsent():
     import sqlalchemy
     mysql_engine_www = sqlalchemy.create_engine('mysql+mysqldb://root:mysql@prodimages.ny.bluefly.com:3301/www_django')
     connection = mysql_engine_www.connect()
 
-    querymake_400notsent = """SELECT colorstyle FROM offshore_status WHERE image_ready_dt IS NOT NULL AND (send_dt IS NULL AND return_dt IS NULL) ORDER BY image_ready_dt DESC LIMIT 0,400;"""
+    querymake_1000notsent = """SELECT colorstyle FROM offshore_status WHERE image_ready_dt IS NOT NULL AND (send_dt IS NULL AND return_dt IS NULL) ORDER BY image_ready_dt DESC LIMIT 0,1000;"""
 
-    result = connection.execute(querymake_400notsent)
+    result = connection.execute(querymake_1000notsent)
     colorstyles_list = []
     for row in result:
         colorstyles_list.append(row['colorstyle'])
@@ -86,7 +86,7 @@ def sqlQuery_400_imgready_notsent():
 
 ###
 ## 4 Last Step is updating the db with what was sent
-### Update send dt based on 400 limit query to send
+### Update send dt based on 1000 limit query to send
 def sqlQuery_set_senddt(colorstyles_list):
     import sqlalchemy, datetime
     todaysdate_senddt = str(datetime.date.today())
@@ -108,7 +108,7 @@ try:
 except:
     rootdir = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/1_Sending'
 
-styles_to_send = sqlQuery_400_imgready_notsent()
+styles_to_send = sqlQuery_1000_imgready_notsent()
 import time, ftplib
 for style in styles_to_send:
     colorstyle = style
@@ -152,8 +152,9 @@ for style in styles_to_send:
 #####################################################################################################################
 #####################################################################################################################
 # 1 #
-## Check Root dir sys.argv[1], for 400 files then create a zip called batch_<todays date yyyy-mm-dd>
-regex            = re.compile(r'^[^\.].+?[^Zz]..$')
+## Check Root dir sys.argv[1], for 1000 files then create a zip called batch_<todays date yyyy-mm-dd>
+import glob
+regex = re.compile(r'^[^\.].+?[^Zz]..$')
 regex_colorstyle = re.compile(r'^[0-9]{9}$')
 
 ## unique datetime with microseconds for unique folder names
@@ -162,17 +163,18 @@ todaysdirdate = datetime.datetime.strftime(datetime.datetime.now(),'%Y-%m-%d_%f'
 filename = "batch_" + todaysdirdate + ".zip"
 dircnt   = len(os.listdir(rootdir))
 zipname  = os.path.join(rootdir, filename)
+filelist = []
 
-
-if dircnt >= 2:
+if dircnt <= 2:
     os.chdir(rootdir)
     zipf = zipfile.ZipFile(zipname, 'w')   ##, allowZip64=True)
     try:
         zlist, zdict = zipdir(rootdir, zipf)
     except zipfile.LargeZipFile:
         zipf.close()
-
-
+else:
+    os.chdir(rootdir)
+    filelist = glob.glob(os.path.join(os.path.abspath(os.curdir)), '*.png')
 #  2  ########## Send Zipped files with ftp --> previous Args remain active and used ###################################
 import ftplib
 import os,sys,re
@@ -181,10 +183,10 @@ import os,sys,re
 username   = "bf"
 password   = "B14300F"
 ftpurl     = "prepressoutsourcing.com"
-remotepath = 'Drop'
+remotepath = 'Drop/ImagesToDo'
 fullftp    = os.path.join(ftpurl, remotepath)
 
-if dircnt >= 1:
+if dircnt >= 1 and not filelist:
     files = []
     ftp = ftplib.FTP(ftpurl)
     ftp.login(username, password)
@@ -200,6 +202,10 @@ if dircnt >= 1:
     upload_to_india(ziptosend)
     # 3 # Move Zip to archive after sent
     os.rename(ziptosend, ziptosend.replace('1_Sending','4_Archive/ZIP_SENT'))
+else:
+    for f in filelist:
+        upload_to_india(f)
+
 
 ##TODO:upload ziptosend to  remote zip via ftp then send inserts colorstyles_sent_dt_key to offshore_to_send and offshore_zip
 # 4 # Update offshore_status with todays date as sent
