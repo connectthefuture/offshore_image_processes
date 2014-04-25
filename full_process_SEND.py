@@ -174,7 +174,7 @@ if dircnt <= 2:
         zipf.close()
 else:
     os.chdir(rootdir)
-    filelist = glob.glob(os.path.join(os.path.abspath(os.curdir)), '*.png')
+    filelist = glob.glob(os.path.join(os.path.abspath(os.curdir), '*.png'))
 #  2  ########## Send Zipped files with ftp --> previous Args remain active and used ###################################
 import ftplib
 import os,sys,re
