@@ -74,7 +74,7 @@ def sqlQuery_1000_imgready_notsent():
     mysql_engine_www = sqlalchemy.create_engine('mysql+mysqldb://root:mysql@prodimages.ny.bluefly.com:3301/www_django')
     connection = mysql_engine_www.connect()
 
-    querymake_1000notsent = """SELECT colorstyle FROM offshore_status WHERE (product_type not like '%sunglasses%' AND image_ready_dt IS NOT NULL) AND (send_dt IS NULL AND return_dt IS NULL) ORDER BY image_ready_dt DESC LIMIT 0,1000;"""
+    querymake_1000notsent = """SELECT colorstyle FROM offshore_status WHERE product_type not like '%sunglasses%' AND image_ready_dt IS NOT NULL AND (send_dt IS NULL AND return_dt IS NULL) ORDER BY image_ready_dt DESC LIMIT 0,1000"""
 
     result = connection.execute(querymake_1000notsent)
     colorstyles_list = []
