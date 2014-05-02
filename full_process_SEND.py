@@ -33,7 +33,7 @@ def upload_to_india(file):
     username   = "bf"
     password   = "B14300F"
     ftpurl     = "prepressoutsourcing.com"
-    remotepath = 'Drop/ImagesToDo'
+    remotepath = 'Drop/ImagesToDoMay2'
     fullftp    = os.path.join(ftpurl, remotepath)
 
     session = ftplib.FTP(ftpurl, username, password)
