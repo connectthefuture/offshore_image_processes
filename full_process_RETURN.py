@@ -17,7 +17,7 @@ def ftp_download_allzips(returndir):
     username   = "bf"
     password   = "B14300F"
     ftpurl     = "prepressoutsourcing.com"
-    remotepath = 'Pick'
+    remotepath = 'Pick/ImagesToDo_Done'
     fullftp    = os.path.join(ftpurl, remotepath)
     #returndir = '/mnt/srv/media/Post_Complete/Complete_Archive/SendReceive_BGRemoval/2_Returned'
     #
