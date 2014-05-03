@@ -358,7 +358,7 @@ ftp_download_allzips(returndir)
 #######################################################################################################################
 ### Grab all downloaded zips in a list prior to extracting pngs
 zipfiles_dload = []
-count = 0
+count = len(glob.glob(os.path.join(returndir, '*.zip')))
 for z in glob.glob(os.path.join(returndir, '*.zip')):
     zipfiles_dload.append(os.path.abspath(z))
     count -= 1
@@ -391,8 +391,10 @@ if len(zipfiles_dload) > 0:
 parentdir = ''
 extracted_pngs = []
 edgecast_clear_list = []
-count = 0
-for f in glob.glob(os.path.join(returndir, '*.png')):
+
+globbeddir = glob.glob(os.path.join(returndir, '*.png'))
+count = len(globbeddir)
+for f in globbeddir:
     extracted_pngs.append(os.path.abspath(f))
     count -= 1
     print "Successfully Extracted--> {0}\v{1} Files Remaining".format(f,count)
@@ -516,9 +518,14 @@ except:
     print "Failed makedirs for Archiving"
 
 ## Build list  and move files to archive and update DB
-for f in glob.glob(os.path.join(archdir, '*/*/*_LP.png')):
+globbeddir = glob.glob(os.path.join(archdir, '*/*/*_LP.png'))
+count = len(globbeddir)
+for f in globbeddir:
     try:
         shutil.move(f, archivedir)
+        count -= 1
+        print "Successfully Archived--> {0}\v{1} Files Remaining".format(f,count)
+        
     except shutil.Error:
         os.rename(f, os.path.join(archivedir, f.split('/')[-1]))
 
