@@ -358,9 +358,11 @@ ftp_download_allzips(returndir)
 #######################################################################################################################
 ### Grab all downloaded zips in a list prior to extracting pngs
 zipfiles_dload = []
+count = 0
 for z in glob.glob(os.path.join(returndir, '*.zip')):
-    print "Successfully Downloaded--> {}".format(z)
     zipfiles_dload.append(os.path.abspath(z))
+    count -= 1
+    print "Successfully Downloaded--> {0}\v{1} Files Remaining".format(z,count)
 #
 ### unzip or pass if no zip exists 
 if len(zipfiles_dload) > 0:
@@ -389,13 +391,15 @@ if len(zipfiles_dload) > 0:
 parentdir = ''
 extracted_pngs = []
 edgecast_clear_list = []
+count = 0
 for f in glob.glob(os.path.join(returndir, '*.png')):
     extracted_pngs.append(os.path.abspath(f))
-    print "Successfully Extracted--> {}".format(f)
+    count -= 1
+    print "Successfully Extracted--> {0}\v{1} Files Remaining".format(f,count)
     edgecast_clear_list.append(os.path.abspath(f))
 
 edgecast_clear_list = list(sorted(set(edgecast_clear_list)))
-
+count = 0
 while len(extracted_pngs) >= 1:
     extractedpng       = os.path.abspath(extracted_pngs.pop())
     parentdir          = '/'.join(extractedpng.split('/')[:-1])
@@ -414,6 +418,8 @@ while len(extracted_pngs) >= 1:
         pass
     else:
         shutil.move(extractedpng, pngarchived_path)
+        count -= 1
+        print "Creating Jpgs for--> {0}\v{1} Files Remaining".format(extractedpng,count)
         subproc_pad_to_x480(pngarchived_path,listpagedir)
         subproc_pad_to_x240(pngarchived_path,listpagedir)
         shutil.copy(pngarchived_path, os.path.join(listpagedir, filename))
