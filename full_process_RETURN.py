@@ -45,11 +45,13 @@ def ftp_download_allzips(returndir):
     ftp.retrlines('NLST', filenames.append)
 
     ##dload
+    count = len(filenames)
     for filename in filenames:
         local_filename = os.path.join(returndir,filename)
         file = open(local_filename, 'wb')
         ftp.retrbinary('RETR '+ filename, file.write)
-        print "Successfully Retrieved--> {}".format(filename)
+        count -= 1
+        print "Successfully Retrieved--> {0}\v{1} Files Remaining".format(filename,count)
         file.close()
     ftp.close()
 
