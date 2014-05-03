@@ -38,6 +38,7 @@ def ftp_download_allzips(returndir):
     ## if filenames is a dir decend into dirand list again till there are files found then dload or fo straught to dload
     if len(filenames) == 1:
         dname = filenames.pop()
+        print dname
         if not re.findall(re.compile(r'^.+?\.[ZIziJPNGjpng]{3}$'), dname):
             ftp.cwd(dname)
     filenames = []
@@ -48,6 +49,7 @@ def ftp_download_allzips(returndir):
         local_filename = os.path.join(returndir,filename)
         file = open(local_filename, 'wb')
         ftp.retrbinary('RETR '+ filename, file.write)
+        print "Successfully Retrieved--> {}".format(filename)
         file.close()
     ftp.close()
 
@@ -355,6 +357,7 @@ ftp_download_allzips(returndir)
 ### Grab all downloaded zips in a list prior to extracting pngs
 zipfiles_dload = []
 for z in glob.glob(os.path.join(returndir, '*.zip')):
+    print "Successfully Downloaded--> {}".format(z)
     zipfiles_dload.append(os.path.abspath(z))
 #
 ### unzip or pass if no zip exists 
@@ -386,6 +389,7 @@ extracted_pngs = []
 edgecast_clear_list = []
 for f in glob.glob(os.path.join(returndir, '*.png')):
     extracted_pngs.append(os.path.abspath(f))
+    print "Successfully Extracted--> {}".format(f)
     edgecast_clear_list.append(os.path.abspath(f))
 
 edgecast_clear_list = list(sorted(set(edgecast_clear_list)))
@@ -439,6 +443,8 @@ for f in glob.glob(os.path.join(listpagedir, '*.??g')):
     try:
         pycurl_upload_imagedrop(f)
         os.rename(f, f.replace('3_ListPage_to_Load', '4_Archive/JPG/LIST_PAGE_LOADED'))
+        print "Successfully Loaded--> {}".format(f)
+        
     except ftplib.error_temp:
         print "Failed FTP error", f
         time.sleep(.2)
