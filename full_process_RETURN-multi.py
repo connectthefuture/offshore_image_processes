@@ -220,7 +220,7 @@ def subproc_multithumbs_4_2(filepath,destdir):
         "LanczosSharp",
         '-write',
         'mpr:copy-of-original',
-        '+delete',
+        #'+delete',
             ## Begin generating imgs 
             # --> Large Jpeg
             'mpr:copy-of-original',
@@ -242,7 +242,7 @@ def subproc_multithumbs_4_2(filepath,destdir):
             '95',
             '-write',
             outfile_l,
-            '+delete',
+            #'+delete',
             
             ## Medium Jpeg
             'mpr:copy-of-original',
@@ -264,7 +264,8 @@ def subproc_multithumbs_4_2(filepath,destdir):
             '95',
             '-write',
             outfile_m,
-            '+delete',
+            #'+delete',
+            'null:',
             ])
     #return
 ##########################################
