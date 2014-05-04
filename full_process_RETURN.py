@@ -518,16 +518,16 @@ except:
     print "Failed makedirs for Archiving"
 
 ## Build list  and move files to archive and update DB
-globbeddir = glob.glob(os.path.join(archdir, '*/*/*_LP.png'))
+globbeddir = glob.glob(os.path.join(uploaded_jpgs_arch, '*_l.jpg'))
 count = len(globbeddir)
 for f in globbeddir:
-    try:
-        shutil.move(f, archivedir)
-        count -= 1
-        print "Successfully Archived--> {0}\v{1} Files Remaining".format(f,count)
-        
-    except shutil.Error:
-        os.rename(f, os.path.join(archivedir, f.split('/')[-1]))
+#    try:
+#        shutil.move(f, archivedir)
+#        count -= 1
+#        print "Successfully Archived--> {0}\v{1} Files Remaining".format(f,count)
+#        
+#    except shutil.Error:
+#        os.rename(f, os.path.join(archivedir, f.split('/')[-1]))
 
     #####################################################
     # 7 # Update offshore_status with todays date as sent
