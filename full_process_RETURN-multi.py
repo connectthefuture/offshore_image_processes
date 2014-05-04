@@ -476,7 +476,7 @@ for f in globbeddir:
     edgecast_clear_list.append(os.path.abspath(f))
 
 edgecast_clear_list = list(sorted(set(edgecast_clear_list)))
-count = 0
+count = len(extracted_pngs)
 while len(extracted_pngs) >= 1:
     extractedpng       = os.path.abspath(extracted_pngs.pop())
     parentdir          = '/'.join(extractedpng.split('/')[:-1])
