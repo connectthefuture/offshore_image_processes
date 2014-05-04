@@ -588,7 +588,7 @@ for pngdelete in glob.glob(os.path.join(uploaded_jpgs_arch, '*.png')):
 ## Gather all _LP files and store in dated dir under 4_Archive/PNG/<todays date>
 ## Make the archive dir for the _LP files
 archivedir = os.path.join(archdir, 'PNG', todaysdate + '_uploaded')
-colorstyle = f.split('/')[-1][:9]
+
 try:
     os.makedirs(archivedir)
 except:
@@ -598,6 +598,7 @@ except:
 globbeddir = glob.glob(os.path.join(uploaded_jpgs_arch, '*_l.jpg'))
 count = len(globbeddir)
 for f in globbeddir:
+    colorstyle = f.split('/')[-1][:9]
 #    try:
 #        shutil.move(f, archivedir)
 #        count -= 1
