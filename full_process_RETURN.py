@@ -500,10 +500,12 @@ for f in glob.glob(os.path.join(listpagedir, '*.??g')):
                 pass
                 
                 
-### 5a ## Delete the copy of the png from the LIST PAGE LOADED dir used only to upload, stored as _LP.png
+### 5a ## Move the copy of the png from the LIST PAGE LOADED dir used only to upload, stored as _LP.png
 uploaded_jpgs_arch  = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive/JPG/LIST_PAGE_LOADED'
-for pngdelete in glob.glob(os.path.join(uploaded_jpgs_arch, '*.png')):
-    os.remove(pngdelete)
+pngarchivedir = os.path.join(archdir, 'PNG', todaysdate + '_uploaded')
+import shutil
+for f in glob.glob(os.path.join(archdir, '*_LP.png')):
+    shutil.move(f, pngarchivedir)
 #######
 #####################################################################################################################
 # 6 # After Uploading from 3_ dir, Archive all the _LP files in dated dir under archive/PNG/etc.....
