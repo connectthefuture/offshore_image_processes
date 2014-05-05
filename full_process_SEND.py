@@ -40,6 +40,7 @@ def upload_to_india(file):
     session = ftplib.FTP(ftpurl, username, password)
     fileread = open(file, 'rb')
     filename = str(file.split('/')[-1])
+    session.mkd(remotepath)
     session.cwd(remotepath)
     session.storbinary('STOR ' + filename, fileread, 8*1024)
     fileread.close()
