@@ -29,11 +29,12 @@ def zipdir(path, zip):
 # 2 # Upload to prepress etc. FTP
 #####################################################################################################################
 def upload_to_india(file):
-    import ftplib
+    import ftplib, datetime
+    todaysdate_senddt = "{0:%B%d}".format(datetime.date.today())
     username   = "bf"
     password   = "B14300F"
     ftpurl     = "prepressoutsourcing.com"
-    remotepath = 'Drop/ImagesToDoMay2'
+    remotepath = str('Drop/ImagesToDo' + todaysdate_senddt)
     fullftp    = os.path.join(ftpurl, remotepath)
 
     session = ftplib.FTP(ftpurl, username, password)
