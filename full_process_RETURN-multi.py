@@ -49,7 +49,6 @@ def ftp_download_allzips(returndir):
     count = len(filenames)
     for filename in filenames:
         local_filename = os.path.join(returndir,filename.replace(' ',''))
-        print local_filename.replace(' ',''), filename
         file = open(local_filename, 'wb')
         ftp.retrbinary('RETR '+ filename, file.write)
         count -= 1
