@@ -499,9 +499,9 @@ while len(extracted_pngs) >= 1:
         shutil.move(extractedpng, pngarchived_path)
         count -= 1
         print "Creating Jpgs for--> {0}\v{1} Files Remaining".format(extractedpng,count)
-        subproc_multithumbs_4_2(pngarchived_path,listpagedir)
-#        subproc_pad_to_x480(pngarchived_path,listpagedir)
-#        subproc_pad_to_x240(pngarchived_path,listpagedir)
+        #subproc_multithumbs_4_2(pngarchived_path,listpagedir)
+        subproc_pad_to_x480(pngarchived_path,listpagedir)
+        subproc_pad_to_x240(pngarchived_path,listpagedir)
         shutil.copy(pngarchived_path, os.path.join(listpagedir, filename))
 ## Remove empty dir after padding etc
 if parentdir:
