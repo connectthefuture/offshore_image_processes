@@ -36,8 +36,9 @@ def get_batches_sent():
 
 
     ftp = ftplib.FTP(ftpurl, username, password)
+    ftp.cwd(remotepath)
     try:
-        ftp.retrlines('NLST', filenames.append)
+        ftp.retrlines('NLST', sentbatches.append)
     except ftplib.error_perm, resp:
         if str(resp) == "550 No files found":
             print "No files in this directory"
@@ -46,7 +47,7 @@ def get_batches_sent():
 
 
     ftp.quit()
-    return sent_batch_names
+    return sorted(sentbatches)
 
 
 def ftp_download_allzips(returndir):
