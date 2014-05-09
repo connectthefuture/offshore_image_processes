@@ -9,6 +9,46 @@
 # 1 # FTP Download zip file or files ################################################################################
 #####################################################################################################################
 
+def styles_awaiting_return():
+    import sqlalchemy
+    
+    mysql_engine_www = sqlalchemy.create_engine('mysql+mysqldb://root:mysql@prodimages.ny.bluefly.com:3301/www_django')
+    connection = mysql_engine_www.connect()
+    queryNotReturnedStyles = "SELECT colorstyle from offshore_status WHERE return_dt is null".format(todaysdate_returndt, style)
+
+    result = connection.execute(queryNotReturnedStyles)
+    
+    colorstyles_list = []
+    for row in result:
+        colorstyles_list.append(row['colorstyle'])
+    connection.close()
+
+    return set(sorted(colorstyles_list))
+
+
+def get_batches_sent():
+    import ftplib, datetime
+    username   = "bf"
+    password   = "B14300F"
+    ftpurl     = "prepressoutsourcing.com"
+    remotepath = str('Drop/')
+    fullftp    = os.path.join(ftpurl, remotepath)
+
+
+    ftp = ftplib.FTP(ftpurl, username, password)
+    try:
+        ftp.retrlines('NLST', filenames.append)
+    except ftplib.error_perm, resp:
+        if str(resp) == "550 No files found":
+            print "No files in this directory"
+        else:
+            raise
+
+
+    ftp.quit()
+    return sent_batch_names
+
+
 def ftp_download_allzips(returndir):
     import ftplib
     import os,sys,re
@@ -27,7 +67,7 @@ def ftp_download_allzips(returndir):
     ftp.cwd(remotepath)
 
     filenames = []
-    
+    styles_not_downloaded = styles_awaiting_return()
     try:
         ftp.retrlines('NLST', filenames.append)
     except ftplib.error_perm, resp:
@@ -46,14 +86,16 @@ def ftp_download_allzips(returndir):
     ftp.retrlines('NLST', filenames.append)
 
     ##dload
+    styles_not_downloaded = styles_awaiting_return()
     count = len(filenames)
     for filename in filenames:
-        local_filename = os.path.join(returndir,filename.lower().replace(' ',''))
-        file = open(local_filename, 'wb')
-        ftp.retrbinary('RETR '+ filename, file.write)
-        count -= 1
-        print "Successfully Retrieved--> {0}\v{1} Files Remaining".format(filename,count)
-        file.close()
+        if filename.split('.')[:9] in styles_not_downloaded:
+            local_filename = os.path.join(returndir,filename.lower().replace(' ',''))
+            file = open(local_filename, 'wb')
+            ftp.retrbinary('RETR '+ filename, file.write)
+            count -= 1
+            print "Successfully Retrieved--> {0}\v{1} Files Remaining".format(filename,count)
+            file.close()
     ftp.close()
 
 #####################################################################################################################
