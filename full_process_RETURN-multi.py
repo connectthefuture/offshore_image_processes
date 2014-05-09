@@ -14,16 +14,18 @@ def styles_awaiting_return():
     
     mysql_engine_www = sqlalchemy.create_engine('mysql+mysqldb://root:mysql@prodimages.ny.bluefly.com:3301/www_django')
     connection = mysql_engine_www.connect()
-    queryNotReturnedStyles = "SELECT colorstyle from offshore_status WHERE return_dt is null"
+    queryNotReturnedStyles = "SELECT colorstyle, send_dt from offshore_status WHERE return_dt is null"
 
     result = connection.execute(queryNotReturnedStyles)
     
     colorstyles_list = []
+    send_dates       = []
     for row in result:
         colorstyles_list.append(row['colorstyle'])
+        send_dates.append(row['send_dt'])
     connection.close()
 
-    return set(sorted(colorstyles_list))
+    return set(sorted(colorstyles_list)),set(send_dates)
 
 
 def get_batches_sent():
@@ -45,7 +47,6 @@ def get_batches_sent():
             print "No files in this directory"
         else:
             raise
-
 
     ftp.quit()
     return sorted(sentbatches)
