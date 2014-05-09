@@ -14,7 +14,7 @@ def styles_awaiting_return():
     
     mysql_engine_www = sqlalchemy.create_engine('mysql+mysqldb://root:mysql@prodimages.ny.bluefly.com:3301/www_django')
     connection = mysql_engine_www.connect()
-    queryNotReturnedStyles = "SELECT colorstyle from offshore_status WHERE return_dt is null".format(todaysdate_returndt, style)
+    queryNotReturnedStyles = "SELECT colorstyle from offshore_status WHERE return_dt is null"
 
     result = connection.execute(queryNotReturnedStyles)
     
