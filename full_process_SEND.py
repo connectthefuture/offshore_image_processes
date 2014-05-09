@@ -52,10 +52,10 @@ def upload_to_india(file):
 #####################################################################################################################
 #####################################################################################################################
 #####################################################################################################################
-################### 1) Crate Zip if 1000+ pngs to send  ##############################################################
+################### 1) Crate Zip if 1500+ pngs to send  ##############################################################
 ################### 2) Send Zipped files with ftp   #################################################################
 ################### 3) Archive zip  #################################################################################
-################### 0) Query db get 1000 to send from netsrv101    ###################################################
+################### 0) Query db get 1500 to send from netsrv101    ###################################################
 #####################################################################################################################
 ### 0 ###
 ## Path to file below is from the mountpoint on FTP, ie /mnt/images..
@@ -73,15 +73,15 @@ def getbinary_ftp_netsrv101(remote_pathtofile, outfile=None):
     session.quit()
 
 ###
-## Query db for 1000 not sent files return colorstyles
-def sqlQuery_1000_imgready_notsent():
+## Query db for 1500 not sent files return colorstyles
+def sqlQuery_1500_imgready_notsent():
     import sqlalchemy
     mysql_engine_www = sqlalchemy.create_engine('mysql+mysqldb://root:mysql@prodimages.ny.bluefly.com:3301/www_django')
     connection = mysql_engine_www.connect()
 
-    querymake_1000notsent = """SELECT colorstyle FROM offshore_status WHERE product_type not like 'sunglasses' AND image_ready_dt IS NOT NULL AND (send_dt IS NULL AND return_dt IS NULL) ORDER BY image_ready_dt DESC LIMIT 0,1000"""
+    querymake_1500notsent = """SELECT colorstyle FROM offshore_status WHERE product_type not like 'sunglasses' AND image_ready_dt IS NOT NULL AND (send_dt IS NULL AND return_dt IS NULL) ORDER BY image_ready_dt DESC LIMIT 0,1500"""
 
-    result = connection.execute(querymake_1000notsent)
+    result = connection.execute(querymake_1500notsent)
     colorstyles_list = []
     for row in result:
         colorstyles_list.append(row['colorstyle'])
@@ -91,7 +91,7 @@ def sqlQuery_1000_imgready_notsent():
 
 ###
 ## 4 Last Step is updating the db with what was sent
-### Update send dt based on 1000 limit query to send
+### Update send dt based on 1500 limit query to send
 def sqlQuery_set_senddt(colorstyles_list):
     import sqlalchemy, datetime
     todaysdate_senddt = str(datetime.date.today())
@@ -113,7 +113,7 @@ try:
 except:
     rootdir = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/1_Sending'
 
-styles_to_send = sqlQuery_1000_imgready_notsent()
+styles_to_send = sqlQuery_1500_imgready_notsent()
 import time, ftplib
 for style in styles_to_send:
     colorstyle = style
@@ -157,7 +157,7 @@ for style in styles_to_send:
 #####################################################################################################################
 #####################################################################################################################
 # 1 #
-## Check Root dir sys.argv[1], for 1000 files then create a zip called batch_<todays date yyyy-mm-dd>
+## Check Root dir sys.argv[1], for 1500 files then create a zip called batch_<todays date yyyy-mm-dd>
 import glob
 regex = re.compile(r'^[^\.].+?[^Zz]..$')
 regex_colorstyle = re.compile(r'^[0-9]{9}$')
