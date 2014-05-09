@@ -37,6 +37,7 @@ def get_batches_sent():
 
     ftp = ftplib.FTP(ftpurl, username, password)
     ftp.cwd(remotepath)
+    sentbatches = []
     try:
         ftp.retrlines('NLST', sentbatches.append)
     except ftplib.error_perm, resp:
