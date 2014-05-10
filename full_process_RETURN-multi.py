@@ -104,9 +104,14 @@ def ftp_download_allzips(returndir):
         if filename[:9] in styles_not_downloaded:
             local_filename = os.path.join(returndir,filename.lower().replace(' ',''))
             file = open(local_filename, 'wb')
-            ftp.retrbinary('RETR '+ filename, file.write)
-            count -= 1
-            print "Successfully Retrieved--> At most, {0}\v{1} Files Remaining".format(filename,count)
+            for batch in batches_to_get:
+                try:
+                    remfile = str(batch)+ str(filename)
+                    ftp.retrbinary('RETR '+ remfile, file.write)
+                    count -= 1
+                    print "Successfully Retrieved--> At most, {0}\v{1} Files Remaining".format(filename,count)
+                except:
+                    pass
             file.close()
     ftp.close()
 
