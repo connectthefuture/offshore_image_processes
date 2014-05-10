@@ -54,49 +54,40 @@ def get_batches_sent():
     ftp.quit()
     return sorted(sentbatches)
 
-
 def ftp_download_allzips(returndir):
-    import ftplib, datetime
+    import ftplib
     import os,sys,re
     #colorstyle = filepath.split('/')[-1][:9]
     #if re.findall(regex_colorstyle, colorstyle):
     username   = "bf"
     password   = "B14300F"
     ftpurl     = "prepressoutsourcing.com"
-    #remotepath = 'Pick/ImagesToDo_Done'
-    #todaysdate_senddt = "ImagesToDo{0:%B%d}_Done".format(datetime.date.today())
-    #remotepath = str('Pick/ImagesToDo' + todaysdate_senddt)
-    sent_batches = get_batches_sent()
+    remotepath = 'Pick/ImagesToDo_Done'
+    fullftp    = os.path.join(ftpurl, remotepath)
+    #returndir = '/mnt/srv/media/Post_Complete/Complete_Archive/SendReceive_BGRemoval/2_Returned'
+    #
+    ftp = ftplib.FTP(ftpurl)
+    ftp.login(username, password)
+    ftp.cwd(remotepath)
 
+    filenames = []
     styles_not_downloaded, batch_list = styles_awaiting_return()
-    sent_set = []
-    [ sent_set.append(f.split('/')[-1].strip('_Done')) for f in batch_list ]
-    batches_to_get = set(sent_set) | set(sent_batches)
-    filenames = []        
-    for batch in batches_to_get:
-        remotepath = os.path.join('Pick', str(batch) + '_Done') ##sys.argv[1])
-        fullftp    = os.path.join(ftpurl, remotepath)
-        #returndir = '/mnt/srv/media/Post_Complete/Complete_Archive/SendReceive_BGRemoval/2_Returned'
-        #
-        ftp = ftplib.FTP(ftpurl)
-        ftp.login(username, password)
-        try:
-            ftp.cwd(remotepath)
-            ftp.retrlines('NLST', filenames.append)
-        except ftplib.error_perm, resp:
-            if str(resp) == "550 No files found":
-                print "No files in this directory"
-            else:
-                pass #raise
+    try:
+        ftp.retrlines('NLST', filenames.append)
+    except ftplib.error_perm, resp:
+        if str(resp) == "550 No files found":
+            print "No files in this directory"
+        else:
+            raise
     
     ## if filenames is a dir decend into dirand list again till there are files found then dload or fo straught to dload
-    # if len(filenames) == 1:
-    #     dname = filenames.pop()
-    #     print dname
-    #     if not re.findall(re.compile(r'^.+?\.[ZIziJPNGjpng]{3}$'), dname):
-    #         ftp.cwd(dname)
-    #filenames = []
-    #ftp.retrlines('NLST', filenames.append)
+    if len(filenames) == 1:
+        dname = filenames.pop()
+        print dname
+        if not re.findall(re.compile(r'^.+?\.[ZIziJPNGjpng]{3}$'), dname):
+            ftp.cwd(dname)
+    filenames = []
+    ftp.retrlines('NLST', filenames.append)
 
     ##dload
     count = len(filenames)
@@ -104,17 +95,74 @@ def ftp_download_allzips(returndir):
         if filename[:9] in styles_not_downloaded:
             local_filename = os.path.join(returndir,filename.lower().replace(' ',''))
             file = open(local_filename, 'wb')
-            for batch in batches_to_get:
-                try:
-                    remfile = os.path.join(str(batch) + '_Done', str(filename))
-                    print remfile
-                    ftp.retrbinary('RETR '+ remfile, file.write)
-                    count -= 1
-                    print "Successfully Retrieved--> At most, {0}\v{1} Files Remaining".format(filename,count)
-                except:
-                    pass
+            #remfile = os.path.join(str(batch) + '_Done', str(filename))
+            #print remfile
+            ftp.retrbinary('RETR '+ filename, file.write)
+            count -= 1
+            print "Successfully Retrieved--> At most, {0}\v{1} Files Remaining".format(filename,count)
             file.close()
     ftp.close()
+    
+# def ftp_download_allzips(returndir):
+#     import ftplib, datetime
+#     import os,sys,re
+#     #colorstyle = filepath.split('/')[-1][:9]
+#     #if re.findall(regex_colorstyle, colorstyle):
+#     username   = "bf"
+#     password   = "B14300F"
+#     ftpurl     = "prepressoutsourcing.com"
+#     #remotepath = 'Pick/ImagesToDo_Done'
+#     #todaysdate_senddt = "ImagesToDo{0:%B%d}_Done".format(datetime.date.today())
+#     #remotepath = str('Pick/ImagesToDo' + todaysdate_senddt)
+#     sent_batches = get_batches_sent()
+
+#     styles_not_downloaded, batch_list = styles_awaiting_return()
+#     sent_set = []
+#     [ sent_set.append(f.split('/')[-1].strip('_Done')) for f in batch_list ]
+#     batches_to_get = set(sent_set) | set(sent_batches)
+#     filenames = []        
+#     for batch in batches_to_get:
+#         remotepath = os.path.join('Pick', str(batch) + '_Done') ##sys.argv[1])
+#         fullftp    = os.path.join(ftpurl, remotepath)
+#         #returndir = '/mnt/srv/media/Post_Complete/Complete_Archive/SendReceive_BGRemoval/2_Returned'
+#         #
+#         ftp = ftplib.FTP(ftpurl)
+#         ftp.login(username, password)
+#         try:
+#             ftp.cwd(remotepath)
+#             ftp.retrlines('NLST', filenames.append)
+#         except ftplib.error_perm, resp:
+#             if str(resp) == "550 No files found":
+#                 print "No files in this directory"
+#             else:
+#                 pass #raise
+    
+#     ## if filenames is a dir decend into dirand list again till there are files found then dload or fo straught to dload
+#     # if len(filenames) == 1:
+#     #     dname = filenames.pop()
+#     #     print dname
+#     #     if not re.findall(re.compile(r'^.+?\.[ZIziJPNGjpng]{3}$'), dname):
+#     #         ftp.cwd(dname)
+#     #filenames = []
+#     #ftp.retrlines('NLST', filenames.append)
+
+#     ##dload
+#     count = len(filenames)
+#     for filename in filenames:
+#         if filename[:9] in styles_not_downloaded:
+#             local_filename = os.path.join(returndir,filename.lower().replace(' ',''))
+#             file = open(local_filename, 'wb')
+#             for batch in batches_to_get:
+#                 try:
+#                     remfile = os.path.join(str(batch) + '_Done', str(filename))
+#                     print remfile
+#                     ftp.retrbinary('RETR '+ remfile, file.write)
+#                     count -= 1
+#                     print "Successfully Retrieved--> At most, {0}\v{1} Files Remaining".format(filename,count)
+#                 except:
+#                     pass
+#             file.close()
+#     ftp.close()
 
 #####################################################################################################################
 # 2 # Unzip downloaded file##########################################################################################
