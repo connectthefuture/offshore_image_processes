@@ -91,7 +91,8 @@ def ftp_download_allzips(returndir):
 
     ##dload
     count = len(filenames)
-    for filename in filenames:
+   while len(filenames) > 0:
+        filename = str(filenames.pop())
         if filename[:9] in styles_not_downloaded:
             local_filename = os.path.join(returndir,filename.lower().replace(' ',''))
             file = open(local_filename, 'wb')
@@ -102,7 +103,7 @@ def ftp_download_allzips(returndir):
             print "Successfully Retrieved--> At most, {0}\v{1} Files Remaining".format(filename,count)
             file.close()
     ftp.close()
-    
+
 # def ftp_download_allzips(returndir):
 #     import ftplib, datetime
 #     import os,sys,re
