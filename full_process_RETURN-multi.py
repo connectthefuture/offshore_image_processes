@@ -101,6 +101,7 @@ def ftp_download_allzips(returndir):
         file = open(local_filename, 'wb')
         #remfile = os.path.join(str(batch) + '_Done', str(filename))
         #print remfile
+        ftp.cwd(remotepath)
         ftp.retrbinary('RETR '+ filename, file.write)
         count -= 1
         print "Successfully Retrieved--> At most, {0}\v{1} Files Remaining".format(filename,count)
