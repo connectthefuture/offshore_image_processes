@@ -91,7 +91,7 @@ def ftp_download_allzips(returndir):
 
     ##dload
     count = len(filenames)
-   while len(filenames) > 0:
+    while len(filenames) > 0:
         filename = str(filenames.pop())
         if filename[:9] in styles_not_downloaded:
             local_filename = os.path.join(returndir,filename.lower().replace(' ',''))
