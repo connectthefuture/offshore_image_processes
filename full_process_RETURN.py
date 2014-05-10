@@ -71,14 +71,11 @@ def ftp_download_allzips(returndir):
         if filename[:9] in styles_not_downloaded:
             local_filename = os.path.join(returndir,filename.lower().replace(' ',''))
             file = open(local_filename, 'wb')
-            try:
-                #remfile = os.path.join(str(batch) + '_Done', str(filename))
-                #print remfile
-                ftp.retrbinary('RETR '+ filename, file.write)
-                count -= 1
-                print "Successfully Retrieved--> At most, {0}\v{1} Files Remaining".format(filename,count)
-            except:
-                pass
+            #remfile = os.path.join(str(batch) + '_Done', str(filename))
+            #print remfile
+            ftp.retrbinary('RETR '+ filename, file.write)
+            count -= 1
+            print "Successfully Retrieved--> At most, {0}\v{1} Files Remaining".format(filename,count)
             file.close()
     ftp.close()
 
