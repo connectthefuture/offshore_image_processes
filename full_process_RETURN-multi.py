@@ -19,17 +19,18 @@ def styles_awaiting_return():
     result = connection.execute(queryNotReturnedStyles)
     
     colorstyles_list = []
-    send_dates       = []
+    batchdirs       = []
     for row in result:
         colorstyles_list.append(row['colorstyle'])
-        send_dates.append(row['send_dt'])
+        send_dates = 'Drop/ImagesToDo{0:%B%d}_Done'.format(row['send_dt'])
+        batchdirs.append(send_dates)
     connection.close()
 
-    return set(sorted(colorstyles_list)),set(send_dates)
+    return set(sorted(colorstyles_list)),set(batchdirs)
 
 
 def get_batches_sent():
-    import ftplib, datetime
+    import ftplib
     username   = "bf"
     password   = "B14300F"
     ftpurl     = "prepressoutsourcing.com"
@@ -53,7 +54,7 @@ def get_batches_sent():
 
 
 def ftp_download_allzips(returndir):
-    import ftplib
+    import ftplib, datetime
     import os,sys,re
     #colorstyle = filepath.split('/')[-1][:9]
     #if re.findall(regex_colorstyle, colorstyle):
@@ -61,35 +62,41 @@ def ftp_download_allzips(returndir):
     password   = "B14300F"
     ftpurl     = "prepressoutsourcing.com"
     #remotepath = 'Pick/ImagesToDo_Done'
-    remotepath = os.path.join('Pick',sys.argv[1])
-    fullftp    = os.path.join(ftpurl, remotepath)
-    #returndir = '/mnt/srv/media/Post_Complete/Complete_Archive/SendReceive_BGRemoval/2_Returned'
-    #
-    ftp = ftplib.FTP(ftpurl)
-    ftp.login(username, password)
-    ftp.cwd(remotepath)
+    #todaysdate_senddt = "ImagesToDo{0:%B%d}_Done".format(datetime.date.today())
+    #remotepath = str('Pick/ImagesToDo' + todaysdate_senddt)
+    sent_batches = get_batches_sent()
+    styles_not_downloaded, batches_to_get = styles_awaiting_return()
 
-    filenames = []
-    styles_not_downloaded = styles_awaiting_return()
-    try:
-        ftp.retrlines('NLST', filenames.append)
-    except ftplib.error_perm, resp:
-        if str(resp) == "550 No files found":
-            print "No files in this directory"
-        else:
-            raise
+    batches_to_get = batches_to_get | sent_batches
+    filenames = []        
+    for batch in batches_to_get:
+        remotepath = os.path.join('Pick', batch) ##sys.argv[1])
+        fullftp    = os.path.join(ftpurl, remotepath)
+        #returndir = '/mnt/srv/media/Post_Complete/Complete_Archive/SendReceive_BGRemoval/2_Returned'
+        #
+        ftp = ftplib.FTP(ftpurl)
+        ftp.login(username, password)
+        ftp.cwd(remotepath)
+
+
+        try:
+            ftp.retrlines('NLST', filenames.append)
+        except ftplib.error_perm, resp:
+            if str(resp) == "550 No files found":
+                print "No files in this directory"
+            else:
+                raise
     
     ## if filenames is a dir decend into dirand list again till there are files found then dload or fo straught to dload
-    if len(filenames) == 1:
-        dname = filenames.pop()
-        print dname
-        if not re.findall(re.compile(r'^.+?\.[ZIziJPNGjpng]{3}$'), dname):
-            ftp.cwd(dname)
-    filenames = []
-    ftp.retrlines('NLST', filenames.append)
+    # if len(filenames) == 1:
+    #     dname = filenames.pop()
+    #     print dname
+    #     if not re.findall(re.compile(r'^.+?\.[ZIziJPNGjpng]{3}$'), dname):
+    #         ftp.cwd(dname)
+    #filenames = []
+    #ftp.retrlines('NLST', filenames.append)
 
     ##dload
-    styles_not_downloaded = styles_awaiting_return()
     count = len(filenames)
     for filename in filenames:
         if filename.split('.')[:9] in styles_not_downloaded:
@@ -97,7 +104,7 @@ def ftp_download_allzips(returndir):
             file = open(local_filename, 'wb')
             ftp.retrbinary('RETR '+ filename, file.write)
             count -= 1
-            print "Successfully Retrieved--> {0}\v{1} Files Remaining".format(filename,count)
+            print "Successfully Retrieved--> At most, {0}\v{1} Files Remaining".format(filename,count)
             file.close()
     ftp.close()
 
@@ -686,6 +693,7 @@ for f in glob.glob(os.path.join(errordir, '*.png')):
 ## finally delete the zip file from the return dir 
 for f in glob.glob(os.path.join(returndir, '*/*.?[a-zA-Z][a-zA-Z][a-zA-Z]')):
     if os.path.isfile(f):
-        os.remove(f)
+        os.remove(os.path.abspath(f))
     elif os.path.isdir(f):
-        shutil.rmtree(os.path.abspath(f))
+        pass
+        #shutil.rmtree(os.path.abspath(f))
