@@ -24,7 +24,7 @@ def styles_awaiting_return():
         colorstyles_list.append(row['colorstyle'])
         if row['send_dt']:
             send_date = "{0:%B%d}".format(row['send_dt'])
-            send_dates = 'Drop/ImagesToDo{0}_Done'.format(send_date)
+            send_dates = 'Pick/ImagesToDo{0}_Done'.format(send_date)
             batchdirs.append(send_dates)
     connection.close()
 
@@ -67,12 +67,14 @@ def ftp_download_allzips(returndir):
     #todaysdate_senddt = "ImagesToDo{0:%B%d}_Done".format(datetime.date.today())
     #remotepath = str('Pick/ImagesToDo' + todaysdate_senddt)
     sent_batches = get_batches_sent()
-    styles_not_downloaded, batches_to_get = styles_awaiting_return()
 
-    batches_to_get = batches_to_get | sent_batches
+    styles_not_downloaded, batch_list = styles_awaiting_return()
+    sent_set = []
+    [ sent_set.append(f.split('/')[-1].strip('_Done')) for f in batch_list ]
+    batches_to_get = set(sent_set) | set(sent_batches)
     filenames = []        
     for batch in batches_to_get:
-        remotepath = os.path.join('Pick', batch) ##sys.argv[1])
+        remotepath = os.path.join('Pick', str(batch) + '_Done') ##sys.argv[1])
         fullftp    = os.path.join(ftpurl, remotepath)
         #returndir = '/mnt/srv/media/Post_Complete/Complete_Archive/SendReceive_BGRemoval/2_Returned'
         #
