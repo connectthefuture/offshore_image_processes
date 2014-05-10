@@ -107,6 +107,7 @@ def ftp_download_allzips(returndir):
             for batch in batches_to_get:
                 try:
                     remfile = str(batch)+ str(filename)
+                    print remfile
                     ftp.retrbinary('RETR '+ remfile, file.write)
                     count -= 1
                     print "Successfully Retrieved--> At most, {0}\v{1} Files Remaining".format(filename,count)
