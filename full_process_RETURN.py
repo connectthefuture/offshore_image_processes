@@ -4,6 +4,27 @@
 #todaysdate = '2014-01-27'
 #todaysfolder = "{0}{1}{2}_BC_SET_B".format(todaysdate[5:7],todaysdate[8:10],todaysdate[2:4])
 #todaysParent = "{0}_{1}".format(todaysdate[5:7],todaysdate[:4])
+def styles_awaiting_return():
+    import sqlalchemy
+    
+    mysql_engine_www = sqlalchemy.create_engine('mysql+mysqldb://root:mysql@prodimages.ny.bluefly.com:3301/www_django')
+    connection = mysql_engine_www.connect()
+    queryNotReturnedStyles = "SELECT colorstyle, send_dt from offshore_status WHERE return_dt is null"
+
+    result = connection.execute(queryNotReturnedStyles)
+    
+    colorstyles_list = []
+    batchdirs       = []
+    for row in result:
+        colorstyles_list.append(row['colorstyle'])
+        if row['send_dt']:
+            send_date = "{0:%B%d}".format(row['send_dt'])
+            send_dates = 'Pick/ImagesToDo{0}_Done'.format(send_date)
+            batchdirs.append(send_dates)
+    connection.close()
+
+    return set(sorted(colorstyles_list)),set(batchdirs)
+
 
 #####################################################################################################################
 # 1 # FTP Download zip file or files ################################################################################
@@ -26,7 +47,7 @@ def ftp_download_allzips(returndir):
     ftp.cwd(remotepath)
 
     filenames = []
-    
+    styles_not_downloaded, batch_list = styles_awaiting_return()
     try:
         ftp.retrlines('NLST', filenames.append)
     except ftplib.error_perm, resp:
@@ -47,12 +68,19 @@ def ftp_download_allzips(returndir):
     ##dload
     count = len(filenames)
     for filename in filenames:
-        local_filename = os.path.join(returndir,filename.lower().replace(' ',''))
-        file = open(local_filename, 'wb')
-        ftp.retrbinary('RETR '+ filename, file.write)
-        count -= 1
-        print "Successfully Retrieved--> {0}\v{1} Files Remaining".format(filename,count)
-        file.close()
+        if filename[:9] in styles_not_downloaded:
+            local_filename = os.path.join(returndir,filename.lower().replace(' ',''))
+            file = open(local_filename, 'wb')
+            for batch in batches_to_get:
+                try:
+                    #remfile = os.path.join(str(batch) + '_Done', str(filename))
+                    #print remfile
+                    ftp.retrbinary('RETR '+ filename, file.write)
+                    count -= 1
+                    print "Successfully Retrieved--> At most, {0}\v{1} Files Remaining".format(filename,count)
+                except:
+                    pass
+            file.close()
     ftp.close()
 
 #####################################################################################################################
