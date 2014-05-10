@@ -537,6 +537,12 @@ returndir    = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/2_Retu
 listpagedir  = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/3_ListPage_to_Load'
 archdir      = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive'
 errordir     = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/X_Errors'
+
+##TODO: This is a terrible workaround for deleting the entire dir at the end of this instead of just the files, but no harm no foul, just ugly
+if os.path.isdir(returndir):
+    pass
+else:
+    shutil.makedirs(returndir)
 #####################################################################################################################
 # 1 #  Download all zips on remote dir via FTP
 #####################################################################################################################
