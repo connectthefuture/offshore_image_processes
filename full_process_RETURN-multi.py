@@ -106,7 +106,7 @@ def ftp_download_allzips(returndir):
             file = open(local_filename, 'wb')
             for batch in batches_to_get:
                 try:
-                    remfile = str(batch)+ str(filename)
+                    remfile = os.path.join(str(batch), str(filename))
                     print remfile
                     ftp.retrbinary('RETR '+ remfile, file.write)
                     count -= 1
