@@ -102,6 +102,8 @@ def ftp_download_allzips(returndir):
             count -= 1
             print "Successfully Retrieved--> At most, {0}\v{1} Files Remaining".format(filename,count)
             file.close()
+        else:
+            pass
     ftp.close()
 
 # def ftp_download_allzips(returndir):
