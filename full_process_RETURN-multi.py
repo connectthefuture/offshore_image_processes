@@ -22,8 +22,10 @@ def styles_awaiting_return():
     batchdirs       = []
     for row in result:
         colorstyles_list.append(row['colorstyle'])
-        send_dates = 'Drop/ImagesToDo{0:%B%d}_Done'.format(row['send_dt'])
-        batchdirs.append(send_dates)
+        if row['send_dt']:
+            send_date = "{0:%B%d}".format(row['send_dt'])
+            send_dates = 'Drop/ImagesToDo{0}_Done'.format(send_date)
+            batchdirs.append(send_dates)
     connection.close()
 
     return set(sorted(colorstyles_list)),set(batchdirs)
