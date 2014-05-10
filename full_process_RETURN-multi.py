@@ -80,10 +80,8 @@ def ftp_download_allzips(returndir):
         #
         ftp = ftplib.FTP(ftpurl)
         ftp.login(username, password)
-        ftp.cwd(remotepath)
-
-
         try:
+            ftp.cwd(remotepath)
             ftp.retrlines('NLST', filenames.append)
         except ftplib.error_perm, resp:
             if str(resp) == "550 No files found":
