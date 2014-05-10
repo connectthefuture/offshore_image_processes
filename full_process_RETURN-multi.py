@@ -101,7 +101,7 @@ def ftp_download_allzips(returndir):
     ##dload
     count = len(filenames)
     for filename in filenames:
-        if filename[0].split('.')[:9] in styles_not_downloaded:
+        if str(filename[0]).split('.')[:9] in styles_not_downloaded:
             local_filename = os.path.join(returndir,filename.lower().replace(' ',''))
             file = open(local_filename, 'wb')
             ftp.retrbinary('RETR '+ filename, file.write)
