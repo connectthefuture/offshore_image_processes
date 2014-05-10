@@ -91,19 +91,20 @@ def ftp_download_allzips(returndir):
 
     ##dload
     count = len(filenames)
-    while len(filenames) > 0:
-        filename = str(filenames.pop())
+    filtered_filenames = []
+    for filename in filenames:
         if filename[:9] in styles_not_downloaded:
-            local_filename = os.path.join(returndir,filename.lower().replace(' ',''))
-            file = open(local_filename, 'wb')
-            #remfile = os.path.join(str(batch) + '_Done', str(filename))
-            #print remfile
-            ftp.retrbinary('RETR '+ filename, file.write)
-            count -= 1
-            print "Successfully Retrieved--> At most, {0}\v{1} Files Remaining".format(filename,count)
-            file.close()
-        else:
-            pass
+            filtered_filenames.append(filename)
+    
+    for filename in filtered_filenames:       
+        local_filename = os.path.join(returndir,filename.lower().replace(' ',''))
+        file = open(local_filename, 'wb')
+        #remfile = os.path.join(str(batch) + '_Done', str(filename))
+        #print remfile
+        ftp.retrbinary('RETR '+ filename, file.write)
+        count -= 1
+        print "Successfully Retrieved--> At most, {0}\v{1} Files Remaining".format(filename,count)
+        file.close()
     ftp.close()
 
 # def ftp_download_allzips(returndir):
