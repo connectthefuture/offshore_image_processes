@@ -539,10 +539,11 @@ archdir      = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Arch
 errordir     = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/X_Errors'
 
 ##TODO: This is a terrible workaround for deleting the entire dir at the end of this instead of just the files, but no harm no foul, just ugly
-if os.path.isdir(returndir):
-    pass
-else:
+try:
     shutil.makedirs(returndir)
+except:
+    pass
+    
 #####################################################################################################################
 # 1 #  Download all zips on remote dir via FTP
 #####################################################################################################################
