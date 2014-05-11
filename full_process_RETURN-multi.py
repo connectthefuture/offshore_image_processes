@@ -534,7 +534,7 @@ regex_zipfilepath = re.compile(r'^/.+?[zipZIP]{3}$')
 todaysdate = str(datetime.date.today())
 
 returndir    = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/2_Returned_{0:%B%d%f}'format(datetime.date.today())
-listpagedir  = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/3_ListPage_to_Load'
+listpagedir  = os.path.join(returndir, '3_ListPage_to_Load_{0:%B%d%f}'format(datetime.date.today()) ## '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/3_ListPage_to_Load_{0:%B%d%f}'format(datetime.date.today()) 
 archdir      = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive'
 errordir     = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/X_Errors'
 
@@ -597,6 +597,12 @@ for f in globbeddir:
     print "Successfully Extracted--> {0}\v{1} Files Remaining".format(f,count)
     edgecast_clear_list.append(os.path.abspath(f))
 
+## make sudir to hold the images to load to site
+try:
+    os.makedirs(listpagedir)
+except:
+    pass
+
 edgecast_clear_list = list(sorted(set(edgecast_clear_list)))
 count = len(extracted_pngs)
 while len(extracted_pngs) >= 1:
@@ -607,11 +613,11 @@ while len(extracted_pngs) >= 1:
     pngarchived_pardir = '/'.join(extractedpng.split('/')[:-1]).replace('2_Returned','4_Archive')
     pngarchived_fname  = extractedpng.split('/')[-1].replace('.png', '_LP.png')
     pngarchived_path   = os.path.join(pngarchived_pardir, pngarchived_fname)
-    
+
     try:
         os.makedirs(pngarchived_pardir)
     except:
-        print "Failed makedirs"
+        pass #print "Failed makedirs"
 
     if os.path.isfile(pngarchived_path):
         pass
@@ -623,9 +629,10 @@ while len(extracted_pngs) >= 1:
         subproc_pad_to_x480(pngarchived_path,listpagedir)
         subproc_pad_to_x240(pngarchived_path,listpagedir)
         shutil.copy(pngarchived_path, os.path.join(listpagedir, filename))
-## Remove empty dir after padding etc
+##prepare to Remove empty dir after padding etc at end
 if parentdir:
-    if len(os.listdir(parentdir)) == 0: os.rmdir(parentdir)
+    if len(os.listdir(parentdir)) == 0: 
+        deletereturndirtree = parentdir
 
 #####################################################################################################################
 # 4 # Generate new list page jpgs, _m.jpg @ 400x480 from PNGs located in the 3_LisPage... folder
@@ -765,3 +772,9 @@ for f in glob.glob(os.path.join(returndir, '*/*.?[a-zA-Z][a-zA-Z][a-zA-Z]')):
     elif os.path.isdir(f):
         pass
         #shutil.rmtree(os.path.abspath(f))
+
+try:
+    if len(os.listdir(deletereturndirtree)) == 0:  
+        os.rmdir(deletereturndirtree)
+except:
+    pass
