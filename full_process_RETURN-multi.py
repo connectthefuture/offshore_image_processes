@@ -104,7 +104,7 @@ def ftp_download_allzips(returndir):
         #ftp.cwd(remotepath)
         ftp.retrbinary('RETR '+ filename, file.write)
         count -= 1
-        print "Successfully Retrieved--> At most, {0}\v{1} Files Remaining".format(filename,count)
+        print "Successfully Retrieved--> {0}\vAt most, {1} Files Remaining".format(filename,count)
         file.close()
     ftp.close()
 
