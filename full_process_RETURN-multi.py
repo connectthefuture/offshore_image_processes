@@ -533,7 +533,7 @@ regex_zipfilepath = re.compile(r'^/.+?[zipZIP]{3}$')
 
 todaysdate = str(datetime.date.today())
 
-returndir    = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/2_Returned'
+returndir    = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/2_Returned_{0:%B%d%f}'format(datetime.date.today())
 listpagedir  = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/3_ListPage_to_Load'
 archdir      = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive'
 errordir     = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/X_Errors'
