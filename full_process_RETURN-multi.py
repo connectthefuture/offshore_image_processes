@@ -548,6 +548,7 @@ errordir     = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/X_Erro
 try:
     os.makedirs(returndir)
 except:
+    print 'Failed {}'.format(returndir)
     pass
     
 #####################################################################################################################
