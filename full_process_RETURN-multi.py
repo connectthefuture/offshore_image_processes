@@ -533,14 +533,20 @@ regex_zipfilepath = re.compile(r'^/.+?[zipZIP]{3}$')
 
 todaysdate = str(datetime.date.today())
 
-returndir    = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/2_Returned_{0:%B%d%f}'format(datetime.date.today())
-listpagedir  = os.path.join(returndir, '3_ListPage_to_Load_{0:%B%d%f}'format(datetime.date.today()) ## '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/3_ListPage_to_Load_{0:%B%d%f}'format(datetime.date.today()) 
+returndir    = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/2_Returned_{0:%B%d%f}'.format(datetime.datetime.now())
+returndirrel = '/'.join(returndir.split('/')[-2:])
+listpagedir  = os.path.join(returndir, '3_ListPage_to_Load_{0:%B%d%f}'.format(datetime.datetime.now()))
+listpagerel = '/'.join(listpagedir.split('/')[-2:])
+archdirtmp      = os.path.join(returndir, '4_Archive_{0:%B%d%f}'.format(datetime.datetime.now()))
+archdirtmprel  = '/'.join(archdirtmp.split('/')[-2:])
+
+## '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/3_ListPage_to_Load_{0:%B%d%f}'format(datetime.date.today()) 
 archdir      = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive'
 errordir     = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/X_Errors'
 
 ##TODO: This is a terrible workaround for deleting the entire dir at the end of this instead of just the files, but no harm no foul, just ugly
 try:
-    shutil.makedirs(returndir)
+    os.makedirs(returndir)
 except:
     pass
     
@@ -603,6 +609,12 @@ try:
 except:
     pass
 
+## make sudir to hold the archive ready imgs and png prior to load to site
+try:
+    os.makedirs(archdirtmp)
+except:
+    pass
+
 edgecast_clear_list = list(sorted(set(edgecast_clear_list)))
 count = len(extracted_pngs)
 while len(extracted_pngs) >= 1:
@@ -610,7 +622,7 @@ while len(extracted_pngs) >= 1:
     parentdir          = '/'.join(extractedpng.split('/')[:-1])
     filename           = extractedpng.split('/')[-1]
     colorstyle         = extractedpng.split('/')[-1].split('.')[0]
-    pngarchived_pardir = '/'.join(extractedpng.split('/')[:-1]).replace('2_Returned','4_Archive')
+    pngarchived_pardir = '/'.join(extractedpng.split('/')[:-1]).replace(returndirrel, archdirtmprel)
     pngarchived_fname  = extractedpng.split('/')[-1].replace('.png', '_LP.png')
     pngarchived_path   = os.path.join(pngarchived_pardir, pngarchived_fname)
 
@@ -652,12 +664,13 @@ if parentdir:
 #####################################################################################################################
 bgremoved_toload = []
 import time, ftplib
+
 for f in glob.glob(os.path.join(listpagedir, '*.??g')):
     bgremoved_toload.append(os.path.abspath(f))
     
     try:
         pycurl_upload_imagedrop(f)
-        os.rename(f, f.replace('3_ListPage_to_Load', '4_Archive/JPG/LIST_PAGE_LOADED'))
+        os.rename(f, f.replace(listpagerel, '4_Archive/JPG/LIST_PAGE_LOADED'))
         print "Successfully Loaded--> {}".format(f)
         
     except ftplib.error_temp:
@@ -666,10 +679,10 @@ for f in glob.glob(os.path.join(listpagedir, '*.??g')):
         try:
             upload_to_imagedrop(f)
             print "Second Try Got File via FTP", f
-            os.rename(f, f.replace('3_ListPage_to_Load', '4_Archive/JPG/LIST_PAGE_LOADED'))
+            os.rename(f, f.replace(listpagerel, '4_Archive/JPG/LIST_PAGE_LOADED'))
         except:
             try:
-                os.rename(f, f.replace('3_ListPage_to_Load', 'X_Errors'))
+                os.rename(f, f.replace(listpagerel, 'X_Errors'))
             except OSError:
                 print "Final Try Connect error", f
                 pass
@@ -680,10 +693,10 @@ for f in glob.glob(os.path.join(listpagedir, '*.??g')):
         try:
             upload_to_imagedrop(f)
             print "Second Try Got File via FTP", f
-            os.rename(f, f.replace('3_ListPage_to_Load', '4_Archive/JPG/LIST_PAGE_LOADED'))
+            os.rename(f, f.replace(listpagerel, '4_Archive/JPG/LIST_PAGE_LOADED'))
         except:
             try:
-                os.rename(f, f.replace('3_ListPage_to_Load', 'X_Errors'))
+                os.rename(f, f.replace(listpagerel, 'X_Errors'))
             except OSError:
                 print "Final Try Connect error", f
                 pass
@@ -695,11 +708,11 @@ for f in glob.glob(os.path.join(listpagedir, '*.??g')):
         try:
             pycurl_upload_imagedrop(f)
             print "Final Try Got File via FTP", f
-            os.rename(f, f.replace('3_ListPage_to_Load', '4_Archive/JPG/LIST_PAGE_LOADED'))
+            os.rename(f, f.replace(listpagerel, '4_Archive/JPG/LIST_PAGE_LOADED'))
             time.sleep(.2)
         except:
             try:
-                os.rename(f, f.replace('3_ListPage_to_Load', 'X_Errors'))
+                os.rename(f, f.replace(listpagerel, 'X_Errors'))
             except OSError:
                 print "Final Try Connect error", f
                 pass
@@ -709,7 +722,7 @@ for f in glob.glob(os.path.join(listpagedir, '*.??g')):
 uploaded_jpgs_arch  = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive/JPG/LIST_PAGE_LOADED'
 pngarchivedir = os.path.join(archdir, 'PNG', todaysdate + '_uploaded')
 import shutil
-for f in glob.glob(os.path.join(archdir, '*_LP.png')):
+for f in glob.glob(os.path.join(archdirtmp, '*_LP.png')):
     shutil.move(f, pngarchivedir)
 #######
 #####################################################################################################################
