@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 #!/usr/bin/env python
-import zipfile,sys,datetime,os,re
+import zipfile,sys,datetime,os,re,glob
 
 
 todaysdate = str(datetime.date.today())
@@ -112,6 +112,13 @@ try:
     rootdir = sys.argv[1]
 except:
     rootdir = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/1_Sending'
+
+## clear send folder
+sendglob = glob.glob(os.path.join(rootdir, '*.??g')
+for g in sendglob:
+    os.remove(g)
+
+###### Cleared #####
 
 styles_to_send = sqlQuery_1500_imgready_notsent()
 import time, ftplib
