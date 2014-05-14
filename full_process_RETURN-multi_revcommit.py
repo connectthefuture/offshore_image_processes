@@ -98,14 +98,14 @@ def ftp_download_allzips(returndir):
     
     for filename in filtered_filenames:       
         local_filename = os.path.join(returndir,filename.lower().replace(' ',''))
-        file = open(local_filename, 'wb')
-        #remfile = os.path.join(str(batch) + '_Done', str(filename))
-        #print remfile
-        #ftp.cwd(remotepath)
-        ftp.retrbinary('RETR '+ filename, file.write)
-        count -= 1
-        print "Successfully Retrieved--> At most, {0}\v{1} Files Remaining".format(filename,count)
-        file.close()
+        with open(local_filename, 'wb') as file:
+            #remfile = os.path.join(str(batch) + '_Done', str(filename))
+            #print remfile
+            #ftp.cwd(remotepath)
+            ftp.retrbinary('RETR '+ filename, file.write)
+            count -= 1
+            print "Successfully Retrieved--> At most, {0}\v{1} Files Remaining".format(filename,count)
+        #file.close()
     ftp.close()
 
 # def ftp_download_allzips(returndir):
