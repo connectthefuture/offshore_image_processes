@@ -114,7 +114,7 @@ except:
     rootdir = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/1_Sending'
 
 ## clear send folder
-sendglob = glob.glob(os.path.join(rootdir, '*.??g')
+sendglob = glob.glob(os.path.join(rootdir, '*.??g'))
 for g in sendglob:
     os.remove(g)
 
