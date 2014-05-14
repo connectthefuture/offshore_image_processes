@@ -540,10 +540,10 @@ errordir     = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/X_Erro
 
 ##TODO: This is a terrible workaround for deleting the entire dir at the end of this instead of just the files, but no harm no foul, just ugly
 try:
-    shutil.makedirs(returndir)
+    os.makedirs(returndir)
 except:
     pass
-shutil.makedirs(returndir)    
+
 #####################################################################################################################
 # 1 #  Download all zips on remote dir via FTP
 #####################################################################################################################
