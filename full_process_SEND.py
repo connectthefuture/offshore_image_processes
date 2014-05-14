@@ -45,8 +45,13 @@ def upload_to_india(file):
     except:
         pass
     session.cwd(remotepath)
-    session.storbinary('STOR ' + filename, fileread, 8*1024)
-    fileread.close()
+    try:
+
+        session.storbinary('STOR ' + filename, fileread, 8*1024)
+        fileread.close()
+    except:
+        pass
+    
     session.quit()
 #############################
 #####################################################################################################################
