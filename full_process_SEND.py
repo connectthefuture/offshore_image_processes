@@ -80,7 +80,7 @@ def getbinary_ftp_netsrv101(remote_pathtofile, outfile=None):
 ###
 ## Query db for 1500 not sent files return colorstyles
 def sqlQuery_1500_imgready_notsent():
-    import SqlAlchemy, sys
+    import sqlalchemy, sys
     mysql_engine_www = sqlalchemy.create_engine('mysql+mysqldb://root:mysql@prodimages.ny.bluefly.com:3301/www_django')
     connection = mysql_engine_www.connect()
     try:
