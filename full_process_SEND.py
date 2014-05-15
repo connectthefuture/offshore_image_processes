@@ -80,11 +80,16 @@ def getbinary_ftp_netsrv101(remote_pathtofile, outfile=None):
 ###
 ## Query db for 1500 not sent files return colorstyles
 def sqlQuery_1500_imgready_notsent():
-    import sqlalchemy
+    import SqlAlchemy, sys
     mysql_engine_www = sqlalchemy.create_engine('mysql+mysqldb://root:mysql@prodimages.ny.bluefly.com:3301/www_django')
     connection = mysql_engine_www.connect()
-
-    querymake_1500notsent = """SELECT colorstyle FROM offshore_status WHERE product_type not like 'sunglasses' AND image_ready_dt IS NOT NULL AND (send_dt IS NULL AND return_dt IS NULL) ORDER BY image_ready_dt DESC LIMIT 0,1500"""
+    try:
+        qtysending = sys.argv[1]
+        if not qtysending.isdigit():
+            qtysending = 1500
+    except IndexError:
+        qtysending = 1500
+    querymake_1500notsent = "SELECT colorstyle FROM offshore_status WHERE product_type not like 'sunglasses' AND image_ready_dt IS NOT NULL AND (send_dt IS NULL AND return_dt IS NULL) ORDER BY image_ready_dt DESC LIMIT 0,{0}".format(str(qtysending))
 
     result = connection.execute(querymake_1500notsent)
     colorstyles_list = []
@@ -115,7 +120,9 @@ def sqlQuery_set_senddt(colorstyles_list):
 rootdir = ''
 try:
     rootdir = sys.argv[1]
-except:
+    if rootdir.isdigit():
+        rootdir = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/1_Sending'
+except IndexError:
     rootdir = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/1_Sending'
 
 ## clear send folder
