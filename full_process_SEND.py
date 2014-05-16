@@ -36,22 +36,26 @@ def upload_to_india(file):
     ftpurl     = "prepressoutsourcing.com"
     remotepath = str('Drop/ImagesToDo' + todaysdate_senddt)
     fullftp    = os.path.join(ftpurl, remotepath)
-
+    
     session = ftplib.FTP(ftpurl, username, password)
-    fileread = open(file, 'rb')
-    filename = str(file.split('/')[-1])
     try:
-        session.mkd(remotepath)
-    except:
-        pass
-    session.cwd(remotepath)
-    try:
-
-        session.storbinary('STOR ' + filename, fileread, 8*1024)
+        
+        fileread = open(file, 'rb')
+        filename = str(file.split('/')[-1])
+        try:
+            session.mkd(remotepath)
+        except:
+            pass
+        session.cwd(remotepath)
+        
+        try:
+            session.storbinary('STOR ' + filename, fileread, 8*1024)
+        except:
+            pass
+        
         fileread.close()
     except:
         pass
-    
     session.quit()
 #############################
 #####################################################################################################################
