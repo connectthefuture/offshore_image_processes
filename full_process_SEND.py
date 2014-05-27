@@ -29,14 +29,14 @@ def zipdir(path, zip):
 # 2 # Upload to prepress etc. FTP
 #####################################################################################################################
 def upload_to_india(file):
-    import ftplib, datetime
+    import ftplib, datetime, os
     todaysdate_senddt = "{0:%B%d}".format(datetime.date.today())
     username   = "bf"
     password   = "B14300F"
     ftpurl     = "prepressoutsourcing.com"
     remotepath = str('Drop/ImagesToDo' + todaysdate_senddt)
     fullftp    = os.path.join(ftpurl, remotepath)
-    
+    failed     = ''
     session = ftplib.FTP(ftpurl, username, password)
     try:
         
@@ -54,9 +54,11 @@ def upload_to_india(file):
             pass
         
         fileread.close()
+        return None
     except:
-        pass
-
+        failed = os.path.abspath(file)
+        return failed
+    
     #session.quit()
 
 #############################
@@ -233,9 +235,14 @@ if dircnt >= 1 and not filelist:
     # 3 # Move Zip to archive after sent
     os.rename(ziptosend, ziptosend.replace('1_Sending','4_Archive/ZIP_SENT'))
 else:
+    failed = []
     for f in filelist:
-        upload_to_india(f)
-
+        if_failed = upload_to_india(f)
+        if if_failed:
+            styles_to_send.remove(if_failed)
+            failed.append(if_failed)
+            
+        
 
 ##TODO:upload ziptosend to  remote zip via ftp then send inserts colorstyles_sent_dt_key to offshore_to_send and offshore_zip
 # 4 # Update offshore_status with todays date as sent
