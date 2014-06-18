@@ -397,9 +397,10 @@ def upload_to_imagedrop(file):
 
 ##
 ##### Upload tmp_loading dir to imagedrop via FTP using Pycurl  #####
-def pycurl_upload_imagedrop(localFilePath):
+def pycurl_upload_imagedrop(img):
     import pycurl, os
     #import FileReader
+    localFilePath = os.path.abspath(img)
     localFileName = localFilePath.split('/')[-1]
 
     mediaType = "8"
@@ -413,20 +414,20 @@ def pycurl_upload_imagedrop(localFilePath):
         ### Send the request to Edgecast
         c = pycurl.Curl()
         c.setopt(pycurl.URL, ftpFilePath)
-        #        c.setopt(pycurl.PORT , 21)
+        #c.setopt(pycurl.PORT , 21)
         c.setopt(pycurl.USERPWD, ftpUSERPWD)
         #c.setopt(pycurl.VERBOSE, 1)
         c.setopt(c.CONNECTTIMEOUT, 5)
         c.setopt(c.TIMEOUT, 8)
         c.setopt(c.FAILONERROR, True)
-        #        c.setopt(pycurl.FORBID_REUSE, 1)
-        #        c.setopt(pycurl.FRESH_CONNECT, 1)
+        #c.setopt(pycurl.FORBID_REUSE, 1)
+        #c.setopt(pycurl.FRESH_CONNECT, 1)
         f = open(localFilePath, 'rb')
         c.setopt(pycurl.INFILE, f)
         c.setopt(pycurl.INFILESIZE, os.path.getsize(localFilePath))
         c.setopt(pycurl.INFILESIZE_LARGE, os.path.getsize(localFilePath))
-        #        c.setopt(pycurl.READFUNCTION, f.read());        
-        #        c.setopt(pycurl.READDATA, f.read()); 
+        #c.setopt(pycurl.READFUNCTION, f.read());        
+        #c.setopt(pycurl.READDATA, f.read()); 
         c.setopt(pycurl.UPLOAD, 1L)
 
         try:
@@ -701,6 +702,11 @@ for f in glob.glob(os.path.join(listpagedir, '*.??g')):
 ### 5a ## Move the copy of the png from the LIST PAGE LOADED dir used only to upload, stored as _LP.png
 uploaded_jpgs_arch  = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive/JPG/LIST_PAGE_LOADED'
 pngarchivedir = os.path.join(archdir, 'PNG', todaysdate + '_uploaded')
+try:
+    os.makedirs(pngarchivedir)
+except:
+    pass
+
 import shutil
 for f in glob.glob(os.path.join(archdir, '*_LP.png')):
     shutil.move(f, pngarchivedir)
