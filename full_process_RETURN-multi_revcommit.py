@@ -644,16 +644,44 @@ if parentdir:
 #####################################################################################################################
 # 5 # Upload all  _m.jpg @ 400x480 located in the 3_LisPage... folder
 #####################################################################################################################
+import os, sys, re, csv, shutil, glob
+
+root_dir = destdir
+## Make the success and fail dirs
+archive_uploaded = os.path.join(listpagedir, 'uploaded')
+tmp_failed = os.path.join(listpagedir, 'failed_upload')
+try:
+    os.makedirs(archive_uploaded, 16877)
+except:
+    pass
+
+try:
+    os.makedirs(tmp_failed, 16877)
+except:
+    pass
+
+
 bgremoved_toload = []
 import time, ftplib
 for f in glob.glob(os.path.join(listpagedir, '*.??g')):
     bgremoved_toload.append(os.path.abspath(f))
     
     try:
-        pycurl_upload_imagedrop(f)
-        os.rename(f, f.replace('3_ListPage_to_Load', '4_Archive/JPG/LIST_PAGE_LOADED'))
-        print "Successfully Loaded--> {}".format(f)
-        
+        code = pycurl_upload_imagedrop(f)
+        if code == '200':
+            os.rename(f, f.replace('3_ListPage_to_Load', '4_Archive/JPG/LIST_PAGE_LOADED'))
+            print "Successfully Loaded--> {}".format(f)
+        elif code:
+            print code, f
+            time.sleep(float(.3))
+            try:
+                ftpload_to_imagedrop(f)
+                print "Uploaded {}".format(f)
+                time.sleep(float(.3))
+                #shutil.move(f, archive_uploaded)
+            except:
+                #shutil.move(f, tmp_failed)
+                pass
     except ftplib.error_temp:
         print "Failed FTP error", f
         time.sleep(.2)
