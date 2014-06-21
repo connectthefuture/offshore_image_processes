@@ -646,7 +646,7 @@ if parentdir:
 #####################################################################################################################
 import os, sys, re, csv, shutil, glob
 
-root_dir = destdir
+root_dir = listpagedir
 ## Make the success and fail dirs
 archive_uploaded = os.path.join(listpagedir, 'uploaded')
 tmp_failed = os.path.join(listpagedir, 'failed_upload')
