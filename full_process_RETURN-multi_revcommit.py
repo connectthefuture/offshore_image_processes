@@ -648,17 +648,17 @@ import os, sys, re, csv, shutil, glob
 
 root_dir = listpagedir
 ## Make the success and fail dirs
-archive_uploaded = os.path.join(listpagedir, 'uploaded')
-tmp_failed = os.path.join(listpagedir, 'failed_upload')
-try:
-    os.makedirs(archive_uploaded, 16877)
-except:
-    pass
+# archive_uploaded = os.path.join(listpagedir, 'uploaded')
+# tmp_failed = os.path.join(listpagedir, 'failed_upload')
+# try:
+#     os.makedirs(archive_uploaded, 16877)
+# except:
+#     pass
 
-try:
-    os.makedirs(tmp_failed, 16877)
-except:
-    pass
+# try:
+#     os.makedirs(tmp_failed, 16877)
+# except:
+#     pass
 
 
 bgremoved_toload = []
@@ -678,6 +678,7 @@ for f in glob.glob(os.path.join(listpagedir, '*.??g')):
                 ftpload_to_imagedrop(f)
                 print "Uploaded {}".format(f)
                 time.sleep(float(.3))
+                os.rename(f, f.replace('3_ListPage_to_Load', '4_Archive/JPG/LIST_PAGE_LOADED'))
                 #shutil.move(f, archive_uploaded)
             except:
                 #shutil.move(f, tmp_failed)
