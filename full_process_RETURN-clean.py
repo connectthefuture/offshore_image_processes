@@ -715,6 +715,7 @@ else:
     globbeddir = glob.glob(os.path.join(uploaded_jpgs_arch, '*_l.jpg'))
 
 count = len(globbeddir)
+print globbeddir
 for f in globbeddir:
     colorstyle = f.split('/')[-1][:9]
     #####################################################
