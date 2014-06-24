@@ -699,7 +699,7 @@ import time, ftplib
 
 success = upload_imagedrop(listpagedir)
 uploaded_jpgs_arch  = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive/JPG/LIST_PAGE_LOADED'
-
+print success
 if type(success) == list:
     globbeddir = success
     for f in globbeddir:
