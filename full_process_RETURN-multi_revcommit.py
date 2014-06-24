@@ -695,7 +695,7 @@ for f in glob.glob(os.path.join(listpagedir, '*.??g')):
         if code == '200':
             os.rename(f, f.replace('3_ListPage_to_Load', '4_Archive/JPG/LIST_PAGE_LOADED'))
             print "Successfully Loaded--> {}".format(f)
-            time.sleep(float(.3))
+            time.sleep(float(.5))
         elif code:
             print code, f
             time.sleep(float(.3))
@@ -744,7 +744,7 @@ for f in glob.glob(os.path.join(listpagedir, '*.??g')):
             pycurl_upload_imagedrop(f)
             print "Final Try Got File via FTP", f
             os.rename(f, f.replace('3_ListPage_to_Load', '4_Archive/JPG/LIST_PAGE_LOADED'))
-            time.sleep(.2)
+            time.sleep(.4)
         except:
             try:
                 os.rename(f, f.replace('3_ListPage_to_Load', 'X_Errors'))
