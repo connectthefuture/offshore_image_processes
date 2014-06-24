@@ -321,15 +321,15 @@ def subproc_multithumbs_4_2(filepath,destdir):
         filepath, 
         '-format', 
         ext,
-        #'-crop',
-        # str(
-        # subprocess.call(['convert', filepath, '-virtual-pixel', 'edge', '-blur', '0x15', '-fuzz', '1%', '-trim', '-format', '%wx%h%O', 'info:'], stdin=None, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=False))
-        # ,
-        # '-gravity',
-        #  'center',
-        # '-trim',
-        # '-colorspace',
-        # 'LAB',
+#        '-crop',
+#        str(
+#        subprocess.call(['convert', filepath, '-virtual-pixel', 'edge', '-blur', '0x15', '-fuzz', '1%', '-trim', '-format', '%wx%h%O', 'info:'], stdin=None, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=False))
+#        ,
+#        '-gravity',
+#         'center',
+#        '-trim',
+#        '-colorspace',
+#        'LAB',
         "-filter",
         "LanczosSharp",
         '-write',
@@ -344,10 +344,10 @@ def subproc_multithumbs_4_2(filepath,destdir):
             '400x480',
             #'-gravity',
             #'center',
-            # '-background',
-            # 'white',
-            # '-extent', 
-            # '400x480',
+#            '-background',
+#            'white',
+#            '-extent', 
+#            '400x480',
             '-colorspace',
             'sRGB',
             '-unsharp',
@@ -366,10 +366,10 @@ def subproc_multithumbs_4_2(filepath,destdir):
             '300x360',
             #'-gravity',
             #'center',
-            # '-background',
-            # 'white',
-            # '-extent', 
-            # '300x360',
+#            '-background',
+#            'white',
+#            '-extent', 
+#            '300x360',
             '-colorspace',
             'sRGB',
             '-unsharp',
@@ -445,69 +445,6 @@ def pycurl_upload_imagedrop(img):
                 pass
             return errno
 
-#####
-def upload_imagedrop(root_dir, destdir=None):
-    import os, sys, re, csv, shutil, glob
-    ## Make the success and fail dirs
-    archive_uploaded = os.path.join(root_dir, 'uploaded')
-    tmp_failed = os.path.join(root_dir, 'failed_upload')
-    try:
-        os.makedirs(archive_uploaded, 16877)
-    except:
-        pass
-
-    try:
-        os.makedirs(tmp_failed, 16877)
-    except:
-        pass
-
-
-    import time
-    #### UPLOAD upload_file via ftp to imagedrop using Pycurl
-    
-    upload_tmp_loading = glob.glob(os.path.join(root_dir, '*.*g'))
-    for upload_file in upload_tmp_loading:
-        #### UPLOAD upload_file via ftp to imagedrop using Pycurl
-        ## Then rm loading tmp dir
-        try:
-            code = pycurl_upload_imagedrop(upload_file)
-            if code == '200':
-                shutil.move(upload_file, archive_uploaded)
-                print "1stTryOK"
-            elif code:
-                print code, upload_file
-                time.sleep(float(.3))
-                try:
-                    ftpload_to_imagedrop(upload_file)
-                    print "Uploaded {}".format(upload_file)
-                    time.sleep(float(.3))
-                    shutil.move(upload_file, archive_uploaded)
-                except:
-                    shutil.move(upload_file, tmp_failed)
-                    pass
-            else:
-                print "Uploaded {}".format(upload_file)
-                time.sleep(float(.3))
-                shutil.move(upload_file, archive_uploaded)
-        except OSError:
-            print "Error moving Finals to Arch {}".format(file)
-            shutil.move(upload_file, tmp_failed)
-            pass
-
-    try:
-        archglob =  glob.glob(os.path.join(archive_uploaded, '*.*g'))
-        if os.path.isdir(destdir):
-            finaldir = os.path.abspath(destdir)
-            for f in archglob:
-                try:
-                    shutil.move(f, finaldir)
-                except:
-                    pass
-        else:
-            return archglob
-    except:
-        pass
-        return 'NOARCHGLOB'
 #####################################################################################################################
 # 7 # After Upload set return_dt on offshore_status #################################################################
 #####################################################################################################################
@@ -705,11 +642,11 @@ if parentdir:
 
         
 #####################################################################################################################
-# 5 # OLD -- SEE BELOW -- Upload all  _m.jpg @ 400x480 located in the 3_LisPage... folder
+# 5 # Upload all  _m.jpg @ 400x480 located in the 3_LisPage... folder
 #####################################################################################################################
-#import os, sys, re, csv, shutil, glob
+import os, sys, re, csv, shutil, glob
 
-
+root_dir = listpagedir
 ## Make the success and fail dirs
 # archive_uploaded = os.path.join(listpagedir, 'uploaded')
 # tmp_failed = os.path.join(listpagedir, 'failed_upload')
@@ -724,93 +661,84 @@ if parentdir:
 #     pass
 
 
-# bgremoved_toload = []
-# import time, ftplib
-# for f in glob.glob(os.path.join(listpagedir, '*_l.??g')):
-#     bgremoved_toload.append(os.path.abspath(f))
-    
-#     try:
-#         code = pycurl_upload_imagedrop(f)
-#         if code == '200':
-#             os.rename(f, f.replace('3_ListPage_to_Load', '4_Archive/JPG/LIST_PAGE_LOADED'))
-#             print "Successfully Loaded--> {}".format(f)
-#         elif code:
-#             print code, f
-#             time.sleep(float(.3))
-#             try:
-#                 ftpload_to_imagedrop(f)
-#                 print "Uploaded {}".format(f)
-#                 time.sleep(float(.3))
-#                 os.rename(f, f.replace('3_ListPage_to_Load', '4_Archive/JPG/LIST_PAGE_LOADED'))
-#                 #shutil.move(f, archive_uploaded)
-#             except:
-#                 #shutil.move(f, tmp_failed)
-#                 pass
-#     except ftplib.error_temp:
-#         print "Failed FTP error", f
-#         time.sleep(.2)
-#         try:
-#             upload_to_imagedrop(f)
-#             print "Second Try Got File via FTP", f
-#             os.rename(f, f.replace('3_ListPage_to_Load', '4_Archive/JPG/LIST_PAGE_LOADED'))
-#         except:
-#             try:
-#                 os.rename(f, f.replace('3_ListPage_to_Load', 'X_Errors'))
-#             except OSError:
-#                 print "Final Try Connect error", f
-#                 pass
-            
-#     except EOFError:
-#         print "Failed EOF error", f
-#         time.sleep(.2)
-#         try:
-#             upload_to_imagedrop(f)
-#             print "Second Try Got File via FTP", f
-#             os.rename(f, f.replace('3_ListPage_to_Load', '4_Archive/JPG/LIST_PAGE_LOADED'))
-#         except:
-#             try:
-#                 os.rename(f, f.replace('3_ListPage_to_Load', 'X_Errors'))
-#             except OSError:
-#                 print "Final Try Connect error", f
-#                 pass
-    
-#     except:
-#         print "Failed Connect error", f
-#         # os.rename(f, f.replace('3_ListPage_to_Load', 'X_Errors'))
-#         time.sleep(1)
-#         try:
-#             pycurl_upload_imagedrop(f)
-#             print "Final Try Got File via FTP", f
-#             os.rename(f, f.replace('3_ListPage_to_Load', '4_Archive/JPG/LIST_PAGE_LOADED'))
-#             time.sleep(.2)
-#         except:
-#             try:
-#                 os.rename(f, f.replace('3_ListPage_to_Load', 'X_Errors'))
-#             except OSError:
-#                 print "Final Try Connect error", f
-#                 pass
-
-#####################################################################################################################
-# 5 # NEW Upload all  _m.jpg @ 400x480 located in the 3_LisPage... folder
-#####################################################################################################################
-import os, sys, re, csv, shutil, glob
 bgremoved_toload = []
 import time, ftplib
-
-success = upload_imagedrop(listpagedir)
-
-#for f in loadfiles:
-#    bgremoved_toload.append(os.path.abspath(f))
-
+for f in glob.glob(os.path.join(listpagedir, '*.??g')):
+    bgremoved_toload.append(os.path.abspath(f))
+    
+    try:
+        code = pycurl_upload_imagedrop(f)
+        if code == '200':
+            os.rename(f, f.replace('3_ListPage_to_Load', '4_Archive/JPG/LIST_PAGE_LOADED'))
+            print "Successfully Loaded--> {}".format(f)
+        elif code:
+            print code, f
+            time.sleep(float(.3))
+            try:
+                ftpload_to_imagedrop(f)
+                print "Uploaded {}".format(f)
+                time.sleep(float(.3))
+                os.rename(f, f.replace('3_ListPage_to_Load', '4_Archive/JPG/LIST_PAGE_LOADED'))
+                #shutil.move(f, archive_uploaded)
+            except:
+                #shutil.move(f, tmp_failed)
+                pass
+    except ftplib.error_temp:
+        print "Failed FTP error", f
+        time.sleep(.2)
+        try:
+            upload_to_imagedrop(f)
+            print "Second Try Got File via FTP", f
+            os.rename(f, f.replace('3_ListPage_to_Load', '4_Archive/JPG/LIST_PAGE_LOADED'))
+        except:
+            try:
+                os.rename(f, f.replace('3_ListPage_to_Load', 'X_Errors'))
+            except OSError:
+                print "Final Try Connect error", f
+                pass
+            
+    except EOFError:
+        print "Failed EOF error", f
+        time.sleep(.2)
+        try:
+            upload_to_imagedrop(f)
+            print "Second Try Got File via FTP", f
+            os.rename(f, f.replace('3_ListPage_to_Load', '4_Archive/JPG/LIST_PAGE_LOADED'))
+        except:
+            try:
+                os.rename(f, f.replace('3_ListPage_to_Load', 'X_Errors'))
+            except OSError:
+                print "Final Try Connect error", f
+                pass
+    
+    except:
+        print "Failed Connect error", f
+#        os.rename(f, f.replace('3_ListPage_to_Load', 'X_Errors'))
+        time.sleep(1)
+        try:
+            pycurl_upload_imagedrop(f)
+            print "Final Try Got File via FTP", f
+            os.rename(f, f.replace('3_ListPage_to_Load', '4_Archive/JPG/LIST_PAGE_LOADED'))
+            time.sleep(.2)
+        except:
+            try:
+                os.rename(f, f.replace('3_ListPage_to_Load', 'X_Errors'))
+            except OSError:
+                print "Final Try Connect error", f
+                pass
+                
+                
 ### 5a ## Move the copy of the png from the LIST PAGE LOADED dir used only to upload, stored as _LP.png
 uploaded_jpgs_arch  = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive/JPG/LIST_PAGE_LOADED'
-# pngarchivedir = os.path.join(archdir, 'PNG', todaysdate + '_uploaded')
-# try:
-#     os.makedirs(pngarchivedir)
-# except:
-#     pass
+pngarchivedir = os.path.join(archdir, 'PNG', todaysdate + '_uploaded')
+try:
+    os.makedirs(pngarchivedir)
+except:
+    pass
 
-
+import shutil
+for f in glob.glob(os.path.join(archdir, '*_LP.png')):
+    shutil.move(f, pngarchivedir)
 #######
 #####################################################################################################################
 # 6 # After Uploading from 3_ dir, Archive all the _LP files in dated dir under archive/PNG/etc.....
@@ -818,22 +746,13 @@ uploaded_jpgs_arch  = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval
 ## Gather all _LP files and store in dated dir under 4_Archive/PNG/<todays date>
 ## Make the archive dir for the _LP files
 
-# try:
-#     os.makedirs(archivedir)
-# except:
-#     print "Failed makedirs for Archiving"
+try:
+    os.makedirs(archivedir)
+except:
+    print "Failed makedirs for Archiving"
 
 ## Build list  and move files to archive and update DB
-import shutil
-
-if type(success) == list:
-    globbeddir = success
-    for f in globbeddir:
-        shutil.move(f, uploaded_jpgs_arch)
-else:
-    globbeddir = glob.glob(os.path.join(uploaded_jpgs_arch, '*_l.jpg'))
-
-
+globbeddir = glob.glob(os.path.join(uploaded_jpgs_arch, '*_l.jpg'))
 count = len(globbeddir)
 for f in globbeddir:
     colorstyle = f.split('/')[-1][:9]
@@ -868,11 +787,11 @@ toclear = [ fname[:].split('/')[-1][:9] for fname in edgecast_clear_list ]
 csv_write_datedCacheClearList(toclear, destdir=cacheclear_csvarch)
 
 ### For now copy all png in error dir to my DropFinalFiles only dir which will create and load in reg processing scripts
-# for f in glob.glob(os.path.join(errordir, '*.png')):
-#     try:
-#         shutil.copy(f, '/mnt/Post_Complete/Complete_to_Load/Drop_FinalFilesOnly/JohnBragato')
-#     except:
-#         pass
+for f in glob.glob(os.path.join(errordir, '*.png')):
+    try:
+        shutil.copy(f, '/mnt/Post_Complete/Complete_to_Load/Drop_FinalFilesOnly/JohnBragato')
+    except:
+        pass
         
 ## finally delete the zip file from the return dir 
 for f in glob.glob(os.path.join(returndir, '*/*.?[a-zA-Z][a-zA-Z][a-zA-Z]')):
