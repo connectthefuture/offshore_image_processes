@@ -221,7 +221,6 @@ def subproc_magick_large_jpg(img, destdir=None):
         outfile = os.path.join(destdir, img.split('/')[-1][:9] + '_l.jpg')
 
         dimensions = "400x480"
-        print dimensions,vert_horiz
         if regex_valid_style.findall(img):
             subprocess.call([
             'convert',
