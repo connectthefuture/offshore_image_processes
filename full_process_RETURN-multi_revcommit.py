@@ -202,110 +202,135 @@ def unzip_dir_savefiles(zipin, extractdir):
 #####################################################################################################################
 # 3 and 4 # Magick Crop and save as 400x480 _m.jpg ##################################################################
 #####################################################################################################################
-def subproc_pad_to_x480(file,destdir):
-    import subprocess, os
+### Large Jpeg Convert to  _l ??[gG]s
+def subproc_magick_large_jpg(img, destdir=None):
+    import subprocess,os,re
+    regex_coded = re.compile(r'^.+?/[1-9][0-9]{8}_[1-6]\.jpg$')
+    regex_alt = re.compile(r'^.+?/[1-9][0-9]{8}_\w+?0[1-6]\.[JjPpNnGg]{3}$')
+    regex_valid_style = re.compile(r'^.+?/[1-9][0-9]{8}_?.*?\.[JjPpNnGg]{3}$')
     
-    fname = file.split("/")[-1].split('.')[0].replace('_LP','_l').lower()
-    ext = file.split(".")[-1]
-    outfile = os.path.join(destdir, fname + ".jpg")    
+    os.chdir(os.path.dirname(img))
     
-    #try:            
-    subprocess.call([
-        "convert", 
-        file, 
-        '-format', 
-        'jpg',
-        '-crop',
-        str(
-        subprocess.call(['convert', file, '-virtual-pixel', 'edge', '-blur', '0x15', '-fuzz', '1%', '-trim', '-format', '%wx%h%O', 'info:'], stdin=None, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=False))
-        ,
-        '-colorspace',
-        'LAB',
-        "-filter",
-        "LanczosSharp",
-        #        '-trim', 
-        '-resize',
-        "400x480",
-        '-background',
-        'white',
-        #        '-gravity',
-        #        'center',
-        #        '-trim', 
-        #        '-gravity',
-        #        'center',
-        '-extent', 
-        "400x480",
-        #        '+repage', 
-        #        '-background',
-        #        'white',
-        #        '+repage',
-        '-colorspace',
-        'sRGB',
-        "-channel",
-        "RGBA",  
-        #        "-unsharp", 
-        #        "0x0.75+0.75+0.008",
-        '-quality',
-        '100',
-        #'-strip', 
-        outfile,
-    ])
-    #except IOError:
-    #    print "Failed: {0}".format(outfile)
-    return outfile
+    ## Destination name if Alt or Not
+    if not destdir:
+        destdir = os.path.abspath('.')
+    else:
+        destdir = os.path.abspath(destdir)
 
+    if not regex_alt.findall(img):
+        outfile = os.path.join(destdir, img.split('/')[-1][:9] + '_l.jpg')
 
-def subproc_pad_to_x240(file,destdir):
-    import subprocess, os
+        dimensions = "400x480"
+        print dimensions,vert_horiz
+        if regex_valid_style.findall(img):
+            subprocess.call([
+            'convert',
+            '-colorspace',
+            'sRGB',
+            img,
+            # CENTERING & Trim
+            '-background',
+            'white',
+            #'-gravity',
+            #'center',
+            #'-trim',
+            #'+repage',
+            "-filter",
+            "Spline",
+            "-filter",
+            #"Catrom",
+            "Cosine",
+            "-define",
+            #"filter:blur=0.88549061701764", # SHARPER
+            "filter:blur=0.9891028367558475",
+            "-distort",
+            "Resize",
+            dimensions,
+            "-colorspace",
+            "sRGB",
+            "-format",
+            "jpeg",
+            '-unsharp',
+            '2x1.24+0.5+0', 
+            '-quality', 
+            '95',
+            outfile
+            ])
+            return outfile
+        else:
+            return img
+    ## No alt _L size needed
+    else:
+        pass
+
+# 
+###
+### Medium Jpeg Convert to  _m jpgs
+def subproc_magick_medium_jpg(img, destdir=None):
+    import subprocess,os,re
+    regex_coded = re.compile(r'^.+?/[1-9][0-9]{8}_[1-6]\.jpg$')
+    regex_alt = re.compile(r'^.+?/[1-9][0-9]{8}_\w+?0[1-6]\.[JjPpNnGg]{3}$')
+    regex_valid_style = re.compile(r'^.+?/[1-9][0-9]{8}_?.*?\.[JjPpNnGg]{3}$')
+       
+    os.chdir(os.path.dirname(img))
+    #rgbmean = get_image_color_minmax(img)
     
-    fname = file.split("/")[-1].split('.')[0].replace('_LP','_m').lower()
-    ext = file.split(".")[-1]
-    outfile = os.path.join(destdir, fname + ".jpg")    
-    
-    #try:            
-    subprocess.call([
-        "convert", 
-        file, 
-        '-format', 
-        'jpg',
-        '-crop',
-        str(
-        subprocess.call(['convert', file, '-virtual-pixel', 'edge', '-blur', '0x15', '-fuzz', '1%', '-trim', '-format', '%wx%h%O', 'info:'], stdin=None, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=False))
-        ,
-        '-colorspace',
-        'LAB',
-        "-filter",
-        "LanczosSharp",
-        #        '-trim', 
-        '-resize',
-        "300x360",
-        '-background',
-        'white',
-        #        '-gravity',
-        #        'center',
-        #        '-trim', 
-        #        '-gravity',
-        #        'center',
-        '-extent', 
-        "300x360",
-        #        '+repage', 
-        #        '-background',
-        #        'white',
-        #        '+repage',
-        '-colorspace',
-        'sRGB',
-        "-channel",
-        "RGBA",  
-        "-unsharp",
-        "2x0.5+0.5+0",
-        '-quality',
-        '100',
-        #'-strip', 
-        outfile,
-    ])
-    #except IOError:
-    #    print "Failed: {0}".format(outfile)
-    return outfile
+    ## Destination name if Alt or Not
+    if not destdir:
+        destdir = os.path.abspath('.')
+    else:
+        destdir = os.path.abspath(destdir)
+
+    if regex_alt.findall(img):
+        outfile = os.path.join(destdir, img.split('/')[-1].split('.')[0] + '.jpg')
+    else:
+        outfile = os.path.join(destdir, img.split('/')[-1][:9] + '_m.jpg')
+
+    dimensions = '300x360'
+
+    if regex_valid_style.findall(img):
+
+        subprocess.call([
+            'convert',
+            '-colorspace',
+            'sRGB',
+            img,
+            # CENTERING & Trim
+            '-background',
+            'white',
+            #'-gravity',
+            #'center',
+            #'-trim',
+            #'+repage',
+            #"-filter",
+            #"Mitchell",
+            "-filter",
+            "Spline",
+            #"-filter",
+            #"Catrom",
+            "-filter",
+            "Cosine",
+            "-define",
+            #"filter:blur=0.88549061701764", # SHARPER
+            "fliter:blur=0.9891028367558475",
+            "-distort",
+            "Resize", 
+            dimensions,
+            "-colorspace",
+            "sRGB",
+            "-format",
+            "jpeg",
+            '-unsharp',
+            '2x1.1+0.5+0', 
+            '-quality', 
+            '95',
+            #os.path.join(destdir, img.split('/')[-1])
+            outfile
+            ])
+        return outfile
+    else:
+        return img
+
 ###########################################################################
 def subproc_multithumbs_4_2(filepath,destdir):
     import subprocess, os
