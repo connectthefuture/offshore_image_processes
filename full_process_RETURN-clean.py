@@ -472,6 +472,9 @@ def upload_imagedrop(root_dir, destdir=None):
         try:
             code = pycurl_upload_imagedrop(upload_file)
             if code == '200':
+                dst_file = upload_file.replace('/output/','/output/uploaded/')
+                if os.path.exists(dst_file):
+                    os.remove(dst_file)
                 shutil.move(upload_file, archive_uploaded)
                 print "1stTryOK"
             elif code:
@@ -483,14 +486,23 @@ def upload_imagedrop(root_dir, destdir=None):
                     time.sleep(float(.3))
                     shutil.move(upload_file, archive_uploaded)
                 except:
+                    failed = upload_file.replace('/output/','/output/failed_upload/')
+                    if os.path.exists(failed):
+                        os.remove(failed)
                     shutil.move(upload_file, tmp_failed)
                     pass
             else:
                 print "Uploaded {}".format(upload_file)
                 time.sleep(float(.3))
+                final = upload_file.replace('/output/','/output/uploaded/')
+                if os.path.exists(final):
+                    os.remove(final)
                 shutil.move(upload_file, archive_uploaded)
         except OSError:
             print "Error moving Finals to Arch {}".format(file)
+            failed = upload_file.replace('/output/','/output/failed_upload/')
+            if os.path.exists(failed):
+                os.remove(failed)
             shutil.move(upload_file, tmp_failed)
             pass
 
@@ -500,7 +512,10 @@ def upload_imagedrop(root_dir, destdir=None):
             finaldir = os.path.abspath(destdir)
             for f in archglob:
                 try:
-                    shutil.move(f, finaldir)
+                    final = f.replace('/output/','/output/uploaded/')
+                    if os.path.exists(final):
+                        os.remove(final)
+                        shutil.move(f, finaldir)
                 except:
                     pass
         else:
