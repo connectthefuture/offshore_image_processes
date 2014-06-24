@@ -472,7 +472,7 @@ def upload_imagedrop(root_dir, destdir=None):
         try:
             code = pycurl_upload_imagedrop(upload_file)
             if code == '200':
-                dst_file = upload_file.replace('/output/','/output/uploaded/')
+                dst_file = upload_file.replace('/3_ListPage_to_Load/','/3_ListPage_to_Load/uploaded/')
                 if os.path.exists(dst_file):
                     os.remove(dst_file)
                 shutil.move(upload_file, archive_uploaded)
@@ -486,7 +486,7 @@ def upload_imagedrop(root_dir, destdir=None):
                     time.sleep(float(.3))
                     shutil.move(upload_file, archive_uploaded)
                 except:
-                    failed = upload_file.replace('/output/','/output/failed_upload/')
+                    failed = upload_file.replace('/3_ListPage_to_Load/','/3_ListPage_to_Load/failed_upload/')
                     if os.path.exists(failed):
                         os.remove(failed)
                     shutil.move(upload_file, tmp_failed)
@@ -494,13 +494,13 @@ def upload_imagedrop(root_dir, destdir=None):
             else:
                 print "Uploaded {}".format(upload_file)
                 time.sleep(float(.3))
-                final = upload_file.replace('/output/','/output/uploaded/')
+                final = upload_file.replace('/3_ListPage_to_Load/','/3_ListPage_to_Load/uploaded/')
                 if os.path.exists(final):
                     os.remove(final)
                 shutil.move(upload_file, archive_uploaded)
         except OSError:
             print "Error moving Finals to Arch {}".format(file)
-            failed = upload_file.replace('/output/','/output/failed_upload/')
+            failed = upload_file.replace('/3_ListPage_to_Load/','/3_ListPage_to_Load/failed_upload/')
             if os.path.exists(failed):
                 os.remove(failed)
             shutil.move(upload_file, tmp_failed)
@@ -512,7 +512,7 @@ def upload_imagedrop(root_dir, destdir=None):
             finaldir = os.path.abspath(destdir)
             for f in archglob:
                 try:
-                    final = f.replace('/output/','/output/uploaded/')
+                    final = f.replace('/3_ListPage_to_Load/','/3_ListPage_to_Load/uploaded/')
                     if os.path.exists(final):
                         os.remove(final)
                         shutil.move(f, finaldir)
