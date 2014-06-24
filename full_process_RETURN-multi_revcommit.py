@@ -695,6 +695,7 @@ for f in glob.glob(os.path.join(listpagedir, '*.??g')):
         if code == '200':
             os.rename(f, f.replace('3_ListPage_to_Load', '4_Archive/JPG/LIST_PAGE_LOADED'))
             print "Successfully Loaded--> {}".format(f)
+            time.sleep(float(.2))
         elif code:
             print code, f
             time.sleep(float(.3))
@@ -762,7 +763,11 @@ except:
 
 import shutil
 for f in glob.glob(os.path.join(archdir, '*_LP.png')):
-    shutil.move(f, pngarchivedir)
+    try:
+        shutil.move(f, pngarchivedir)
+    except shutil.Error:
+        pass
+
 #######
 #####################################################################################################################
 # 6 # After Uploading from 3_ dir, Archive all the _LP files in dated dir under archive/PNG/etc.....
