@@ -712,7 +712,7 @@ if type(success) == list:
             except:
                 pass
 else:
-    globbeddir = glob.glob(os.path.join(uploaded_jpgs_arch, '*_l.jpg'))
+    globbeddir = glob.glob(os.path.join(listpagedir, '*_l.jpg'))
 
 count = len(globbeddir)
 print globbeddir
