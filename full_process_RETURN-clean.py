@@ -446,7 +446,7 @@ def pycurl_upload_imagedrop(img):
             return errno
 
 #####
-def upload_imagedrop(root_dir, destdir=None)
+def upload_imagedrop(root_dir, destdir=None):
     import os, sys, re, csv, shutil, glob
     ## Make the success and fail dirs
     archive_uploaded = os.path.join(root_dir, 'uploaded')
