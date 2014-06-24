@@ -701,7 +701,14 @@ uploaded_jpgs_arch  = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval
 if type(success) == list:
     globbeddir = success
     for f in globbeddir:
-        shutil.move(f, uploaded_jpgs_arch)
+        try:
+            shutil.move(f, uploaded_jpgs_arch)
+        except shutil.Error:
+            os.remove(os.path.join(uploaded_jpgs_arch, f.split('/')[-1]))
+            try:
+                shutil.move(f, uploaded_jpgs_arch)
+            except:
+                pass
 else:
     globbeddir = glob.glob(os.path.join(uploaded_jpgs_arch, '*_l.jpg'))
 
