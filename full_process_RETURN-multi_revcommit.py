@@ -695,7 +695,7 @@ for f in glob.glob(os.path.join(listpagedir, '*.??g')):
         if code == '200':
             os.rename(f, f.replace('3_ListPage_to_Load', '4_Archive/JPG/LIST_PAGE_LOADED'))
             print "Successfully Loaded--> {}".format(f)
-            time.sleep(float(.2))
+            time.sleep(float(.3))
         elif code:
             print code, f
             time.sleep(float(.3))
