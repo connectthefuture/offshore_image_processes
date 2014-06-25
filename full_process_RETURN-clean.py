@@ -831,14 +831,13 @@ if type(success) == list:
     globreturned = success
     for f in globreturned:
         shutil.move(f, uploaded_jpgs_arch)
-#else:
-globreturned = glob.glob(os.path.join(listpagedir, 'uploaded/*_l.jpg'))
+else:
+    globreturned = glob.glob(os.path.join(uploaded_jpgs_arch, '*_l.jpg'))
 
 
 count = len(globreturned)
 for f in globreturned:
     colorstyle = f.split('/')[-1][:9]
-
 #    try:
 #        shutil.move(f, archivedir)
 #        count -= 1
