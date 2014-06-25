@@ -96,7 +96,7 @@ def sqlQuery_1500_imgready_notsent():
             qtysending = 1500
     except IndexError:
         qtysending = 1500
-    querymake_1500notsent = "SELECT colorstyle FROM offshore_status WHERE product_type not like 'sunglasses' AND image_ready_dt IS NOT NULL AND (send_dt IS NULL AND return_dt IS NULL) ORDER BY available_ct DESC, image_ready_dt DESC LIMIT 0,{0}".format(str(qtysending))
+    querymake_1500notsent = "SELECT colorstyle FROM offshore_status WHERE product_type not like 'sunglasses' AND image_ready_dt IS NOT NULL AND (send_dt IS NULL AND return_dt IS NULL) and WHERE colorstyle IN ('326636801', '324567101', '325333501', '326562202', '325325001', '332552901', '326754401', '326561501', '326162201', '324492401', '326249201', '325323201', '332553301', '326726501', '325596301', '326560601', '325682701', '324563501', '326250501', '325515801', '332552801', '323673101', '325333401', '332552201') ORDER BY available_ct DESC, image_ready_dt DESC LIMIT 0,{0}".format(str(qtysending))
 
     result = connection.execute(querymake_1500notsent)
     colorstyles_list = []
