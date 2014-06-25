@@ -205,7 +205,7 @@ def unzip_dir_savefiles(zipin, extractdir):
 def subproc_pad_to_x480(file,destdir):
     import subprocess, os
     
-    fname = file.split("/")[-1].split('.')[0].replace('_LP','_l').lower()
+    fname = file.split("/")[-1].split('.')[0].replace('_1','_l').lower()
     ext = file.split(".")[-1]
     outfile = os.path.join(destdir, fname + ".jpg")    
     
@@ -258,7 +258,7 @@ def subproc_pad_to_x480(file,destdir):
 def subproc_pad_to_x240(file,destdir):
     import subprocess, os
     
-    fname = file.split("/")[-1].split('.')[0].replace('_LP','_m').lower()
+    fname = file.split("/")[-1].split('.')[0].replace('_1','_m').lower()
     ext = file.split(".")[-1]
     outfile = os.path.join(destdir, fname + ".jpg")    
     
@@ -310,7 +310,7 @@ def subproc_pad_to_x240(file,destdir):
 def subproc_multithumbs_4_2(filepath,destdir):
     import subprocess, os
     
-    fname = filepath.split("/")[-1].split('.')[0].lower().replace('_1.','.').replace('_lp','')
+    fname = filepath.split("/")[-1].split('.')[0].lower().replace('_1.','.').replace('_1','')
     ext = filepath.split(".")[-1]
  
     outfile_l = os.path.join(destdir, fname + "_l.jpg")    
@@ -644,7 +644,7 @@ for z in glob.glob(os.path.join(returndir, '*.zip')):
 if len(zipfiles_dload) > 0:
     while len(zipfiles_dload) >= 1:
         zipreturned = os.path.abspath(zipfiles_dload.pop())
-        parentdir   = '/'.join(zipreturned.split('/')[:-1])
+        parentdir   = os.path.dirname(zipreturned)
         zipname     = zipreturned.split('/')[-1].split('.')[0]
         extractdir  = os.path.join(parentdir, zipname)
         
@@ -663,7 +663,7 @@ if len(zipfiles_dload) > 0:
 #####################################################################################################################
 # 3 # After unzip of complete PNGs Archive and Create new List page image
 #####################################################################################################################
-## Get all extracted PNGs and rename with _LP ext and move to archive dir 4, then copy/create _m.jpg in 3_ListPage_to_Load
+## Get all extracted PNGs and rename with _1 ext and move to archive dir 4, then copy/create _m.jpg in 3_ListPage_to_Load
 parentdir = ''
 returned_files = []
 edgecast_clear_list = []
@@ -680,15 +680,15 @@ edgecast_clear_list = list(sorted(set(edgecast_clear_list)))
 count = len(returned_files)
 while len(returned_files) >= 1:
     strippedpng        = os.path.abspath(returned_files.pop())
-    parentdir          = os.path.parentdir(strippedpng)
+    parentdir          = os.path.dirname(strippedpng)
     filename           = strippedpng.split('/')[-1]
     colorstyle         = strippedpng.split('/')[-1].split('.')[0]
-    pngarchived_pardir = os.path.parentdir(strippedpng).replace('2_Returned','4_Archive/PNG')
-    pngarchived_fname  = strippedpng.split('/')[-1].replace('.png', '_LP.png')
-    pngarchived_path   = os.path.join(pngarchived_pardir, pngarchived_fname)
+    pngarchived_dirname = os.path.dirname(strippedpng).replace('2_Returned','4_Archive/PNG')
+    pngarchived_fname  = strippedpng.split('/')[-1].replace('.png', '_1.png')
+    pngarchived_path   = os.path.join(pngarchived_dirname, pngarchived_fname)
     
     try:
-        os.makedirs(pngarchived_pardir)
+        os.makedirs(pngarchived_dirname)
     except:
         print "Failed makedirs"
 
@@ -816,7 +816,7 @@ success = upload_imagedrop(listpagedir)
 #for f in loadfiles:
 #    bgremoved_toload.append(os.path.abspath(f))
 
-### 5a ## Move the copy of the png from the LIST PAGE LOADED dir used only to upload, stored as _LP.png
+### 5a ## Move the copy of the png from the LIST PAGE LOADED dir used only to upload, stored as _1.png
 uploaded_jpgs_arch  = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive/JPG/LIST_PAGE_LOADED'
 
 # try:
