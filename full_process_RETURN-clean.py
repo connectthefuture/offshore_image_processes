@@ -472,6 +472,9 @@ def upload_imagedrop(root_dir, destdir=None):
         try:
             code = pycurl_upload_imagedrop(upload_file)
             if code == '200':
+                dst_file = upload_file.replace('/3_ListPage_to_Load/','/3_ListPage_to_Load/uploaded/')
+                if os.path.exists(dst_file):
+                    os.remove(dst_file)
                 shutil.move(upload_file, archive_uploaded)
                 print "1stTryOK"
             elif code:
@@ -483,14 +486,23 @@ def upload_imagedrop(root_dir, destdir=None):
                     time.sleep(float(.3))
                     shutil.move(upload_file, archive_uploaded)
                 except:
+                    failed = upload_file.replace('/3_ListPage_to_Load/','/3_ListPage_to_Load/failed_upload/')
+                    if os.path.exists(failed):
+                        os.remove(failed)
                     shutil.move(upload_file, tmp_failed)
                     pass
             else:
                 print "Uploaded {}".format(upload_file)
                 time.sleep(float(.3))
+                final = upload_file.replace('/3_ListPage_to_Load/','/3_ListPage_to_Load/uploaded/')
+                if os.path.exists(final):
+                    os.remove(final)
                 shutil.move(upload_file, archive_uploaded)
         except OSError:
             print "Error moving Finals to Arch {}".format(file)
+            failed = upload_file.replace('/3_ListPage_to_Load/','/3_ListPage_to_Load/failed_upload/')
+            if os.path.exists(failed):
+                os.remove(failed)
             shutil.move(upload_file, tmp_failed)
             pass
 
@@ -500,7 +512,10 @@ def upload_imagedrop(root_dir, destdir=None):
             finaldir = os.path.abspath(destdir)
             for f in archglob:
                 try:
-                    shutil.move(f, finaldir)
+                    final = f.replace('/3_ListPage_to_Load/','/3_ListPage_to_Load/uploaded/')
+                    if os.path.exists(final):
+                        os.remove(final)
+                        shutil.move(f, finaldir)
                 except:
                     pass
         else:
@@ -650,26 +665,26 @@ if len(zipfiles_dload) > 0:
 #####################################################################################################################
 ## Get all extracted PNGs and rename with _LP ext and move to archive dir 4, then copy/create _m.jpg in 3_ListPage_to_Load
 parentdir = ''
-extracted_pngs = []
+returned_files = []
 edgecast_clear_list = []
 
-globbeddir = glob.glob(os.path.join(returndir, '*.png'))
-count = len(globbeddir)
-for f in globbeddir:
-    extracted_pngs.append(os.path.abspath(f))
+globreturned = glob.glob(os.path.join(returndir, '*.png'))
+count = len(globreturned)
+for f in globreturned:
+    returned_files.append(os.path.abspath(f))
     count -= 1
     print "Successfully Extracted--> {0}\v{1} Files Remaining".format(f,count)
     edgecast_clear_list.append(os.path.abspath(f))
 
 edgecast_clear_list = list(sorted(set(edgecast_clear_list)))
-count = len(extracted_pngs)
-while len(extracted_pngs) >= 1:
-    extractedpng       = os.path.abspath(extracted_pngs.pop())
-    parentdir          = '/'.join(extractedpng.split('/')[:-1])
-    filename           = extractedpng.split('/')[-1]
-    colorstyle         = extractedpng.split('/')[-1].split('.')[0]
-    pngarchived_pardir = '/'.join(extractedpng.split('/')[:-1]).replace('2_Returned','4_Archive')
-    pngarchived_fname  = extractedpng.split('/')[-1].replace('.png', '_LP.png')
+count = len(returned_files)
+while len(returned_files) >= 1:
+    strippedpng        = os.path.abspath(returned_files.pop())
+    parentdir          = os.path.parentdir(strippedpng)
+    filename           = strippedpng.split('/')[-1]
+    colorstyle         = strippedpng.split('/')[-1].split('.')[0]
+    pngarchived_pardir = os.path.parentdir(strippedpng).replace('2_Returned','4_Archive/PNG')
+    pngarchived_fname  = strippedpng.split('/')[-1].replace('.png', '_LP.png')
     pngarchived_path   = os.path.join(pngarchived_pardir, pngarchived_fname)
     
     try:
@@ -680,9 +695,9 @@ while len(extracted_pngs) >= 1:
     if os.path.isfile(pngarchived_path):
         pass
     else:
-        shutil.move(extractedpng, pngarchived_path)
+        shutil.move(strippedpng, pngarchived_path)
         count -= 1
-        print "Creating Jpgs for--> {0}\v{1} Files Remaining".format(extractedpng,count)
+        print "Creating Jpgs for--> {0}\v{1} Files Remaining".format(strippedpng,count)
         #subproc_multithumbs_4_2(pngarchived_path,listpagedir)
         subproc_pad_to_x480(pngarchived_path,listpagedir)
         subproc_pad_to_x240(pngarchived_path,listpagedir)
@@ -703,7 +718,6 @@ if parentdir:
 #for png in pngs_for_listpage_jpg:
 #    magick_crop_saveX480(png)
 
-        
 #####################################################################################################################
 # 5 # OLD -- SEE BELOW -- Upload all  _m.jpg @ 400x480 located in the 3_LisPage... folder
 #####################################################################################################################
@@ -804,19 +818,6 @@ success = upload_imagedrop(listpagedir)
 
 ### 5a ## Move the copy of the png from the LIST PAGE LOADED dir used only to upload, stored as _LP.png
 uploaded_jpgs_arch  = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive/JPG/LIST_PAGE_LOADED'
-# pngarchivedir = os.path.join(archdir, 'PNG', todaysdate + '_uploaded')
-# try:
-#     os.makedirs(pngarchivedir)
-# except:
-#     pass
-
-
-#######
-#####################################################################################################################
-# 6 # After Uploading from 3_ dir, Archive all the _LP files in dated dir under archive/PNG/etc.....
-#####################################################################################################################
-## Gather all _LP files and store in dated dir under 4_Archive/PNG/<todays date>
-## Make the archive dir for the _LP files
 
 # try:
 #     os.makedirs(archivedir)
@@ -827,15 +828,15 @@ uploaded_jpgs_arch  = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval
 import shutil
 
 if type(success) == list:
-    globbeddir = success
-    for f in globbeddir:
+    globreturned = success
+    for f in globreturned:
         shutil.move(f, uploaded_jpgs_arch)
 else:
-    globbeddir = glob.glob(os.path.join(uploaded_jpgs_arch, '*_l.jpg'))
+    globreturned = glob.glob(os.path.join(uploaded_jpgs_arch, '*_l.jpg'))
 
 
-count = len(globbeddir)
-for f in globbeddir:
+count = len(globreturned)
+for f in globreturned:
     colorstyle = f.split('/')[-1][:9]
 #    try:
 #        shutil.move(f, archivedir)
