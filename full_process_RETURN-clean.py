@@ -779,7 +779,7 @@ bgremoved_toload = []
 import time, ftplib
 
 success = upload_imagedrop(listpagedir)
-
+print 'SUCCESS {}'.format(len(success))
 #for f in loadfiles:
 #    bgremoved_toload.append(os.path.abspath(f))
 
@@ -805,6 +805,7 @@ else:
 count = len(globreturned)
 for f in globreturned:
     colorstyle = f.split('/')[-1][:9]
+    print 'COLORSTYLE {}'.format(colorstyle)
 #    try:
 #        shutil.move(f, archivedir)
 #        count -= 1
