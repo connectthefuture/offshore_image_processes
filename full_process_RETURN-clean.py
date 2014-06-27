@@ -169,56 +169,23 @@ def ftp_download_allzips(returndir):
 #             file.close()
 #     ftp.close()
 
-#####################################################################################################################
-# 2 # Unzip downloaded file##########################################################################################
-#####################################################################################################################
 
-def unzip_dir_savefiles(zipin, extractdir):
-    import zipfile,sys,datetime,os,re
-    regex_png = re.compile(r'^[^\.].+?[png]{3}$')
-    os.chdir(extractdir)
-    # Open zip file
-    zipf   = zipfile.ZipFile(zipin, 'r')
-    
-    # ZipFile.read returns the bytes contained in named file
-    filenames = zipf.namelist()
-    #print "777e3e3",os.path.abspath(os.curdir)
-    for filename in filenames:
-        if re.findall(regex_png, filename):    
-            f = zipf.open(filename)
-            contents = f.read()
-            f.close()
-            writefile = os.path.join(extractdir, filename.split('/')[-1])
-            try:
-                with open(writefile, 'w') as wfile:
-                    wfile.write(contents)
-                    print 'Extracting to --> {0}/{1}'.format(extractdir, filename.split('/')[-1])
-            except IOError:
-                print "IO Error -->{0}".format(filename)
-                #os.rename(filename, filename.replace('2_Returned', 'X_Errors'))
-                pass
-    return zipin
 
 #####################################################################################################################
 # 3 and 4 # Magick Crop and save as 400x480 _m.jpg ##################################################################
 #####################################################################################################################
+
 def subproc_pad_to_x480(file,destdir):
     import subprocess, os
     
     fname = file.split("/")[-1].split('.')[0].replace('_1','_l').lower()
     ext = file.split(".")[-1]
     outfile = os.path.join(destdir, fname + ".jpg")    
-    
-    #try:            
     subprocess.call([
         "convert", 
         file, 
         '-format', 
         'jpg',
-        '-crop',
-        str(
-        subprocess.call(['convert', file, '-virtual-pixel', 'edge', '-blur', '0x15', '-fuzz', '1%', '-trim', '-format', '%wx%h%O', 'info:'], stdin=None, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=False))
-        ,
         '-colorspace',
         'LAB',
         "-filter",
@@ -268,10 +235,10 @@ def subproc_pad_to_x240(file,destdir):
         file, 
         '-format', 
         'jpg',
-        '-crop',
-        str(
-        subprocess.call(['convert', file, '-virtual-pixel', 'edge', '-blur', '0x15', '-fuzz', '1%', '-trim', '-format', '%wx%h%O', 'info:'], stdin=None, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=False))
-        ,
+        #'-crop',
+        #str(
+        #subprocess.call(['convert', file, '-virtual-pixel', 'edge', '-blur', '0x15', '-fuzz', '1%', '-trim', '-format', '%wx%h%O', 'info:'], stdin=None, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=False))
+        #,
         '-colorspace',
         'LAB',
         "-filter",
@@ -882,3 +849,35 @@ for f in glob.glob(os.path.join(returndir, '*/*.?[a-zA-Z][a-zA-Z][a-zA-Z]')):
     elif os.path.isdir(f):
         pass
         #shutil.rmtree(os.path.abspath(f))
+
+
+
+#####################################################################################################################
+# 2 # Unzip downloaded file##########################################################################################
+#####################################################################################################################
+
+# def unzip_dir_savefiles(zipin, extractdir):
+#     import zipfile,sys,datetime,os,re
+#     regex_png = re.compile(r'^[^\.].+?[png]{3}$')
+#     os.chdir(extractdir)
+#     # Open zip file
+#     zipf   = zipfile.ZipFile(zipin, 'r')
+    
+#     # ZipFile.read returns the bytes contained in named file
+#     filenames = zipf.namelist()
+#     #print "777e3e3",os.path.abspath(os.curdir)
+#     for filename in filenames:
+#         if re.findall(regex_png, filename):    
+#             f = zipf.open(filename)
+#             contents = f.read()
+#             f.close()
+#             writefile = os.path.join(extractdir, filename.split('/')[-1])
+#             try:
+#                 with open(writefile, 'w') as wfile:
+#                     wfile.write(contents)
+#                     print 'Extracting to --> {0}/{1}'.format(extractdir, filename.split('/')[-1])
+#             except IOError:
+#                 print "IO Error -->{0}".format(filename)
+#                 #os.rename(filename, filename.replace('2_Returned', 'X_Errors'))
+#                 pass
+#     return zipin
