@@ -54,9 +54,20 @@ def get_batches_sent():
     ftp.quit()
     return sorted(sentbatches)
 
+def query_days_not_returned():
+    import sqlalchemy
+
+    # get a list of dates for files awaiting return to then test against ftp Pickup dir
+
+    pass
+
 def ftp_download_allzips(returndir):
     import ftplib
-    import os,sys,re
+    import os,sys,re, datetime
+    
+    todaysdate_senddt = "{0:%B%d}".format(datetime.date.today())
+    remotepath = str('Drop/ImagesToDo' + todaysdate_senddt)
+    
     #colorstyle = filepath.split('/')[-1][:9]
     #if re.findall(regex_colorstyle, colorstyle):
     username   = "bf"
@@ -64,6 +75,8 @@ def ftp_download_allzips(returndir):
     ftpurl     = "prepressoutsourcing.com"
     remotepath = 'Pick/ImagesToDo' + str(sys.argv[1]) + '_Done'
     fullftp    = os.path.join(ftpurl, remotepath)
+    
+    
     #returndir = '/mnt/srv/media/Post_Complete/Complete_Archive/SendReceive_BGRemoval/2_Returned'
     #
     ftp = ftplib.FTP(ftpurl)
