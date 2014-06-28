@@ -581,7 +581,7 @@ for f in globreturned:
 
 ### 8ish ## Write styles to Clear at end of day through separate Edgecast script
 cacheclear_csvarch  = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive/CSV'
-print edgecast_clear_list
+# print edgecast_clear_list
 
 toclear = [ fname[:].split('/')[-1][:9] for fname in edgecast_clear_list ]
 csv_write_datedCacheClearList(toclear, destdir=cacheclear_csvarch)
