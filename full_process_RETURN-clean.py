@@ -302,6 +302,7 @@ def upload_imagedrop(root_dir, destdir=None):
     
     upload_tmp_loading = glob.glob(os.path.join(root_dir, '*.*g'))
     for upload_file in upload_tmp_loading:
+        print "PREFTP {}".format(upload_file)
         #### UPLOAD upload_file via ftp to imagedrop using Pycurl
         ## Then rm loading tmp dir
         try:
@@ -321,6 +322,7 @@ def upload_imagedrop(root_dir, destdir=None):
                     time.sleep(float(.3))
                     shutil.move(upload_file, archive_uploaded)
                 except:
+                    print "FAILED {}".format(upload_file)
                     failed = upload_file.replace('/3_ListPage_to_Load/','/3_ListPage_to_Load/failed_upload/')
                     if os.path.exists(failed):
                         os.remove(failed)
@@ -334,7 +336,7 @@ def upload_imagedrop(root_dir, destdir=None):
                     os.remove(final)
                 shutil.move(upload_file, archive_uploaded)
         except OSError:
-            print "Error moving Finals to Arch {}".format(file)
+            print "Error moving Finals to Arch {}".format(upload_file)
             failed = upload_file.replace('/3_ListPage_to_Load/','/3_ListPage_to_Load/failed_upload/')
             if os.path.exists(failed):
                 os.remove(failed)
@@ -347,6 +349,7 @@ def upload_imagedrop(root_dir, destdir=None):
             finaldir = os.path.abspath(destdir)
             for f in archglob:
                 try:
+                    print "FINAL DEST {}".format(f)
                     final = f.replace('/3_ListPage_to_Load/','/3_ListPage_to_Load/uploaded/')
                     if os.path.exists(final):
                         os.remove(final)
