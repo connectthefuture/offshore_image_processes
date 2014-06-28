@@ -31,6 +31,14 @@ def styles_awaiting_return():
     return set(sorted(colorstyles_list)),set(batchdirs)
 
 
+def query_days_not_returned():
+    import sqlalchemy
+
+    # get a list of dates for files awaiting return to then test against ftp Pickup dir or complete the above func
+
+    pass
+
+
 def get_batches_sent():
     import ftplib
     username   = "bf"
@@ -54,12 +62,7 @@ def get_batches_sent():
     ftp.quit()
     return sorted(sentbatches)
 
-def query_days_not_returned():
-    import sqlalchemy
 
-    # get a list of dates for files awaiting return to then test against ftp Pickup dir
-
-    pass
 
 def ftp_download_allzips(returndir):
     import ftplib
@@ -68,8 +71,8 @@ def ftp_download_allzips(returndir):
     todaysdate_senddt = "{0:%B%d}".format(datetime.date.today())
     remotepath = str('Drop/ImagesToDo' + todaysdate_senddt)
     
-    #colorstyle = filepath.split('/')[-1][:9]
-    #if re.findall(regex_colorstyle, colorstyle):
+    # colorstyle = filepath.split('/')[-1][:9]
+    # if re.findall(regex_colorstyle, colorstyle):
     username   = "bf"
     password   = "B14300F"
     ftpurl     = "prepressoutsourcing.com"
@@ -77,7 +80,7 @@ def ftp_download_allzips(returndir):
     fullftp    = os.path.join(ftpurl, remotepath)
     
     
-    #returndir = '/mnt/srv/media/Post_Complete/Complete_Archive/SendReceive_BGRemoval/2_Returned'
+    # returndir = '/mnt/srv/media/Post_Complete/Complete_Archive/SendReceive_BGRemoval/2_Returned'
     #
     ftp = ftplib.FTP(ftpurl)
     ftp.login(username, password)
@@ -227,16 +230,6 @@ def subproc_pad_to_x240(file,destdir):
 ###########################################################################
 # 5 # Upload stripped bg _m.jpg files to ImageDrop ##################################################################
 #####################################################################################################################
-def upload_to_imagedrop(file):
-    import ftplib
-    session = ftplib.FTP('file3.bluefly.corp', 'imagedrop', 'imagedrop0')
-    fileread = open(file, 'rb')
-    filename = str(file.split('/')[-1])
-    session.cwd("ImageDrop/")
-    session.storbinary('STOR ' + filename, fileread, 8*1024)
-    fileread.close()
-    session.quit() 
-
 ##
 ##### Upload tmp_loading dir to imagedrop via FTP using Pycurl  #####
 def pycurl_upload_imagedrop(img):
@@ -559,7 +552,7 @@ else:
 count = len(globreturned)
 for f in globreturned:
     colorstyle = f.split('/')[-1][:9]
-    print 'COLORSTYLE {}'.format(colorstyle)
+    # print 'COLORSTYLE {}'.format(colorstyle)
 #    try:
 #        shutil.move(f, archivedir)
 #        count -= 1
