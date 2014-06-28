@@ -89,7 +89,7 @@ def ftp_download_allzips(returndir):
     filenames = []
     ftp.retrlines('NLST', filenames.append)
 
-    ##dload
+    ## dload
     count = len(filenames)
     filtered_filenames = []
     for filename in filenames:
@@ -99,76 +99,13 @@ def ftp_download_allzips(returndir):
     for filename in filtered_filenames:       
         local_filename = os.path.join(returndir,filename.lower().replace(' ',''))
         with open(local_filename, 'wb') as file:
-            #remfile = os.path.join(str(batch) + '_Done', str(filename))
-            #print remfile
-            #ftp.cwd(remotepath)
+            # remfile = os.path.join(str(batch) + '_Done', str(filename))
+            # print remfile
+            # ftp.cwd(remotepath)
             ftp.retrbinary('RETR '+ filename, file.write)
             count -= 1
             print "Successfully Retrieved--> At most, {0}\v{1} Files Remaining".format(filename,count)
-        #file.close()
     ftp.close()
-
-# def ftp_download_allzips(returndir):
-#     import ftplib, datetime
-#     import os,sys,re
-#     #colorstyle = filepath.split('/')[-1][:9]
-#     #if re.findall(regex_colorstyle, colorstyle):
-#     username   = "bf"
-#     password   = "B14300F"
-#     ftpurl     = "prepressoutsourcing.com"
-#     #remotepath = 'Pick/ImagesToDo_Done'
-#     #todaysdate_senddt = "ImagesToDo{0:%B%d}_Done".format(datetime.date.today())
-#     #remotepath = str('Pick/ImagesToDo' + todaysdate_senddt)
-#     sent_batches = get_batches_sent()
-
-#     styles_not_downloaded, batch_list = styles_awaiting_return()
-#     sent_set = []
-#     [ sent_set.append(f.split('/')[-1].strip('_Done')) for f in batch_list ]
-#     batches_to_get = set(sent_set) | set(sent_batches)
-#     filenames = []        
-#     for batch in batches_to_get:
-#         remotepath = os.path.join('Pick', str(batch) + '_Done') ##sys.argv[1])
-#         fullftp    = os.path.join(ftpurl, remotepath)
-#         #returndir = '/mnt/srv/media/Post_Complete/Complete_Archive/SendReceive_BGRemoval/2_Returned'
-#         #
-#         ftp = ftplib.FTP(ftpurl)
-#         ftp.login(username, password)
-#         try:
-#             ftp.cwd(remotepath)
-#             ftp.retrlines('NLST', filenames.append)
-#         except ftplib.error_perm, resp:
-#             if str(resp) == "550 No files found":
-#                 print "No files in this directory"
-#             else:
-#                 pass #raise
-    
-#     ## if filenames is a dir decend into dirand list again till there are files found then dload or fo straught to dload
-#     # if len(filenames) == 1:
-#     #     dname = filenames.pop()
-#     #     print dname
-#     #     if not re.findall(re.compile(r'^.+?\.[ZIziJPNGjpng]{3}$'), dname):
-#     #         ftp.cwd(dname)
-#     #filenames = []
-#     #ftp.retrlines('NLST', filenames.append)
-
-#     ##dload
-#     count = len(filenames)
-#     for filename in filenames:
-#         if filename[:9] in styles_not_downloaded:
-#             local_filename = os.path.join(returndir,filename.lower().replace(' ',''))
-#             file = open(local_filename, 'wb')
-#             for batch in batches_to_get:
-#                 try:
-#                     remfile = os.path.join(str(batch) + '_Done', str(filename))
-#                     print remfile
-#                     ftp.retrbinary('RETR '+ remfile, file.write)
-#                     count -= 1
-#                     print "Successfully Retrieved--> At most, {0}\v{1} Files Remaining".format(filename,count)
-#                 except:
-#                     pass
-#             file.close()
-#     ftp.close()
-
 
 
 #####################################################################################################################
@@ -235,10 +172,10 @@ def subproc_pad_to_x240(file,destdir):
         file, 
         '-format', 
         'jpg',
-        #'-crop',
-        #str(
-        #subprocess.call(['convert', file, '-virtual-pixel', 'edge', '-blur', '0x15', '-fuzz', '1%', '-trim', '-format', '%wx%h%O', 'info:'], stdin=None, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=False))
-        #,
+        # '-crop',
+        # str(
+        # subprocess.call(['convert', file, '-virtual-pixel', 'edge', '-blur', '0x15', '-fuzz', '1%', '-trim', '-format', '%wx%h%O', 'info:'], stdin=None, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=False))
+        # ,
         '-colorspace',
         'LAB',
         "-filter",
@@ -273,83 +210,8 @@ def subproc_pad_to_x240(file,destdir):
     #except IOError:
     #    print "Failed: {0}".format(outfile)
     return outfile
-###########################################################################
-def subproc_multithumbs_4_2(filepath,destdir):
-    import subprocess, os
-    
-    fname = filepath.split("/")[-1].split('.')[0].lower().replace('_1.','.').replace('_1','')
-    ext = filepath.split(".")[-1]
- 
-    outfile_l = os.path.join(destdir, fname + "_l.jpg")    
-    outfile_m = os.path.join(destdir, fname + "_m.jpg")
 
-    subprocess.call([
-        'convert', 
-        filepath, 
-        '-format', 
-        ext,
-        #'-crop',
-        # str(
-        # subprocess.call(['convert', filepath, '-virtual-pixel', 'edge', '-blur', '0x15', '-fuzz', '1%', '-trim', '-format', '%wx%h%O', 'info:'], stdin=None, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=False))
-        # ,
-        # '-gravity',
-        #  'center',
-        # '-trim',
-        # '-colorspace',
-        # 'LAB',
-        "-filter",
-        "LanczosSharp",
-        '-write',
-        'mpr:copy-of-original',
-        #'+delete',
-            ## Begin generating imgs 
-            # --> Large Jpeg
-            'mpr:copy-of-original',
-            '-format', 
-            'jpg',
-            '-resize',
-            '400x480',
-            #'-gravity',
-            #'center',
-            # '-background',
-            # 'white',
-            # '-extent', 
-            # '400x480',
-            '-colorspace',
-            'sRGB',
-            '-unsharp',
-            '2x0.5+0.5+0', 
-            '-quality', 
-            '95',
-            '-write',
-            outfile_l,
-            #'+delete',
-            
-            ## Medium Jpeg
-            'mpr:copy-of-original',
-            '-format', 
-            'jpg',
-            '-resize',
-            '300x360',
-            #'-gravity',
-            #'center',
-            # '-background',
-            # 'white',
-            # '-extent', 
-            # '300x360',
-            '-colorspace',
-            'sRGB',
-            '-unsharp',
-            '2x0.5+0.5+0', 
-            '-quality', 
-            '95',
-            '-write',
-            outfile_m,
-            #'+delete',
-            'null:',
-            ])
-    #return
-##########################################
+###########################################################################
 # 5 # Upload stripped bg _m.jpg files to ImageDrop ##################################################################
 #####################################################################################################################
 def upload_to_imagedrop(file):
@@ -366,7 +228,7 @@ def upload_to_imagedrop(file):
 ##### Upload tmp_loading dir to imagedrop via FTP using Pycurl  #####
 def pycurl_upload_imagedrop(img):
     import pycurl, os
-    #import FileReader
+    # import FileReader
     localFilePath = os.path.abspath(img)
     localFileName = localFilePath.split('/')[-1]
 
@@ -381,20 +243,20 @@ def pycurl_upload_imagedrop(img):
         ### Send the request to Edgecast
         c = pycurl.Curl()
         c.setopt(pycurl.URL, ftpFilePath)
-        #c.setopt(pycurl.PORT , 21)
+        # c.setopt(pycurl.PORT , 21)
         c.setopt(pycurl.USERPWD, ftpUSERPWD)
-        #c.setopt(pycurl.VERBOSE, 1)
+        # c.setopt(pycurl.VERBOSE, 1)
         c.setopt(c.CONNECTTIMEOUT, 5)
         c.setopt(c.TIMEOUT, 8)
         c.setopt(c.FAILONERROR, True)
-        #c.setopt(pycurl.FORBID_REUSE, 1)
-        #c.setopt(pycurl.FRESH_CONNECT, 1)
+        # c.setopt(pycurl.FORBID_REUSE, 1)
+        # c.setopt(pycurl.FRESH_CONNECT, 1)
         f = open(localFilePath, 'rb')
         c.setopt(pycurl.INFILE, f)
         c.setopt(pycurl.INFILESIZE, os.path.getsize(localFilePath))
         c.setopt(pycurl.INFILESIZE_LARGE, os.path.getsize(localFilePath))
-        #c.setopt(pycurl.READFUNCTION, f.read());        
-        #c.setopt(pycurl.READDATA, f.read()); 
+        # c.setopt(pycurl.READFUNCTION, f.read());        
+        # c.setopt(pycurl.READDATA, f.read()); 
         c.setopt(pycurl.UPLOAD, 1L)
 
         try:
@@ -490,9 +352,11 @@ def upload_imagedrop(root_dir, destdir=None):
     except:
         pass
         return 'NOARCHGLOB'
+
 #####################################################################################################################
 # 7 # After Upload set return_dt on offshore_status #################################################################
 #####################################################################################################################
+
 def sqlQuery_set_returndt(style):
     import sqlalchemy, datetime
     todaysdate_returndt = str(datetime.date.today())
@@ -509,9 +373,11 @@ def sqlQuery_set_returndt(style):
     except sqlalchemy.exc.IntegrityError:
         print "Duplicate Entry {0}".format(style)
     connection.close()
+
 #####################################################################################################################
 ## 8 ## Write styles to clear to csv, which will be use to Clear List page cdn with edgecast and style number, no version needed on List page for now
 #####################################################################################################################
+
 def csv_write_datedCacheClearList(styleslist, destdir=None):
     import csv,datetime,os
     dt = str(datetime.datetime.now())
@@ -530,6 +396,7 @@ def csv_write_datedCacheClearList(styleslist, destdir=None):
 ###########################
 ### Not used Currently
 ###########################
+
 def edgecast_clear_primary_only(colorstyle):
     import pycurl,json,sys,os
     token = "9af6d09a-1250-4766-85bd-29cebf1c984f"
@@ -596,36 +463,7 @@ except:
 
 ftp_download_allzips(returndir)
 
-######################################################################################################################
-## 2 # After download list zip files dloaded and unzip
-#######################################################################################################################
-### Grab all downloaded zips in a list prior to extracting pngs
-zipfiles_dload = []
-count = len(glob.glob(os.path.join(returndir, '*.zip')))
-for z in glob.glob(os.path.join(returndir, '*.zip')):
-    zipfiles_dload.append(os.path.abspath(z))
-    count -= 1
-    print "Successfully Downloaded--> {0}\v{1} Files Remaining".format(z,count)
-#
-### unzip or pass if no zip exists 
-if len(zipfiles_dload) > 0:
-    while len(zipfiles_dload) >= 1:
-        zipreturned = os.path.abspath(zipfiles_dload.pop())
-        parentdir   = os.path.dirname(zipreturned)
-        zipname     = zipreturned.split('/')[-1].split('.')[0]
-        extractdir  = os.path.join(parentdir, zipname)
-        
-        ## Make new dir named as zipfile name without ext to extract zip contents to
-        try:
-            os.mkdir(extractdir)
-        except:# SystemError:
-            pass
-        
-        if os.path.isfile(zipreturned):
-            print "ZZZ",zipreturned, extractdir, zipname
-            unzip_dir_savefiles(zipreturned, extractdir)
-            os.remove(zipreturned)
-    
+  
 
 #####################################################################################################################
 # 3 # After unzip of complete PNGs Archive and Create new List page image
@@ -673,6 +511,211 @@ while len(returned_files) >= 1:
 if parentdir:
     if len(os.listdir(parentdir)) == 0: os.rmdir(parentdir)
 
+
+#####################################################################################################################
+# 5 # NEW Upload all located in the 3_LisPage... folder
+#####################################################################################################################
+import os, sys, re, csv, shutil, glob
+bgremoved_toload = []
+import time, ftplib
+
+success = upload_imagedrop(listpagedir)
+print 'SUCCESS {}'.format(len(success))
+#for f in loadfiles:
+#    bgremoved_toload.append(os.path.abspath(f))
+
+### 5a ## Move the copy of the png from the LIST PAGE LOADED dir used only to upload, stored as _1.png
+uploaded_jpgs_arch  = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive/JPG/LIST_PAGE_LOADED'
+
+# try:
+#     os.makedirs(archivedir)
+# except:
+#     print "Failed makedirs for Archiving"
+
+## Build list  and move files to archive and update DB
+import shutil
+
+if type(success) == list:
+    globreturned = success
+    for f in globreturned:
+        shutil.move(f, uploaded_jpgs_arch)
+else:
+    globreturned = glob.glob(os.path.join(uploaded_jpgs_arch, '*_l.jpg'))
+
+
+count = len(globreturned)
+for f in globreturned:
+    colorstyle = f.split('/')[-1][:9]
+    print 'COLORSTYLE {}'.format(colorstyle)
+#    try:
+#        shutil.move(f, archivedir)
+#        count -= 1
+#        print "Successfully Archived--> {0}\v{1} Files Remaining".format(f,count)
+#        
+#    except shutil.Error:
+#        os.rename(f, os.path.join(archivedir, f.split('/')[-1]))
+
+    #####################################################
+    # 7 # Update offshore_status with todays date as sent
+    #####################################################
+    try:
+        sqlQuery_set_returndt(colorstyle)
+    except:
+        print "Failed Entrering Return dt for --> {0}".format(colorstyle)
+    #####################################################
+    #####################################################
+    # try:
+    #
+    #     #edgecast_clear_primary_only(colorstyle)
+    # except:
+    #     pass
+
+### 8ish ## Write styles to Clear at end of day through separate Edgecast script
+cacheclear_csvarch  = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive/CSV'
+print edgecast_clear_list
+
+toclear = [ fname[:].split('/')[-1][:9] for fname in edgecast_clear_list ]
+csv_write_datedCacheClearList(toclear, destdir=cacheclear_csvarch)
+
+### For now copy all png in error dir to my DropFinalFiles only dir which will create and load in reg processing scripts
+# for f in glob.glob(os.path.join(errordir, '*.png')):
+#     try:
+#         shutil.copy(f, '/mnt/Post_Complete/Complete_to_Load/Drop_FinalFilesOnly/JohnBragato')
+#     except:
+#         pass
+        
+## finally delete the zip file from the return dir 
+for f in glob.glob(os.path.join(returndir, '*/*.?[a-zA-Z][a-zA-Z][a-zA-Z]')):
+    if os.path.isfile(f):
+        os.remove(os.path.abspath(f))
+    elif os.path.isdir(f):
+        pass
+        #shutil.rmtree(os.path.abspath(f))
+
+
+######################################################################################################################
+# ## 2 # After download list zip files dloaded and unzip
+# #######################################################################################################################
+# ### Grab all downloaded zips in a list prior to extracting pngs
+# zipfiles_dload = []
+# count = len(glob.glob(os.path.join(returndir, '*.zip')))
+# for z in glob.glob(os.path.join(returndir, '*.zip')):
+#     zipfiles_dload.append(os.path.abspath(z))
+#     count -= 1
+#     print "Successfully Downloaded--> {0}\v{1} Files Remaining".format(z,count)
+# #
+# ### unzip or pass if no zip exists 
+# if len(zipfiles_dload) > 0:
+#     while len(zipfiles_dload) >= 1:
+#         zipreturned = os.path.abspath(zipfiles_dload.pop())
+#         parentdir   = os.path.dirname(zipreturned)
+#         zipname     = zipreturned.split('/')[-1].split('.')[0]
+#         extractdir  = os.path.join(parentdir, zipname)
+        
+#         ## Make new dir named as zipfile name without ext to extract zip contents to
+#         try:
+#             os.mkdir(extractdir)
+#         except:# SystemError:
+#             pass
+        
+#         if os.path.isfile(zipreturned):
+#             print "ZZZ",zipreturned, extractdir, zipname
+#             unzip_dir_savefiles(zipreturned, extractdir)
+#             os.remove(zipreturned)
+  
+
+#####################################################################################################################
+# 2 # Unzip downloaded file##########################################################################################
+#####################################################################################################################
+
+# def unzip_dir_savefiles(zipin, extractdir):
+#     import zipfile,sys,datetime,os,re
+#     regex_png = re.compile(r'^[^\.].+?[png]{3}$')
+#     os.chdir(extractdir)
+#     # Open zip file
+#     zipf   = zipfile.ZipFile(zipin, 'r')
+    
+#     # ZipFile.read returns the bytes contained in named file
+#     filenames = zipf.namelist()
+#     #print "777e3e3",os.path.abspath(os.curdir)
+#     for filename in filenames:
+#         if re.findall(regex_png, filename):    
+#             f = zipf.open(filename)
+#             contents = f.read()
+#             f.close()
+#             writefile = os.path.join(extractdir, filename.split('/')[-1])
+#             try:
+#                 with open(writefile, 'w') as wfile:
+#                     wfile.write(contents)
+#                     print 'Extracting to --> {0}/{1}'.format(extractdir, filename.split('/')[-1])
+#             except IOError:
+#                 print "IO Error -->{0}".format(filename)
+#                 #os.rename(filename, filename.replace('2_Returned', 'X_Errors'))
+#                 pass
+#     return zipin
+
+# def ftp_download_allzips(returndir):
+#     import ftplib, datetime
+#     import os,sys,re
+#     #colorstyle = filepath.split('/')[-1][:9]
+#     #if re.findall(regex_colorstyle, colorstyle):
+#     username   = "bf"
+#     password   = "B14300F"
+#     ftpurl     = "prepressoutsourcing.com"
+#     #remotepath = 'Pick/ImagesToDo_Done'
+#     #todaysdate_senddt = "ImagesToDo{0:%B%d}_Done".format(datetime.date.today())
+#     #remotepath = str('Pick/ImagesToDo' + todaysdate_senddt)
+#     sent_batches = get_batches_sent()
+
+#     styles_not_downloaded, batch_list = styles_awaiting_return()
+#     sent_set = []
+#     [ sent_set.append(f.split('/')[-1].strip('_Done')) for f in batch_list ]
+#     batches_to_get = set(sent_set) | set(sent_batches)
+#     filenames = []        
+#     for batch in batches_to_get:
+#         remotepath = os.path.join('Pick', str(batch) + '_Done') ##sys.argv[1])
+#         fullftp    = os.path.join(ftpurl, remotepath)
+#         #returndir = '/mnt/srv/media/Post_Complete/Complete_Archive/SendReceive_BGRemoval/2_Returned'
+#         #
+#         ftp = ftplib.FTP(ftpurl)
+#         ftp.login(username, password)
+#         try:
+#             ftp.cwd(remotepath)
+#             ftp.retrlines('NLST', filenames.append)
+#         except ftplib.error_perm, resp:
+#             if str(resp) == "550 No files found":
+#                 print "No files in this directory"
+#             else:
+#                 pass #raise
+    
+#     ## if filenames is a dir decend into dirand list again till there are files found then dload or fo straught to dload
+#     # if len(filenames) == 1:
+#     #     dname = filenames.pop()
+#     #     print dname
+#     #     if not re.findall(re.compile(r'^.+?\.[ZIziJPNGjpng]{3}$'), dname):
+#     #         ftp.cwd(dname)
+#     #filenames = []
+#     #ftp.retrlines('NLST', filenames.append)
+
+#     ##dload
+#     count = len(filenames)
+#     for filename in filenames:
+#         if filename[:9] in styles_not_downloaded:
+#             local_filename = os.path.join(returndir,filename.lower().replace(' ',''))
+#             file = open(local_filename, 'wb')
+#             for batch in batches_to_get:
+#                 try:
+#                     remfile = os.path.join(str(batch) + '_Done', str(filename))
+#                     print remfile
+#                     ftp.retrbinary('RETR '+ remfile, file.write)
+#                     count -= 1
+#                     print "Successfully Retrieved--> At most, {0}\v{1} Files Remaining".format(filename,count)
+#                 except:
+#                     pass
+#             file.close()
+#     ftp.close()
+
+
 #####################################################################################################################
 # 4 # Generate new list page jpgs, _m.jpg @ 400x480 from PNGs located in the 3_LisPage... folder
 #####################################################################################################################
@@ -684,6 +727,83 @@ if parentdir:
 #
 #for png in pngs_for_listpage_jpg:
 #    magick_crop_saveX480(png)
+
+# def subproc_multithumbs_4_2(filepath,destdir):
+#     import subprocess, os
+    
+#     fname = filepath.split("/")[-1].split('.')[0].lower().replace('_1.','.').replace('_1','')
+#     ext = filepath.split(".")[-1]
+ 
+#     outfile_l = os.path.join(destdir, fname + "_l.jpg")    
+#     outfile_m = os.path.join(destdir, fname + "_m.jpg")
+
+#     subprocess.call([
+#         'convert', 
+#         filepath, 
+#         '-format', 
+#         ext,
+#         #'-crop',
+#         # str(
+#         # subprocess.call(['convert', filepath, '-virtual-pixel', 'edge', '-blur', '0x15', '-fuzz', '1%', '-trim', '-format', '%wx%h%O', 'info:'], stdin=None, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=False))
+#         # ,
+#         # '-gravity',
+#         #  'center',
+#         # '-trim',
+#         # '-colorspace',
+#         # 'LAB',
+#         "-filter",
+#         "LanczosSharp",
+#         '-write',
+#         'mpr:copy-of-original',
+#         # '+delete',
+#         ## Begin generating imgs 
+#         # --> Large Jpeg
+#         'mpr:copy-of-original',
+#         '-format', 
+#         'jpg',
+#         '-resize',
+#         '400x480',
+#         # '-gravity',
+#         # 'center',
+#         # '-background',
+#         # 'white',
+#         # '-extent', 
+#         # '400x480',
+#         '-colorspace',
+#         'sRGB',
+#         '-unsharp',
+#         '2x0.5+0.5+0', 
+#         '-quality', 
+#         '95',
+#         '-write',
+#         outfile_l,
+#         # '+delete',
+        
+#         ## Medium Jpeg
+#         'mpr:copy-of-original',
+#         '-format', 
+#         'jpg',
+#         '-resize',
+#         '300x360',
+#         # '-gravity',
+#         # 'center',
+#         # '-background',
+#         # 'white',
+#         # '-extent', 
+#         # '300x360',
+#         '-colorspace',
+#         'sRGB',
+#         '-unsharp',
+#         '2x0.5+0.5+0', 
+#         '-quality', 
+#         '95',
+#         '-write',
+#         outfile_m,
+#         # '+delete',
+#         'null:',
+#         ])
+#     #return
+# ##########################################
 
 #####################################################################################################################
 # 5 # OLD -- SEE BELOW -- Upload all  _m.jpg @ 400x480 located in the 3_LisPage... folder
@@ -771,114 +891,3 @@ if parentdir:
 #                 print "Final Try Connect error", f
 #                 pass
 
-#####################################################################################################################
-# 5 # NEW Upload all  _m.jpg @ 400x480 located in the 3_LisPage... folder
-#####################################################################################################################
-import os, sys, re, csv, shutil, glob
-bgremoved_toload = []
-import time, ftplib
-
-success = upload_imagedrop(listpagedir)
-print 'SUCCESS {}'.format(len(success))
-#for f in loadfiles:
-#    bgremoved_toload.append(os.path.abspath(f))
-
-### 5a ## Move the copy of the png from the LIST PAGE LOADED dir used only to upload, stored as _1.png
-uploaded_jpgs_arch  = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive/JPG/LIST_PAGE_LOADED'
-
-# try:
-#     os.makedirs(archivedir)
-# except:
-#     print "Failed makedirs for Archiving"
-
-## Build list  and move files to archive and update DB
-import shutil
-
-if type(success) == list:
-    globreturned = success
-    for f in globreturned:
-        shutil.move(f, uploaded_jpgs_arch)
-else:
-    globreturned = glob.glob(os.path.join(uploaded_jpgs_arch, '*_l.jpg'))
-
-
-count = len(globreturned)
-for f in globreturned:
-    colorstyle = f.split('/')[-1][:9]
-    print 'COLORSTYLE {}'.format(colorstyle)
-#    try:
-#        shutil.move(f, archivedir)
-#        count -= 1
-#        print "Successfully Archived--> {0}\v{1} Files Remaining".format(f,count)
-#        
-#    except shutil.Error:
-#        os.rename(f, os.path.join(archivedir, f.split('/')[-1]))
-
-    #####################################################
-    # 7 # Update offshore_status with todays date as sent
-    #####################################################
-    try:
-        sqlQuery_set_returndt(colorstyle)
-    except:
-        print "Failed Entrering Return dt for --> {0}".format(colorstyle)
-    #####################################################
-    #####################################################
-    # try:
-    #
-    #     #edgecast_clear_primary_only(colorstyle)
-    # except:
-    #     pass
-
-### 8ish ## Write styles to Clear at end of day through separate Edgecast script
-cacheclear_csvarch  = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive/CSV'
-print edgecast_clear_list
-
-toclear = [ fname[:].split('/')[-1][:9] for fname in edgecast_clear_list ]
-csv_write_datedCacheClearList(toclear, destdir=cacheclear_csvarch)
-
-### For now copy all png in error dir to my DropFinalFiles only dir which will create and load in reg processing scripts
-# for f in glob.glob(os.path.join(errordir, '*.png')):
-#     try:
-#         shutil.copy(f, '/mnt/Post_Complete/Complete_to_Load/Drop_FinalFilesOnly/JohnBragato')
-#     except:
-#         pass
-        
-## finally delete the zip file from the return dir 
-for f in glob.glob(os.path.join(returndir, '*/*.?[a-zA-Z][a-zA-Z][a-zA-Z]')):
-    if os.path.isfile(f):
-        os.remove(os.path.abspath(f))
-    elif os.path.isdir(f):
-        pass
-        #shutil.rmtree(os.path.abspath(f))
-
-
-
-#####################################################################################################################
-# 2 # Unzip downloaded file##########################################################################################
-#####################################################################################################################
-
-# def unzip_dir_savefiles(zipin, extractdir):
-#     import zipfile,sys,datetime,os,re
-#     regex_png = re.compile(r'^[^\.].+?[png]{3}$')
-#     os.chdir(extractdir)
-#     # Open zip file
-#     zipf   = zipfile.ZipFile(zipin, 'r')
-    
-#     # ZipFile.read returns the bytes contained in named file
-#     filenames = zipf.namelist()
-#     #print "777e3e3",os.path.abspath(os.curdir)
-#     for filename in filenames:
-#         if re.findall(regex_png, filename):    
-#             f = zipf.open(filename)
-#             contents = f.read()
-#             f.close()
-#             writefile = os.path.join(extractdir, filename.split('/')[-1])
-#             try:
-#                 with open(writefile, 'w') as wfile:
-#                     wfile.write(contents)
-#                     print 'Extracting to --> {0}/{1}'.format(extractdir, filename.split('/')[-1])
-#             except IOError:
-#                 print "IO Error -->{0}".format(filename)
-#                 #os.rename(filename, filename.replace('2_Returned', 'X_Errors'))
-#                 pass
-#     return zipin
