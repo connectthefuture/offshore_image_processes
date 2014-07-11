@@ -571,6 +571,7 @@ import timeit
 def main():
     import glob,zipfile,sys,datetime,os,re,shutil, time
 
+    st = time.time()
     regex_zipfilename = re.compile(r'^[^\.].+?[zipZIP]{3}$')
     regex_zipfilepath = re.compile(r'^/.+?[zipZIP]{3}$')
 
@@ -678,7 +679,9 @@ def main():
     else:
         globreturned = glob.glob(os.path.join(uploaded_jpgs_arch, '*_l.jpg'))
 
-
+    end = time.time()
+    print end - st
+    
     count = len(globreturned)
     for f in globreturned:
         colorstyle = f.split('/')[-1][:9]
