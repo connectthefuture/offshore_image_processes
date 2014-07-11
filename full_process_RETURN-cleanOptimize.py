@@ -545,161 +545,174 @@ def edgecast_clear_primary_only(colorstyle):
 #####################################################################################################################
 ## RUN ##
 ######### find out how many zips dloaded then extract pngs from zip
-import glob,zipfile,sys,datetime,os,re,shutil
+import timeit
 
-regex_zipfilename = re.compile(r'^[^\.].+?[zipZIP]{3}$')
-regex_zipfilepath = re.compile(r'^/.+?[zipZIP]{3}$')
+def main():
+    import glob,zipfile,sys,datetime,os,re,shutil
 
-todaysdate = str(datetime.date.today())
+    regex_zipfilename = re.compile(r'^[^\.].+?[zipZIP]{3}$')
+    regex_zipfilepath = re.compile(r'^/.+?[zipZIP]{3}$')
 
-todaysnow = str(datetime.datetime.now())
+    todaysdate = str(datetime.date.today())
 
-returndir    = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/2_Returned' + todaysnow
-listpagedir  = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/3_ListPage_to_Load' + todaysnow
-archdir      = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive'
-errordir     = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/X_Errors'
+    todaysnow = str(datetime.datetime.now())
 
-##TODO: This is a terrible workaround for deleting the entire dir at the end of this instead of just the files, but no harm no foul, just ugly
-try:
-    os.makedirs(returndir)
-except:
-    pass
+    returndir    = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/2_Returned' + todaysnow
+    listpagedir  = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/3_ListPage_to_Load' + todaysnow
+    archdir      = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive'
+    errordir     = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/X_Errors'
 
-try:
-    os.makedirs(listpagedir)
-except:
-    pass
-
-#####################################################################################################################
-# 1 #  Download all zips on remote dir via FTP
-#####################################################################################################################
-
-ftp_download_allzips(returndir)
-
-
-#####################################################################################################################
-# 3 # After unzip of complete PNGs Archive and Create new List page image
-#####################################################################################################################
-## Get all extracted PNGs and rename with _1 ext and move to archive dir 4, then copy/create _m.jpg in 3_ListPage_to_Load
-parentdir = ''
-returned_files = []
-edgecast_clear_list = []
-
-globreturned = glob.glob(os.path.join(returndir, '*.png'))
-count = len(globreturned)
-for f in globreturned:
-    returned_files.append(os.path.abspath(f))
-    count -= 1
-    print "Successfully Extracted--> {0}\v{1} Files Remaining".format(f,count)
-    edgecast_clear_list.append(os.path.abspath(f))
-
-edgecast_clear_list = list(sorted(set(edgecast_clear_list)))
-count = len(returned_files)
-while len(returned_files) >= 1:
-    strippedpng        = os.path.abspath(returned_files.pop())
-    parentdir          = os.path.dirname(strippedpng)
-    filename           = strippedpng.split('/')[-1]
-    colorstyle         = strippedpng.split('/')[-1].split('.')[0]
-    pngarchived_dirname = os.path.dirname(strippedpng).replace('2_Returned','4_Archive/PNG')
-    pngarchived_fname  = strippedpng.split('/')[-1].replace('.png', '_1.png')
-    pngarchived_path   = os.path.join(pngarchived_dirname, pngarchived_fname)
-    
+    ##TODO: This is a terrible workaround for deleting the entire dir at the end of this instead of just the files, but no harm no foul, just ugly
     try:
-        os.makedirs(pngarchived_dirname)
+        os.makedirs(returndir)
     except:
-        print "Failed makedirs"
-
-    if os.path.isfile(pngarchived_path):
         pass
-    else:
-        shutil.move(strippedpng, pngarchived_path)
-        count -= 1
-        print "Creating Jpgs for--> {0}\v{1} Files Remaining".format(strippedpng,count)
-        #subproc_multithumbs_4_2(pngarchived_path,listpagedir)
-        subproc_pad_to_x480(pngarchived_path,listpagedir)
-        subproc_pad_to_x240(pngarchived_path,listpagedir)
-        shutil.copy(pngarchived_path, os.path.join(listpagedir, filename))
-## Remove empty dir after padding etc
-if parentdir:
-    if len(os.listdir(parentdir)) == 0: os.rmdir(parentdir)
+
+    try:
+        os.makedirs(listpagedir)
+    except:
+        pass
+
+    #####################################################################################################################
+    # 1 #  Download all zips on remote dir via FTP
+    #####################################################################################################################
+
+    ftp_download_allzips(returndir)
 
 
-#####################################################################################################################
-# 5 # NEW Upload all  _m.jpg @ 400x480 located in the 3_LisPage... folder
-#####################################################################################################################
-import os, sys, re, csv, shutil, glob
-bgremoved_toload = []
-import time, ftplib
+    #####################################################################################################################
+    # 3 # After unzip of complete PNGs Archive and Create new List page image
+    #####################################################################################################################
+    ## Get all extracted PNGs and rename with _1 ext and move to archive dir 4, then copy/create _m.jpg in 3_ListPage_to_Load
+    parentdir = ''
+    returned_files = []
+    edgecast_clear_list = []
 
-success = upload_imagedrop(listpagedir)
-
-#for f in loadfiles:
-#    bgremoved_toload.append(os.path.abspath(f))
-
-### 5a ## Move the copy of the png from the LIST PAGE LOADED dir used only to upload, stored as _1.png
-uploaded_jpgs_arch  = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive/JPG/LIST_PAGE_LOADED'
-
-# try:
-#     os.makedirs(archivedir)
-# except:
-#     print "Failed makedirs for Archiving"
-
-## Build list  and move files to archive and update DB
-import shutil
-
-if type(success) == list:
-    globreturned = success
+    globreturned = glob.glob(os.path.join(returndir, '*.png'))
+    count = len(globreturned)
     for f in globreturned:
-        shutil.move(f, uploaded_jpgs_arch)
-else:
-    globreturned = glob.glob(os.path.join(uploaded_jpgs_arch, '*_l.jpg'))
+        returned_files.append(os.path.abspath(f))
+        count -= 1
+        print "Successfully Extracted--> {0}\v{1} Files Remaining".format(f,count)
+        edgecast_clear_list.append(os.path.abspath(f))
+
+    edgecast_clear_list = list(sorted(set(edgecast_clear_list)))
+    count = len(returned_files)
+    while len(returned_files) >= 1:
+        strippedpng        = os.path.abspath(returned_files.pop())
+        parentdir          = os.path.dirname(strippedpng)
+        filename           = strippedpng.split('/')[-1]
+        colorstyle         = strippedpng.split('/')[-1].split('.')[0]
+        pngarchived_dirname = os.path.dirname(strippedpng).replace('2_Returned','4_Archive/PNG')
+        pngarchived_fname  = strippedpng.split('/')[-1].replace('.png', '_1.png')
+        pngarchived_path   = os.path.join(pngarchived_dirname, pngarchived_fname)
+
+        try:
+            os.makedirs(pngarchived_dirname)
+        except:
+            print "Failed makedirs"
+
+        if os.path.isfile(pngarchived_path):
+            pass
+        else:
+            shutil.move(strippedpng, pngarchived_path)
+            count -= 1
+            print "Creating Jpgs for--> {0}\v{1} Files Remaining".format(strippedpng,count)
+            #subproc_multithumbs_4_2(pngarchived_path,listpagedir)
+            subproc_pad_to_x480(pngarchived_path,listpagedir)
+            subproc_pad_to_x240(pngarchived_path,listpagedir)
+            shutil.copy(pngarchived_path, os.path.join(listpagedir, filename))
+    ## Remove empty dir after padding etc
+    if parentdir:
+        if len(os.listdir(parentdir)) == 0: os.rmdir(parentdir)
 
 
-count = len(globreturned)
-for f in globreturned:
-    colorstyle = f.split('/')[-1][:9]
-    print f,colorstyle + ' SQLRETURN'
-#    try:
-#        shutil.move(f, archivedir)
-#        count -= 1
-#        print "Successfully Archived--> {0}\v{1} Files Remaining".format(f,count)
-#        
-#    except shutil.Error:
-#        os.rename(f, os.path.join(archivedir, f.split('/')[-1]))
+    #####################################################################################################################
+    # 5 # NEW Upload all  _m.jpg @ 400x480 located in the 3_LisPage... folder
+    #####################################################################################################################
+    import os, sys, re, csv, shutil, glob
+    bgremoved_toload = []
+    import time, ftplib
 
-    #####################################################
-    # 7 # Update offshore_status with todays date as sent
-    #####################################################
-    try:
-        sqlQuery_set_returndt(colorstyle)
-    except:
-        print "Failed Entrering Return dt for --> {0}".format(colorstyle)
-    #####################################################
-    #####################################################
+    success = upload_imagedrop(listpagedir)
+
+    #for f in loadfiles:
+    #    bgremoved_toload.append(os.path.abspath(f))
+
+    ### 5a ## Move the copy of the png from the LIST PAGE LOADED dir used only to upload, stored as _1.png
+    uploaded_jpgs_arch  = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive/JPG/LIST_PAGE_LOADED'
+
     # try:
-    #
-    #     #edgecast_clear_primary_only(colorstyle)
+    #     os.makedirs(archivedir)
     # except:
-    #     pass
+    #     print "Failed makedirs for Archiving"
 
-### 8ish ## Write styles to Clear at end of day through separate Edgecast script
-cacheclear_csvarch  = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive/CSV'
-print edgecast_clear_list
+    ## Build list  and move files to archive and update DB
+    import shutil
 
-toclear = [ fname[:].split('/')[-1][:9] for fname in edgecast_clear_list ]
-csv_write_datedCacheClearList(toclear, destdir=cacheclear_csvarch)
+    if type(success) == list:
+        globreturned = success
+        for f in globreturned:
+            shutil.move(f, uploaded_jpgs_arch)
+    else:
+        globreturned = glob.glob(os.path.join(uploaded_jpgs_arch, '*_l.jpg'))
 
-### For now copy all png in error dir to my DropFinalFiles only dir which will create and load in reg processing scripts
-# for f in glob.glob(os.path.join(errordir, '*.png')):
-#     try:
-#         shutil.copy(f, '/mnt/Post_Complete/Complete_to_Load/Drop_FinalFilesOnly/JohnBragato')
-#     except:
-#         pass
-        
-## finally delete the zip file from the return dir 
-for f in glob.glob(os.path.join(returndir, '*/*.?[a-zA-Z][a-zA-Z][a-zA-Z]')):
-    if os.path.isfile(f):
-        os.remove(os.path.abspath(f))
-    elif os.path.isdir(f):
-        pass
+
+    count = len(globreturned)
+    for f in globreturned:
+        colorstyle = f.split('/')[-1][:9]
+        print f,colorstyle + ' SQLRETURN'
+    #    try:
+    #        shutil.move(f, archivedir)
+    #        count -= 1
+    #        print "Successfully Archived--> {0}\v{1} Files Remaining".format(f,count)
+    #
+    #    except shutil.Error:
+    #        os.rename(f, os.path.join(archivedir, f.split('/')[-1]))
+
+        #####################################################
+        # 7 # Update offshore_status with todays date as sent
+        #####################################################
+        try:
+            sqlQuery_set_returndt(colorstyle)
+        except:
+            print "Failed Entrering Return dt for --> {0}".format(colorstyle)
+        #####################################################
+        #####################################################
+        # try:
+        #
+        #     #edgecast_clear_primary_only(colorstyle)
+        # except:
+        #     pass
+
+    ### 8ish ## Write styles to Clear at end of day through separate Edgecast script
+    cacheclear_csvarch  = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive/CSV'
+    print edgecast_clear_list
+
+    toclear = [ fname[:].split('/')[-1][:9] for fname in edgecast_clear_list ]
+    csv_write_datedCacheClearList(toclear, destdir=cacheclear_csvarch)
+
+    ### For now copy all png in error dir to my DropFinalFiles only dir which will create and load in reg processing scripts
+    # for f in glob.glob(os.path.join(errordir, '*.png')):
+    #     try:
+    #         shutil.copy(f, '/mnt/Post_Complete/Complete_to_Load/Drop_FinalFilesOnly/JohnBragato')
+    #     except:
+    #         pass
+
+    ## finally delete the zip file from the return dir
+    for f in glob.glob(os.path.join(returndir, '*/*.?[a-zA-Z][a-zA-Z][a-zA-Z]')):
+        if os.path.isfile(f):
+            os.remove(os.path.abspath(f))
+        elif os.path.isdir(f):
+            pass
         #shutil.rmtree(os.path.abspath(f))
+
+def test():
+    main()
+    L = []
+    for i in range(100):
+        L.append(i)
+
+if __name__ == '__main__':
+    import timeit
+    print(timeit.timeit("test()", setup="from __main__ import test"))
