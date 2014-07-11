@@ -551,15 +551,21 @@ regex_zipfilename = re.compile(r'^[^\.].+?[zipZIP]{3}$')
 regex_zipfilepath = re.compile(r'^/.+?[zipZIP]{3}$')
 
 todaysdate = str(datetime.date.today())
+todaysnow = '_' + str(datetime.date.now())
 
-returndir    = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/2_Returned'
-listpagedir  = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/3_ListPage_to_Load'
+returndir    = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/2_Returned' + todaysnow
+listpagedir  = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/3_ListPage_to_Load' + todaysnow
 archdir      = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive'
 errordir     = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/X_Errors'
 
 ##TODO: This is a terrible workaround for deleting the entire dir at the end of this instead of just the files, but no harm no foul, just ugly
 try:
     os.makedirs(returndir)
+except:
+    pass
+
+try:
+    os.makedirs(listpagedir)
 except:
     pass
 
