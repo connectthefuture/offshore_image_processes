@@ -551,7 +551,8 @@ regex_zipfilename = re.compile(r'^[^\.].+?[zipZIP]{3}$')
 regex_zipfilepath = re.compile(r'^/.+?[zipZIP]{3}$')
 
 todaysdate = str(datetime.date.today())
-todaysnow = '_' + str(datetime.date.now())
+
+todaysnow = str(datetime.datetime.now())
 
 returndir    = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/2_Returned' + todaysnow
 listpagedir  = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/3_ListPage_to_Load' + todaysnow
