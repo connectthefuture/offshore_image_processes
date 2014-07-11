@@ -8,7 +8,22 @@
 #####################################################################################################################
 # 1 # FTP Download zip file or files ################################################################################
 #####################################################################################################################
+import profile
 
+class memoize:
+    # from http://avinashv.net/2008/04/python-decorators-syntactic-sugar/
+    def __init__(self, function):
+        self.function = function
+        self.memoized = {}
+
+    def __call__(self, *args):
+        try:
+            return self.memoized[args]
+        except KeyError:
+            self.memoized[args] = self.function(*args)
+            return self.memoized[args]
+
+@memoize
 def styles_awaiting_return():
     import sqlalchemy
     
@@ -30,7 +45,7 @@ def styles_awaiting_return():
 
     return set(sorted(colorstyles_list)),set(batchdirs)
 
-
+@memoize
 def get_batches_sent():
     import ftplib
     username   = "bf"
@@ -54,6 +69,7 @@ def get_batches_sent():
     ftp.quit()
     return sorted(sentbatches)
 
+@memoize
 def ftp_download_allzips(returndir):
     import ftplib
     import os,sys,re
@@ -142,6 +158,7 @@ def unzip_dir_savefiles(zipin, extractdir):
 #####################################################################################################################
 # 3 and 4 # Magick Crop and save as 400x480 _m.jpg ##################################################################
 #####################################################################################################################
+@memoize
 def subproc_pad_to_x480(file,destdir):
     import subprocess, os
     
@@ -194,7 +211,7 @@ def subproc_pad_to_x480(file,destdir):
     #    print "Failed: {0}".format(outfile)
     return outfile
 
-
+@memoize
 def subproc_pad_to_x240(file,destdir):
     import subprocess, os
     
@@ -247,6 +264,7 @@ def subproc_pad_to_x240(file,destdir):
     #    print "Failed: {0}".format(outfile)
     return outfile
 ###########################################################################
+@memoize
 def subproc_multithumbs_4_2(filepath,destdir):
     import subprocess, os
     
@@ -337,6 +355,7 @@ def upload_to_imagedrop(file):
 
 ##
 ##### Upload tmp_loading dir to imagedrop via FTP using Pycurl  #####
+@memoize
 def pycurl_upload_imagedrop(img):
     import pycurl, os
     #import FileReader
@@ -466,6 +485,7 @@ def upload_imagedrop(root_dir, destdir=None):
 #####################################################################################################################
 # 7 # After Upload set return_dt on offshore_status #################################################################
 #####################################################################################################################
+@memoize
 def sqlQuery_set_returndt(style):
     import sqlalchemy, datetime
     todaysdate_returndt = str(datetime.date.today())
@@ -547,6 +567,7 @@ def edgecast_clear_primary_only(colorstyle):
 ######### find out how many zips dloaded then extract pngs from zip
 import timeit
 
+@memoize
 def main():
     import glob,zipfile,sys,datetime,os,re,shutil
 
