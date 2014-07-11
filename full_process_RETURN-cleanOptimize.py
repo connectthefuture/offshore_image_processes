@@ -726,7 +726,9 @@ def main():
             os.remove(os.path.abspath(f))
         elif os.path.isdir(f):
             pass
-        #shutil.rmtree(os.path.abspath(f))
+    # Delete Dirs
+    shutil.rmtree(os.path.abspath(listpagedir))
+    shutil.rmtree(os.path.abspath(returndir))
 
 def test():
     main()
