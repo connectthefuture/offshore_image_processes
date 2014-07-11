@@ -681,7 +681,7 @@ def main():
 
     end = time.time()
     print end - st
-    
+
     count = len(globreturned)
     for f in globreturned:
         colorstyle = f.split('/')[-1][:9]
