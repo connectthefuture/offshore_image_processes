@@ -215,7 +215,8 @@ def subproc_pad_to_x480(file,destdir):
     #except IOError:
     #    print "Failed: {0}".format(outfile)]
 
-    print("%s(outfile)--- %s seconds ---" % time.time() - start_time, outfile)
+    end_time = time.time() - start_time
+    print("%s(outfile)--- %s(end_time) seconds ---" % outfile, end_time)
     return outfile
 
 @memoize
@@ -278,7 +279,7 @@ def subproc_pad_to_x240(file,destdir):
     #    print "Failed: {0}".format(outfile)
 
     end_time = time.time() - start_time
-    print("%s(outfile)--- %s(end_time) seconds ---" % end_time, outfile)
+    print("%s(outfile)--- %s(end_time) seconds ---" % outfile, end_time)
     return outfile
 
 ###########################################################################
@@ -358,7 +359,7 @@ def subproc_multithumbs_4_2(filepath,destdir):
             'null:',
     ])
     end_time = time.time() - start_time
-    print("%s(outfile_m)--- %s(end_time) seconds ---" % end_time, outfile_m)
+    print("%s(outfile_m)--- %s(end_time) seconds ---" % outfile_m, end_time)
 
     #return
 ##########################################
