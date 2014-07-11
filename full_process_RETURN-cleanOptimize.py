@@ -172,39 +172,42 @@ def subproc_pad_to_x480(file,destdir):
         file, 
         '-format', 
         'jpg',
-        '-crop',
-        str(
-        subprocess.call(['convert', file, '-virtual-pixel', 'edge', '-blur', '0x15', '-fuzz', '1%', '-trim', '-format', '%wx%h%O', 'info:'], stdin=None, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=False))
-        ,
+        # '-crop',
+        # str(
+        # subprocess.call(['convert', file, '-virtual-pixel', 'edge', '-blur', '0x15', '-fuzz', '1%', '-trim', '-format', '%wx%h%O', 'info:'], stdin=None, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=False))
+        # ,
         '-colorspace',
-        'LAB',
+        'sRGB',
         "-filter",
         "LanczosSharp",
-        #        '-trim', 
-        '-resize',
+        #        '-trim',
+        "-define",
+        "filter:blur=0.9891028367558475",
+        "-distort",
+        "Resize",
         "400x480",
         '-background',
         'white',
         #        '-gravity',
         #        'center',
-        #        '-trim', 
+        #        '-trim',
         #        '-gravity',
         #        'center',
-        '-extent', 
+        '-extent',
         "400x480",
-        #        '+repage', 
+        #        '+repage',
         #        '-background',
         #        'white',
         #        '+repage',
         '-colorspace',
         'sRGB',
         "-channel",
-        "RGBA",  
-        #        "-unsharp", 
+        "RGBA",
+        #        "-unsharp",
         #        "0x0.75+0.75+0.008",
         '-quality',
         '100',
-        #'-strip', 
+        #'-strip',
         outfile,
     ])
     #except IOError:
@@ -214,50 +217,57 @@ def subproc_pad_to_x480(file,destdir):
 @memoize
 def subproc_pad_to_x240(file,destdir):
     import subprocess, os
-    
+
     fname = file.split("/")[-1].split('.')[0].replace('_1','_m').lower()
     ext = file.split(".")[-1]
-    outfile = os.path.join(destdir, fname + ".jpg")    
-    
-    #try:            
+    outfile = os.path.join(destdir, fname + ".jpg")
+
+    #try:
     subprocess.call([
-        "convert", 
-        file, 
-        '-format', 
+        "convert",
+        file,
+        '-format',
         'jpg',
-        '-crop',
-        str(
-        subprocess.call(['convert', file, '-virtual-pixel', 'edge', '-blur', '0x15', '-fuzz', '1%', '-trim', '-format', '%wx%h%O', 'info:'], stdin=None, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=False))
-        ,
+        # '-crop',
+        # str(
+        # subprocess.call(['convert', file, '-virtual-pixel', 'edge', '-blur', '0x15', '-fuzz', '1%', '-trim', '-format', '%wx%h%O', 'info:'], stdin=None, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=False))
+        # ,
         '-colorspace',
-        'LAB',
+        'sRGB',
+        # "-filter",
+        # "Spline",
+        # "-filter",
+        # "Cosine",
         "-filter",
         "LanczosSharp",
-        #        '-trim', 
-        '-resize',
+        #        '-trim',
+        "-define",
+        "filter:blur=0.9891028367558475",
+        "-distort",
+        "Resize",
         "300x360",
         '-background',
         'white',
         #        '-gravity',
         #        'center',
-        #        '-trim', 
+        #        '-trim',
         #        '-gravity',
         #        'center',
-        '-extent', 
+        '-extent',
         "300x360",
-        #        '+repage', 
+        #        '+repage',
         #        '-background',
         #        'white',
         #        '+repage',
         '-colorspace',
         'sRGB',
         "-channel",
-        "RGBA",  
+        "RGBA",
         "-unsharp",
         "2x0.5+0.5+0",
         '-quality',
         '100',
-        #'-strip', 
+        #'-strip',
         outfile,
     ])
     #except IOError:
@@ -267,17 +277,17 @@ def subproc_pad_to_x240(file,destdir):
 @memoize
 def subproc_multithumbs_4_2(filepath,destdir):
     import subprocess, os
-    
+
     fname = filepath.split("/")[-1].split('.')[0].lower().replace('_1.','.').replace('_1','')
     ext = filepath.split(".")[-1]
- 
-    outfile_l = os.path.join(destdir, fname + "_l.jpg")    
+
+    outfile_l = os.path.join(destdir, fname + "_l.jpg")
     outfile_m = os.path.join(destdir, fname + "_m.jpg")
 
     subprocess.call([
-        'convert', 
-        filepath, 
-        '-format', 
+        'convert',
+        filepath,
+        '-format',
         ext,
         #'-crop',
         # str(
@@ -293,10 +303,10 @@ def subproc_multithumbs_4_2(filepath,destdir):
         '-write',
         'mpr:copy-of-original',
         #'+delete',
-            ## Begin generating imgs 
+            ## Begin generating imgs
             # --> Large Jpeg
             'mpr:copy-of-original',
-            '-format', 
+            '-format',
             'jpg',
             '-resize',
             '400x480',
@@ -304,21 +314,21 @@ def subproc_multithumbs_4_2(filepath,destdir):
             #'center',
             # '-background',
             # 'white',
-            # '-extent', 
+            # '-extent',
             # '400x480',
             '-colorspace',
             'sRGB',
             '-unsharp',
-            '2x0.5+0.5+0', 
-            '-quality', 
+            '2x0.5+0.5+0',
+            '-quality',
             '95',
             '-write',
             outfile_l,
             #'+delete',
-            
+
             ## Medium Jpeg
             'mpr:copy-of-original',
-            '-format', 
+            '-format',
             'jpg',
             '-resize',
             '300x360',
@@ -326,13 +336,13 @@ def subproc_multithumbs_4_2(filepath,destdir):
             #'center',
             # '-background',
             # 'white',
-            # '-extent', 
+            # '-extent',
             # '300x360',
             '-colorspace',
             'sRGB',
             '-unsharp',
-            '2x0.5+0.5+0', 
-            '-quality', 
+            '2x0.5+0.5+0',
+            '-quality',
             '95',
             '-write',
             outfile_m,
@@ -351,7 +361,7 @@ def upload_to_imagedrop(file):
     session.cwd("ImageDrop/")
     session.storbinary('STOR ' + filename, fileread, 8*1024)
     fileread.close()
-    session.quit() 
+    session.quit()
 
 ##
 ##### Upload tmp_loading dir to imagedrop via FTP using Pycurl  #####
@@ -385,8 +395,8 @@ def pycurl_upload_imagedrop(img):
         c.setopt(pycurl.INFILE, f)
         c.setopt(pycurl.INFILESIZE, os.path.getsize(localFilePath))
         c.setopt(pycurl.INFILESIZE_LARGE, os.path.getsize(localFilePath))
-        #c.setopt(pycurl.READFUNCTION, f.read());        
-        #c.setopt(pycurl.READDATA, f.read()); 
+        #c.setopt(pycurl.READFUNCTION, f.read());
+        #c.setopt(pycurl.READDATA, f.read());
         c.setopt(pycurl.UPLOAD, 1L)
 
         try:
@@ -579,7 +589,7 @@ def main():
 
     #todaysnow = "{0:%Y%m%d_%f}".format(str(datetime.datetime.now()))
     todaysnow = time.strftime('%Y%m%d-%H%M%s')
-    
+
     returndir    = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/2_Returned' + todaysnow
     listpagedir  = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/3_ListPage_to_Load' + todaysnow
     archdir      = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive'
