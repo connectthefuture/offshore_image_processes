@@ -356,7 +356,7 @@ def subproc_multithumbs_4_2(filepath,destdir):
             outfile_m,
             #'+delete',
             'null:',
-            ])
+    ])
     print("%s(outfile_m)--- %s seconds ---" % time.time() - start_time, outfile_m)
 
     #return
