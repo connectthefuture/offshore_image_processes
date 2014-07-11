@@ -569,15 +569,15 @@ import timeit
 
 @memoize
 def main():
-    import glob,zipfile,sys,datetime,os,re,shutil
+    import glob,zipfile,sys,datetime,os,re,shutil, time
 
     regex_zipfilename = re.compile(r'^[^\.].+?[zipZIP]{3}$')
     regex_zipfilepath = re.compile(r'^/.+?[zipZIP]{3}$')
 
     todaysdate = str(datetime.date.today())
 
-    todaysnow = "{0:%Y%m%d_%f}".format(str(datetime.datetime.now()))
-
+    #todaysnow = "{0:%Y%m%d_%f}".format(str(datetime.datetime.now()))
+    todaysnow = time.strftime('%Y%m%d_%f')
     returndir    = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/2_Returned' + todaysnow
     listpagedir  = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/3_ListPage_to_Load' + todaysnow
     archdir      = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive'
