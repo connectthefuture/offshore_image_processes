@@ -580,7 +580,8 @@ import timeit
 @memoize
 def main():
     import glob,zipfile,sys,datetime,os,re,shutil, time
-
+    print time.strftime('%M%S')
+    print 'START'
     st = time.time()
     regex_zipfilename = re.compile(r'^[^\.].+?[zipZIP]{3}$')
     regex_zipfilepath = re.compile(r'^/.+?[zipZIP]{3}$')
@@ -620,6 +621,7 @@ def main():
     parentdir = ''
     returned_files = []
     edgecast_clear_list = []
+    print time.strftime('%M%S')
 
     globreturned = glob.glob(os.path.join(returndir, '*.png'))
     count = len(globreturned)
@@ -692,7 +694,7 @@ def main():
 
     end = time.time()
     print end - st
-
+    print time.strftime('%M%S')
     count = len(globreturned)
     for f in globreturned:
         colorstyle = f.split('/')[-1][:9]
