@@ -161,7 +161,9 @@ def unzip_dir_savefiles(zipin, extractdir):
 @memoize
 def subproc_pad_to_x480(file,destdir):
     import subprocess, os
-    
+
+    start_time = time.time()
+
     fname = file.split("/")[-1].split('.')[0].replace('_1','_l').lower()
     ext = file.split(".")[-1]
     outfile = os.path.join(destdir, fname + ".jpg")    
@@ -211,7 +213,9 @@ def subproc_pad_to_x480(file,destdir):
         outfile,
     ])
     #except IOError:
-    #    print "Failed: {0}".format(outfile)
+    #    print "Failed: {0}".format(outfile)]
+
+    print("%s(outfile)--- %s seconds ---" % time.time() - start_time, outfile)
     return outfile
 
 @memoize
@@ -272,7 +276,11 @@ def subproc_pad_to_x240(file,destdir):
     ])
     #except IOError:
     #    print "Failed: {0}".format(outfile)
+
+    print("%s(outfile)--- %s seconds ---" % time.time() - start_time, outfile)
+
     return outfile
+
 ###########################################################################
 @memoize
 def subproc_multithumbs_4_2(filepath,destdir):
@@ -349,6 +357,8 @@ def subproc_multithumbs_4_2(filepath,destdir):
             #'+delete',
             'null:',
             ])
+    print("%s(outfile_m)--- %s seconds ---" % time.time() - start_time, outfile_m)
+
     #return
 ##########################################
 # 5 # Upload stripped bg _m.jpg files to ImageDrop ##################################################################
@@ -753,6 +763,11 @@ def test():
     for i in range(100):
         L.append(i)
 
-if __name__ == '__main__':
-    import timeit
-    print(timeit.timeit("test()", setup="from __main__ import test"))
+import time
+start_time = time.time()
+main()
+print("--- %s seconds ---" % time.time() - start_time)
+#
+# if __name__ == '__main__':
+#     import timeit
+#     print(timeit.timeit("test()", setup="from __main__ import test"))
