@@ -576,7 +576,7 @@ def main():
 
     todaysdate = str(datetime.date.today())
 
-    todaysnow = str(datetime.datetime.now())
+    todaysnow = "{0:%Y%m%d_%f}".format(str(datetime.datetime.now()))
 
     returndir    = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/2_Returned' + todaysnow
     listpagedir  = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/3_ListPage_to_Load' + todaysnow
