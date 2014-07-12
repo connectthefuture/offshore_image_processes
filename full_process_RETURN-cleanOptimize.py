@@ -164,15 +164,15 @@ def subproc_pad_to_x480(file,destdir):
 
     start_time = time.time()
 
-    fname = file.split("/")[-1].split('.')[0].replace('_1','_l').lower()
+    fname = file.split("/")[-1].split('.')[0]  # .replace('_1','_m').lower()
     ext = file.split(".")[-1]
-    outfile = os.path.join(destdir, fname + ".jpg")    
-    
-    #try:            
+    outfile = os.path.join(destdir, fname + "_l.jpg")
+
+    #try:
     subprocess.call([
-        "convert", 
-        file, 
-        '-format', 
+        "convert",
+        file,
+        '-format',
         'jpg',
         # '-crop',
         # str(
@@ -225,9 +225,9 @@ def subproc_pad_to_x240(file,destdir):
 
     start_time = time.time()
 
-    fname = file.split("/")[-1].split('.')[0].replace('_1','_m').lower()
+    fname = file.split("/")[-1].split('.')[0] #.replace('_1','_m').lower()
     ext = file.split(".")[-1]
-    outfile = os.path.join(destdir, fname + ".jpg")
+    outfile = os.path.join(destdir, fname + "_m.jpg")
 
     #try:
     subprocess.call([
@@ -289,7 +289,7 @@ def subproc_pad_to_x240(file,destdir):
 def subproc_multithumbs_4_2(filepath,destdir):
     import subprocess, os
 
-    fname = filepath.split("/")[-1].split('.')[0].lower().replace('_1.','.').replace('_1','')
+    fname = filepath.split("/")[-1].split('.')[0] #.lower().replace('_1.','.').replace('_1','')
     ext = filepath.split(".")[-1]
 
     outfile_l = os.path.join(destdir, fname + "_l.jpg")
@@ -747,7 +747,7 @@ def main():
     #     elif os.path.isdir(f):
     #         pass
     # # Delete Dirs
-    shutil.rmtree(os.path.abspath(listpagedir))
+    # shutil.rmtree(os.path.abspath(listpagedir))
     shutil.rmtree(os.path.abspath(returndir))
 
 def test():
