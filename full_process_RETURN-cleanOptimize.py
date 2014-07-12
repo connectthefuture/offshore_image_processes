@@ -710,7 +710,7 @@ def main():
     count = len(globreturned)
     for f in globreturned:
         colorstyle = os.path.abspath(f.split('/')[-1][:9])
-        print f,colorstyle + ' SQLRETURN'
+        print f + " is file ",colorstyle + ' SQLRETURN'
     #    try:
     #        shutil.move(f, archivedir)
     #        count -= 1
