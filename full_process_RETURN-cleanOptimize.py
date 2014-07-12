@@ -600,6 +600,7 @@ def main():
     returndir    = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/2_Returned' + todaysnow
     listpagedir  = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/3_ListPage_to_Load' + todaysnow
     archdir      = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive'
+    archdirpng      = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive/PNG'
     errordir     = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/X_Errors'
 
     ##TODO: This is a terrible workaround for deleting the entire dir at the end of this instead of just the files, but no harm no foul, just ugly
@@ -672,7 +673,7 @@ def main():
     bgremoved_toload = []
     import time, ftplib
 
-    success = upload_imagedrop(listpagedir)
+    upload_imagedrop(listpagedir,destdir=archdirpng)
 
     #for f in loadfiles:
     #    bgremoved_toload.append(os.path.abspath(f))
@@ -701,7 +702,7 @@ def main():
     print 'LOADED'
     count = len(globreturned)
     for f in globreturned:
-        colorstyle = f.split('/')[-1][:9]
+        colorstyle = os.path.abspath(f.split('/')[-1][:9])
         print f,colorstyle + ' SQLRETURN'
     #    try:
     #        shutil.move(f, archivedir)
