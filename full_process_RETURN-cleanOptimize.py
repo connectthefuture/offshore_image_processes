@@ -216,7 +216,7 @@ def subproc_pad_to_x480(file,destdir):
     #    print "Failed: {0}".format(outfile)]
 
     end_time = time.time() - start_time
-    print("%(outfile)s--- %(end_time)s seconds ---" % outfile, end_time)
+    print "{0}--- {1} seconds ---".format(outfile, end_time)
     return outfile
 
 @memoize
@@ -279,7 +279,7 @@ def subproc_pad_to_x240(file,destdir):
     #    print "Failed: {0}".format(outfile)
 
     end_time = time.time() - start_time
-    print("%(outfile)s--- %(end_time)s seconds ---" % outfile, end_time)
+    print "{0}--- {1} seconds ---".format(outfile, end_time)
     return outfile
 
 ###########################################################################
@@ -359,7 +359,7 @@ def subproc_multithumbs_4_2(filepath,destdir):
             'null:',
     ])
     end_time = time.time() - start_time
-    print("%(outfile_m)s--- %(end_time)s seconds ---" % outfile_m, end_time)
+    print "{0}--- {1} seconds ---".format(outfile_m, end_time)
 
     #return
 ##########################################
@@ -769,10 +769,10 @@ import time
 start_time = time.time()
 main()
 end_time = time.time() - start_time
-print("Total--- %(end_time)s seconds ---" % end_time)
+print "Total--- {0} seconds ---".format(end_time)
 
 #
 
 # if __name__ == '__main__':
 #     import timeit
-#     print(timeit.timeit("test()", setup="from __main__ import test"))
+#     print timeit.timeit("test()", setup="from __main__ import test"))
