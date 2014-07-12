@@ -223,6 +223,8 @@ def subproc_pad_to_x480(file,destdir):
 def subproc_pad_to_x240(file,destdir):
     import subprocess, os
 
+    start_time = time.time()
+
     fname = file.split("/")[-1].split('.')[0].replace('_1','_m').lower()
     ext = file.split(".")[-1]
     outfile = os.path.join(destdir, fname + ".jpg")
