@@ -758,7 +758,11 @@ def main():
     #         pass
     # # Delete Dirs
     shutil.rmtree(os.path.abspath(listpagedir))
-    #shutil.rmtree(os.path.abspath(returndir))
+
+    try:
+        shutil.rmtree(os.path.abspath(returndir))
+    except:
+        pass
     return total
 
 def test():
