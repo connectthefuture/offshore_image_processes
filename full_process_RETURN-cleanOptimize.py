@@ -664,7 +664,7 @@ def main():
         #subproc_multithumbs_4_2(pngarchived_path,listpagedir)
         subproc_pad_to_x480(strippedpng,listpagedir)
         subproc_pad_to_x240(strippedpng,listpagedir)
-        shutil.move(strippedpng, os.path.join(listpagedir, filename))
+        shutil.move(strippedpng, pngarchived_path) #os.path.join(listpagedir, filename))
     ## Remove empty dir after padding etc
     if parentdir:
         if len(os.listdir(parentdir)) == 0: os.rmdir(parentdir)
