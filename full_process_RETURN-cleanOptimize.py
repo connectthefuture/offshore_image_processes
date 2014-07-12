@@ -666,7 +666,7 @@ def main():
         subproc_pad_to_x480(strippedpng,listpagedir)
         subproc_pad_to_x240(strippedpng,listpagedir)
         shutil.copy(strippedpng, pngarchived_path) #os.path.join(listpagedir, filename))
-        shutil.copy(strippedpng, listpagedir)  # os.path.join(listpagedir, filename))
+        shutil.move(strippedpng, listpagedir)  # os.path.join(listpagedir, filename))
 
     ## Remove empty dir after padding etc
     if parentdir:
