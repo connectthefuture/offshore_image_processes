@@ -636,6 +636,7 @@ def main():
 
     globreturned = glob.glob(os.path.join(returndir, '*.png'))
     count = len(globreturned)
+    total = count
     for f in globreturned:
         returned_files.append(os.path.abspath(f))
         count -= 1
@@ -758,6 +759,7 @@ def main():
     # # Delete Dirs
     shutil.rmtree(os.path.abspath(listpagedir))
     #shutil.rmtree(os.path.abspath(returndir))
+    return total
 
 def test():
     main()
@@ -767,9 +769,10 @@ def test():
 
 import time
 start_time = time.time()
-main()
+total = main()
 end_time = time.time() - start_time
-print "Total--- {0} seconds ---".format(end_time)
+avg_time = end_time/total
+print "Total--- {0} seconds --- \n{1} sec. Avg per Style".format(end_time,avg_time)
 
 #
 
