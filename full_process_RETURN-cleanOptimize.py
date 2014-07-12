@@ -422,6 +422,7 @@ def pycurl_upload_imagedrop(img):
 def upload_imagedrop(root_dir, destdir=None):
     import os, sys, re, csv, shutil, glob
     ## Make the success and fail dirs
+    regex_png = re.compile(r'^.*?\.png$')
     archive_uploaded = os.path.join(root_dir, 'uploaded')
     tmp_failed = os.path.join(root_dir, 'failed_upload')
     try:
@@ -451,7 +452,10 @@ def upload_imagedrop(root_dir, destdir=None):
             if code == '200':
                 if os.path.exists(dst_file):
                     os.remove(dst_file)
-                shutil.move(upload_file, archive_uploaded)
+                if regex_png.findall(upload_file):
+                    shutil.move(upload_file, destdir)
+                else:
+                    shutil.move(upload_file, archive_uploaded)
                 print "1stTryOK"
             elif code:
                 print code, upload_file
