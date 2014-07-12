@@ -442,10 +442,13 @@ def upload_imagedrop(root_dir, destdir=None):
     for upload_file in upload_tmp_loading:
         #### UPLOAD upload_file via ftp to imagedrop using Pycurl
         ## Then rm loading tmp dir
+        dst_file = upload_file.replace(os.path.dirname(upload_file).split('/')[-1],
+                                       os.path.dirname(upload_file).split('/')[-1][0] + '/uploaded/')
+        failed = upload_file.replace(os.path.dirname(upload_file).split('/')[-1],
+                                       os.path.dirname(upload_file).split('/')[-1][0] + '/failed_upload/')
         try:
             code = pycurl_upload_imagedrop(upload_file)
             if code == '200':
-                dst_file = upload_file.replace('/3_ListPage_to_Load/','/3_ListPage_to_Load/uploaded/')
                 if os.path.exists(dst_file):
                     os.remove(dst_file)
                 shutil.move(upload_file, archive_uploaded)
@@ -459,7 +462,6 @@ def upload_imagedrop(root_dir, destdir=None):
                     time.sleep(float(.3))
                     shutil.move(upload_file, archive_uploaded)
                 except:
-                    failed = upload_file.replace('/3_ListPage_to_Load/','/3_ListPage_to_Load/failed_upload/')
                     if os.path.exists(failed):
                         os.remove(failed)
                     shutil.move(upload_file, tmp_failed)
@@ -467,25 +469,24 @@ def upload_imagedrop(root_dir, destdir=None):
             else:
                 print "Uploaded {}".format(upload_file)
                 time.sleep(float(.3))
-                final = upload_file.replace('/3_ListPage_to_Load/','/3_ListPage_to_Load/uploaded/')
+                final = dst_file #upload_file.replace('/3_ListPage_to_Load/','/3_ListPage_to_Load/uploaded/')
                 if os.path.exists(final):
                     os.remove(final)
                 shutil.move(upload_file, archive_uploaded)
         except OSError:
             print "Error moving Finals to Arch {}".format(file)
-            failed = upload_file.replace('/3_ListPage_to_Load/','/3_ListPage_to_Load/failed_upload/')
             if os.path.exists(failed):
                 os.remove(failed)
             shutil.move(upload_file, tmp_failed)
             pass
 
     try:
-        archglob =  glob.glob(os.path.join(archive_uploaded, '*.*g'))
+        archglob =  glob.glob(os.path.join(archive_uploaded, '*.png'))
         if os.path.isdir(destdir):
             finaldir = os.path.abspath(destdir)
             for f in archglob:
                 try:
-                    final = f.replace('/3_ListPage_to_Load/','/3_ListPage_to_Load/uploaded/')
+                    final = os.path.join(finaldir, f.split('/')[-1]) #f.replace(os.path.dirname(upload_file).split('/')[-1],)  #'/3_ListPage_to_Load/','/3_ListPage_to_Load/uploaded/')
                     if os.path.exists(final):
                         os.remove(final)
                         shutil.move(f, finaldir)
@@ -652,16 +653,13 @@ def main():
         except:
             print "Failed makedirs"
 
-        if os.path.isfile(pngarchived_path):
-            os.remove(pngarchived_path)
         #else:
-        shutil.move(strippedpng, pngarchived_path)
         count -= 1
         print "Creating Jpgs for--> {0}\v{1} Files Remaining".format(strippedpng,count)
         #subproc_multithumbs_4_2(pngarchived_path,listpagedir)
-        subproc_pad_to_x480(pngarchived_path,listpagedir)
-        subproc_pad_to_x240(pngarchived_path,listpagedir)
-        shutil.copy(pngarchived_path, os.path.join(listpagedir, filename))
+        subproc_pad_to_x480(strippedpng,listpagedir)
+        subproc_pad_to_x240(strippedpng,listpagedir)
+        shutil.move(strippedpng, os.path.join(listpagedir, filename))
     ## Remove empty dir after padding etc
     if parentdir:
         if len(os.listdir(parentdir)) == 0: os.rmdir(parentdir)
@@ -690,12 +688,12 @@ def main():
     ## Build list  and move files to archive and update DB
     import shutil
 
-    if type(success) == list:
-        globreturned = success
-        for f in globreturned:
-            shutil.move(f, uploaded_jpgs_arch)
-    else:
-        globreturned = glob.glob(os.path.join(uploaded_jpgs_arch, '*_l.jpg'))
+    # if type(success) == list:
+    #     globreturned = success
+    #     for f in globreturned:
+    #         shutil.move(f, uploaded_jpgs_arch)
+    # else:
+    globreturned = glob.glob(os.path.join(listpagedir, '*_l.jpg'))
 
     end = time.time()
     print end - st
@@ -749,8 +747,8 @@ def main():
     #     elif os.path.isdir(f):
     #         pass
     # # Delete Dirs
-    # shutil.rmtree(os.path.abspath(listpagedir))
-    # shutil.rmtree(os.path.abspath(returndir))
+    shutil.rmtree(os.path.abspath(listpagedir))
+    shutil.rmtree(os.path.abspath(returndir))
 
 def test():
     main()
