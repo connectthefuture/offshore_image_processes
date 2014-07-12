@@ -698,7 +698,10 @@ def main():
     #     for f in globreturned:
     #         shutil.move(f, uploaded_jpgs_arch)
     # else:
+
     globreturned = glob.glob(os.path.join(listpagedir, 'uploaded/*_l.jpg'))
+
+    # globreturned = glob.glob(os.path.join(pngarchived_dirname, '*.png'))
 
     end = time.time()
     print end - st
