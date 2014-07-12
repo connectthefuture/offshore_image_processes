@@ -752,14 +752,14 @@ def main():
     #         pass
 
     ## finally delete the zip file from the return dir
-    for f in glob.glob(os.path.join(returndir, '*/*.?[a-zA-Z][a-zA-Z][a-zA-Z]')):
-        if os.path.isfile(f):
-            os.remove(os.path.abspath(f))
-        elif os.path.isdir(f):
-            pass
-    # Delete Dirs
-    shutil.rmtree(os.path.abspath(listpagedir))
-    shutil.rmtree(os.path.abspath(returndir))
+    # for f in glob.glob(os.path.join(returndir, '*/*.?[a-zA-Z][a-zA-Z][a-zA-Z]')):
+    #     if os.path.isfile(f):
+    #         os.remove(os.path.abspath(f))
+    #     elif os.path.isdir(f):
+    #         pass
+    # # Delete Dirs
+    # shutil.rmtree(os.path.abspath(listpagedir))
+    # shutil.rmtree(os.path.abspath(returndir))
 
 def test():
     main()
