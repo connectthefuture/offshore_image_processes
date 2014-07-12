@@ -309,8 +309,8 @@ def subproc_multithumbs_4_2(filepath,destdir):
         # '-trim',
         # '-colorspace',
         # 'LAB',
-        "-filter",
-        "LanczosSharp",
+        #"-filter",
+        #"LanczosSharp",
         '-write',
         'mpr:copy-of-original',
         #'+delete',
@@ -709,7 +709,7 @@ def main():
     print 'LOADED'
     count = len(globreturned)
     for f in globreturned:
-        colorstyle = os.path.abspath(f.split('/')[-1][:9])
+        colorstyle = os.path.abspath(f).split('/')[-1][:9]
         print f + " is file ",colorstyle + ' SQLRETURN'
     #    try:
     #        shutil.move(f, archivedir)
