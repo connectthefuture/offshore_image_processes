@@ -364,20 +364,10 @@ def subproc_multithumbs_4_2(filepath,destdir):
     print "{0}--- {1} seconds ---".format(outfile_m, end_time)
 
     #return
+
 ##########################################
 # 5 # Upload stripped bg _m.jpg files to ImageDrop ##################################################################
 #####################################################################################################################
-def upload_to_imagedrop(file):
-    import ftplib
-    session = ftplib.FTP('file3.bluefly.corp', 'imagedrop', 'imagedrop0')
-    fileread = open(file, 'rb')
-    filename = str(file.split('/')[-1])
-    session.cwd("ImageDrop/")
-    session.storbinary('STOR ' + filename, fileread, 8*1024)
-    fileread.close()
-    session.quit()
-
-##
 ##### Upload tmp_loading dir to imagedrop via FTP using Pycurl  #####
 @memoize
 def pycurl_upload_imagedrop(img):
@@ -447,7 +437,7 @@ def upload_imagedrop(root_dir, destdir=None):
 
     import time
     #### UPLOAD upload_file via ftp to imagedrop using Pycurl
-    
+
     upload_tmp_loading = glob.glob(os.path.join(root_dir, '*.*g'))
     for upload_file in upload_tmp_loading:
         #### UPLOAD upload_file via ftp to imagedrop using Pycurl
@@ -506,6 +496,7 @@ def upload_imagedrop(root_dir, destdir=None):
     except:
         pass
         return 'NOARCHGLOB'
+
 #####################################################################################################################
 # 7 # After Upload set return_dt on offshore_status #################################################################
 #####################################################################################################################
@@ -662,15 +653,15 @@ def main():
             print "Failed makedirs"
 
         if os.path.isfile(pngarchived_path):
-            pass
-        else:
-            shutil.move(strippedpng, pngarchived_path)
-            count -= 1
-            print "Creating Jpgs for--> {0}\v{1} Files Remaining".format(strippedpng,count)
-            #subproc_multithumbs_4_2(pngarchived_path,listpagedir)
-            subproc_pad_to_x480(pngarchived_path,listpagedir)
-            subproc_pad_to_x240(pngarchived_path,listpagedir)
-            shutil.copy(pngarchived_path, os.path.join(listpagedir, filename))
+            os.remove(pngarchived_path)
+        #else:
+        shutil.move(strippedpng, pngarchived_path)
+        count -= 1
+        print "Creating Jpgs for--> {0}\v{1} Files Remaining".format(strippedpng,count)
+        #subproc_multithumbs_4_2(pngarchived_path,listpagedir)
+        subproc_pad_to_x480(pngarchived_path,listpagedir)
+        subproc_pad_to_x240(pngarchived_path,listpagedir)
+        shutil.copy(pngarchived_path, os.path.join(listpagedir, filename))
     ## Remove empty dir after padding etc
     if parentdir:
         if len(os.listdir(parentdir)) == 0: os.rmdir(parentdir)
