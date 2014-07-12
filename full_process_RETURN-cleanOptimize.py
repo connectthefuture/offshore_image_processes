@@ -724,6 +724,7 @@ def main():
         #####################################################
         try:
             sqlQuery_set_returndt(colorstyle)
+            print "SQLRETUrN {}".format(colorstyle)
         except:
             print "Failed Entrering Return dt for --> {0}".format(colorstyle)
         #####################################################
