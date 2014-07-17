@@ -611,7 +611,7 @@ import timeit
 
 @memoize
 def main():
-    import glob,zipfile,sys,datetime,os,re,shutil, time
+    import glob,ftplib,sys,datetime,os,re,shutil, time
     print time.strftime('%M%S')
     print 'START'
     st = time.time()
@@ -647,8 +647,10 @@ def main():
     remotepaths = formatted_delta_path(flag='ftpdirs', daysrange=5, textpre='Pick/ImagesToDo', textext='_Done')
     
     for remotepath in remotepaths:
-        ftp_download_all_files(returndir,remotepath)
-
+        try:
+            ftp_download_all_files(returndir,remotepath)
+        except ftplib.error_perm:
+            pass
 
     #####################################################################################################################
     # 3 # After unzip of complete PNGs Archive and Create new List page image
