@@ -647,7 +647,7 @@ def main():
     remotepaths = formatted_delta_path(flag='ftpdirs', daysrange=5, textpre='Pick/ImagesToDo', textext='_Done')
     
     for remotepath in remotepaths:
-        ftp_download_all_files(returndir,remotepath=remotepath)
+        ftp_download_all_files(returndir,remotepath)
 
 
     #####################################################################################################################
