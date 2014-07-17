@@ -23,6 +23,28 @@ class memoize:
             self.memoized[args] = self.function(*args)
             return self.memoized[args]
 
+
+def formatted_delta_path(flag='csv',textext=None,textpre=None,daysrange=1):
+    import datetime
+    fivedirs = []
+    fivecsvs = []
+    nowobj = datetime.datetime.now()
+    for day in xrange(daysrange):
+        delta = datetime.timedelta(weeks=0, days=day, hours=12, minutes=50, seconds=600)
+        nowdelta = nowobj - delta
+        
+        datedir = '{0}{1:%B%d}{2}'.format(textpre='Pick/ImagesToDo', nowdelta, textext='_Done')
+        datecsv = '{0}{1:%Y-%m-%d}{2}'.format(textpre, nowdelta, textext)
+        fivedirs.append(datedir)
+        fivecsvs.append(datecsv)
+    
+    if flag == 'csv':
+        return fivecsvs
+    else:
+        return fivedirs
+
+
+
 @memoize
 def styles_awaiting_return():
     import sqlalchemy
@@ -70,7 +92,7 @@ def get_batches_sent():
     return sorted(sentbatches)
 
 @memoize
-def ftp_download_allzips(returndir):
+def ftp_download_all_files(returndir,remotepath=None):
     import ftplib
     import os,sys,re
     #colorstyle = filepath.split('/')[-1][:9]
@@ -78,7 +100,7 @@ def ftp_download_allzips(returndir):
     username   = "bf"
     password   = "B14300F"
     ftpurl     = "prepressoutsourcing.com"
-    remotepath = 'Pick/ImagesToDo' + str(sys.argv[1]) + '_Done'
+    #remotepath = 'Pick/ImagesToDo' + str(sys.argv[1]) + '_Done'
     fullftp    = os.path.join(ftpurl, remotepath)
     #returndir = '/mnt/srv/media/Post_Complete/Complete_Archive/SendReceive_BGRemoval/2_Returned'
     #
@@ -619,10 +641,13 @@ def main():
         pass
 
     #####################################################################################################################
-    # 1 #  Download all zips on remote dir via FTP
+    # 1 #  Download all files on remote dir via FTP trying dates within 5 day range
     #####################################################################################################################
-
-    ftp_download_allzips(returndir)
+    
+    remotepaths = formatted_delta_path(flag='ftpdirs', daysrange=5 textpre='Pick/ImagesToDo', nowdelta, textext='_Done')
+    
+    for remotepath in remotepaths:
+        ftp_download_all_files(returndir,remotepath=remotepath)
 
 
     #####################################################################################################################
