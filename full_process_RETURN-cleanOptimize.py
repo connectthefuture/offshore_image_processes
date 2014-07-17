@@ -644,7 +644,7 @@ def main():
     # 1 #  Download all files on remote dir via FTP trying dates within 5 day range
     #####################################################################################################################
     
-    remotepaths = formatted_delta_path(flag='ftpdirs', daysrange=5 textpre='Pick/ImagesToDo', nowdelta, textext='_Done')
+    remotepaths = formatted_delta_path(flag='ftpdirs', daysrange=5, textpre='Pick/ImagesToDo', nowdelta, textext='_Done')
     
     for remotepath in remotepaths:
         ftp_download_all_files(returndir,remotepath=remotepath)
