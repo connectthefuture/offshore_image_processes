@@ -33,7 +33,7 @@ def formatted_delta_path(flag='csv',textext=None,textpre=None,daysrange=1):
         delta = datetime.timedelta(weeks=0, days=day, hours=12, minutes=50, seconds=600)
         nowdelta = nowobj - delta
         
-        datedir = '{0}{1:%B%d}{2}'.format(textpre='Pick/ImagesToDo', nowdelta, textext='_Done')
+        datedir = '{0}{1:%B%d}{2}'.format(textpre, nowdelta, textext)
         datecsv = '{0}{1:%Y-%m-%d}{2}'.format(textpre, nowdelta, textext)
         fivedirs.append(datedir)
         fivecsvs.append(datecsv)
