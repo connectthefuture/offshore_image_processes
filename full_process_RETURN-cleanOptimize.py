@@ -718,6 +718,7 @@ def main():
     remotepaths = formatted_delta_path(flag='ftpdirs', daysrange=4, textpre='Pick/ImagesToDo', textext='_Done')
     
     for remotepath in remotepaths:
+        print remotepath
         try:
             ftp_download_all_files(returndir,remotepath)
         except ftplib.error_perm:
