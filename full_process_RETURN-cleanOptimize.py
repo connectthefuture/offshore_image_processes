@@ -181,24 +181,94 @@ def unzip_dir_savefiles(zipin, extractdir):
 # 3 and 4 # Magick Crop and save as 400x480 _m.jpg ##################################################################
 #####################################################################################################################
 @memoize
-def subproc_pad_to_x480(file,destdir):
+def subproc_magick_png(img, destdir=None, dimensions=None):
+    import subprocess,re,os
+    regex_coded = re.compile(r'^.+?/[1-9][0-9]{8}_[1-6]\.jpg$')
+    regex_alt = re.compile(r'^.+?/[1-9][0-9]{8}_\w+?0[1-6]\.[JjPpNnGg]{3}$')
+    regex_valid_style = re.compile(r'^.+?/[1-9][0-9]{8}_?.*?\.[JjPpNnGg]{3}$')
+
+    if not destdir:
+        destdir = '.'
+    #imgdestpng_out = os.path.join(tmp_processing, os.path.basename(imgsrc_jpg))
+    os.chdir(os.path.dirname(img))
+
+    
+    format = img.split('.')[-1]
+    
+    os.chdir(os.path.dirname(img))
+
+    ## Destination name
+    if not destdir:
+        destdir = os.path.abspath('.')
+    else:
+        destdir = os.path.abspath(destdir)
+
+    outfile = os.path.join(destdir, img.split('/')[-1].split('.')[0] + '.png')
+
+    
+    ## Get variable values for processing
+    
+    if not dimensions:
+        dimensions = '100%'
+        vert_horiz = '100%'
+
+    subprocess.call([
+            'convert',
+            '-format',
+            format,
+            img,
+            '-define',
+            'png:preserve-colormap',
+            '-define',
+            'png:format\=png24',
+            '-define',
+            'png:compression-level\=N',
+            '-define',
+            'png:compression-strategy\=N',
+            '-define',
+            'png:compression-filter\=N',
+            '-format',
+            'png',
+            "-define",
+            "filter:blur=0.625",
+            #"filter:blur=0.88549061701764",
+            '-background',
+            'white',
+            '-gravity',
+            'center',
+            '-extent', 
+            dimensions,
+            "-colorspace",
+            "sRGB",
+            '-unsharp',
+            '2x2.7+0.5+0',
+            '-quality', 
+            '95',
+            os.path.join(destdir, img.split('/')[-1].split('.')[0] + '.png')
+            ])
+        
+    print 'Done {}'.format(img)
+    return os.path.join(destdir, img.split('/')[-1].split('.')[0] + '.png')
+
+@memoize
+def subproc_pad_to_x480(img,destdir):
     import subprocess, os
 
     start_time = time.time()
 
-    fname = file.split("/")[-1].split('.')[0]  # .replace('_1','_m').lower()
-    ext = file.split(".")[-1]
+    fname = img.split("/")[-1].split('.')[0]  # .replace('_1','_m').lower()
+    ext = img.split(".")[-1]
     outfile = os.path.join(destdir, fname + "_l.jpg")
 
     #try:
     subprocess.call([
         "convert",
-        file,
+        img,
         '-format',
         'jpg',
         # '-crop',
         # str(
-        # subprocess.call(['convert', file, '-virtual-pixel', 'edge', '-blur', '0x15', '-fuzz', '1%', '-trim', '-format', '%wx%h%O', 'info:'], stdin=None, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=False))
+        # subprocess.call(['convert', img, '-virtual-pixel', 'edge', '-blur', '0x15', '-fuzz', '1%', '-trim', '-format', '%wx%h%O', 'info:'], stdin=None, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=False))
         # ,
         '-colorspace',
         'sRGB',
@@ -234,32 +304,30 @@ def subproc_pad_to_x480(file,destdir):
         #'-strip',
         outfile,
     ])
-    #except IOError:
-    #    print "Failed: {0}".format(outfile)]
 
     end_time = time.time() - start_time
     print "{0}--- {1} seconds ---".format(outfile, end_time)
     return outfile
 
 @memoize
-def subproc_pad_to_x240(file,destdir):
+def subproc_pad_to_x240(img,destdir):
     import subprocess, os
 
     start_time = time.time()
 
-    fname = file.split("/")[-1].split('.')[0] #.replace('_1','_m').lower()
-    ext = file.split(".")[-1]
+    fname = img.split("/")[-1].split('.')[0] #.replace('_1','_m').lower()
+    ext = img.split(".")[-1]
     outfile = os.path.join(destdir, fname + "_m.jpg")
 
     #try:
     subprocess.call([
         "convert",
-        file,
+        img,
         '-format',
         'jpg',
         # '-crop',
         # str(
-        # subprocess.call(['convert', file, '-virtual-pixel', 'edge', '-blur', '0x15', '-fuzz', '1%', '-trim', '-format', '%wx%h%O', 'info:'], stdin=None, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=False))
+        # subprocess.call(['convert', img, '-virtual-pixel', 'edge', '-blur', '0x15', '-fuzz', '1%', '-trim', '-format', '%wx%h%O', 'info:'], stdin=None, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=False))
         # ,
         '-colorspace',
         'sRGB',
@@ -673,12 +741,12 @@ def main():
     edgecast_clear_list = list(sorted(set(edgecast_clear_list)))
     count = len(returned_files)
     while len(returned_files) >= 1:
-        strippedpng        = os.path.abspath(returned_files.pop())
-        parentdir          = os.path.dirname(strippedpng)
-        filename           = strippedpng.split('/')[-1]
-        colorstyle         = strippedpng.split('/')[-1].split('.')[0]
-        pngarchived_dirname = os.path.dirname(strippedpng).replace('2_Returned','4_Archive/PNG')
-        pngarchived_fname  = strippedpng.split('/')[-1].replace('.png', '_1.png')
+        img        = os.path.abspath(returned_files.pop())
+        parentdir          = os.path.dirname(img)
+        filename           = img.split('/')[-1]
+        colorstyle         = img.split('/')[-1].split('.')[0]
+        pngarchived_dirname = os.path.dirname(img).replace('2_Returned','4_Archive/PNG')
+        pngarchived_fname  = img.split('/')[-1].replace('.png', '_1.png')
         pngarchived_path   = os.path.join(pngarchived_dirname, pngarchived_fname)
 
         try:
@@ -688,12 +756,21 @@ def main():
 
         #else:
         count -= 1
-        print "Creating Jpgs for--> {0}\v{1} Files Remaining".format(strippedpng,count)
+        print "Creating Jpgs for--> {0}\v{1} Files Remaining".format(img,count)
         #subproc_multithumbs_4_2(pngarchived_path,listpagedir)
-        subproc_pad_to_x480(strippedpng,listpagedir)
-        subproc_pad_to_x240(strippedpng,listpagedir)
-        shutil.copy(strippedpng, pngarchived_path) #os.path.join(listpagedir, filename))
-        shutil.move(strippedpng, listpagedir)  # os.path.join(listpagedir, filename))
+        hires_zoom = subproc_magick_png(img,destdir=listpagedir)
+        if os.path.isfile(hires_zoom):
+            jpgarchivepath = pngarchived_path.replace('4_Archive/PNG','4_Archive/JPG')
+            jpgarchivepath = jpgarchivepath.replace('.png','.jpg')
+            if jpgarchivepath.isfile():
+                os.remove(jpgarchivepath)
+                shutil.move(img, jpgarchivepath)
+            else:
+                shutil.move(img, jpgarchivepath)
+        subproc_pad_to_x480(hires_zoom,listpagedir)
+        subproc_pad_to_x240(hires_zoom,listpagedir)
+        shutil.copy(hires_zoom, pngarchived_path) #os.path.join(listpagedir, filename))
+        shutil.move(hires_zoom, listpagedir)  # os.path.join(listpagedir, filename))
 
     ## Remove empty dir after padding etc
     if parentdir:
