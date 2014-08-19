@@ -718,7 +718,7 @@ def main():
     
     for remotepath in remotepaths:
         try:
-            ftp_download_all_files(returndir,remotepath)
+            ftp_download_all_files(returndir,remotepath=remotepath)
         except ftplib.error_perm:
             pass
 
