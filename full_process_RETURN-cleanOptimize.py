@@ -92,7 +92,7 @@ def get_batches_sent():
     return sorted(sentbatches)
 
 @memoize
-def ftp_download_all_files(returndir,remotepath=None):
+def ftp_download_all_files(returndir,remotepath):
     import ftplib
     import os,sys,re
     #colorstyle = filepath.split('/')[-1][:9]
@@ -718,7 +718,7 @@ def main():
     
     for remotepath in remotepaths:
         try:
-            ftp_download_all_files(returndir,remotepath=remotepath)
+            ftp_download_all_files(returndir,remotepath)
         except ftplib.error_perm:
             pass
 
