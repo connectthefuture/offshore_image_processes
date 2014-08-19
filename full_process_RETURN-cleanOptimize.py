@@ -26,8 +26,8 @@ class memoize:
 
 def formatted_delta_path(flag='csv',textext=None,textpre=None,daysrange=1):
     import datetime
-    fivedirs = []
-    fivecsvs = []
+    deltadirs = []
+    deltacvs = []
     nowobj = datetime.datetime.now()
     for day in xrange(daysrange):
         delta = datetime.timedelta(weeks=0, days=day, hours=12, minutes=50, seconds=600)
@@ -35,13 +35,13 @@ def formatted_delta_path(flag='csv',textext=None,textpre=None,daysrange=1):
         
         datedir = '{0}{1:%B%d}{2}'.format(textpre, nowdelta, textext)
         datecsv = '{0}{1:%Y-%m-%d}{2}'.format(textpre, nowdelta, textext)
-        fivedirs.append(datedir)
-        fivecsvs.append(datecsv)
+        deltadirs.append(datedir)
+        deltacvs.append(datecsv)
     
     if flag == 'csv':
-        return fivecsvs
+        return deltacvs
     else:
-        return fivedirs
+        return deltadirs
 
 
 
@@ -718,7 +718,7 @@ def main():
     remotepaths = formatted_delta_path(flag='ftpdirs', daysrange=4, textpre='Pick/ImagesToDo', textext='_Done')
     
     for remotepath in remotepaths:
-        print remotepath
+        print 'Remote-->', remotepath
         try:
             ftp_download_all_files(returndir,remotepath)
         except ftplib.error_perm:
