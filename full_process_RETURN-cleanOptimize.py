@@ -721,7 +721,7 @@ def main():
         print 'Remote-->', remotepath
         try:
             ftp_download_all_files(returndir,remotepath)
-        except ftplib.error_perm:
+        except IOError:#ftplib.error_perm:
             pass
 
     #####################################################################################################################
