@@ -118,7 +118,7 @@ def ftp_download_all_files(returndir,remotepath):
             print "No files in this directory"
         else:
             raise
-    print 'Filenames-->', filenames
+    
     ## if filenames is a dir decend into dirand list again till there are files found then dload or fo straught to dload
     if len(filenames) == 1:
         dname = filenames.pop()
@@ -718,10 +718,12 @@ def main():
     remotepaths = formatted_delta_path(flag='ftpdirs', daysrange=4, textpre='Pick/ImagesToDo', textext='_Done')
     
     for remotepath in remotepaths:
-        print 'Remote-->', remotepath
+        
         try:
             ftp_download_all_files(returndir,remotepath)
-        except IOError:#ftplib.error_perm:
+            print 'Path in Pick Does Exist-->', remotepath
+        except ftplib.error_perm:
+            print 'Remote Path in Pick Doesnt Exist-->', remotepath
             pass
 
     #####################################################################################################################
