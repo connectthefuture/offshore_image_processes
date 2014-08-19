@@ -110,6 +110,7 @@ def ftp_download_all_files(returndir,remotepath):
 
     filenames = []
     styles_not_downloaded, batch_list = styles_awaiting_return()
+    print styles_not_downloaded
     try:
         ftp.retrlines('NLST', filenames.append)
     except ftplib.error_perm, resp:
