@@ -721,9 +721,9 @@ def main():
         
         try:
             ftp_download_all_files(returndir,remotepath)
-            print 'Path in Pick Does Exist-->', remotepath
+            print 'Path in Pick Does Exist--> ', remotepath
         except ftplib.error_perm:
-            print 'Remote Path in Pick Doesnt Exist-->', remotepath
+            print 'Remote Path in Pick Doesnt Exist--> ', remotepath
             pass
 
     #####################################################################################################################
