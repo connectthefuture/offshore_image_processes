@@ -153,7 +153,7 @@ def ftp_download_all_files(returndir,remotepath=None):
 
 def unzip_dir_savefiles(zipin, extractdir):
     import zipfile,sys,datetime,os,re
-    regex_png = re.compile(r'^[^\.].+?[png]{3}$')
+    regex_png = re.compile(r'^[^\.].+?[jpng]{3}$')
     os.chdir(extractdir)
     # Open zip file
     zipf   = zipfile.ZipFile(zipin, 'r')
@@ -729,7 +729,7 @@ def main():
     edgecast_clear_list = []
     print time.strftime('%M%S')
 
-    globreturned = glob.glob(os.path.join(returndir, '*.png'))
+    globreturned = glob.glob(os.path.join(returndir, '*.??g'))
     count = len(globreturned)
     total = count
     for f in globreturned:
@@ -747,6 +747,7 @@ def main():
         colorstyle         = img.split('/')[-1].split('.')[0]
         pngarchived_dirname = os.path.dirname(img).replace('2_Returned','4_Archive/PNG')
         pngarchived_fname  = img.split('/')[-1].replace('.png', '_1.png')
+        pngarchived_fname  = img.split('/')[-1].replace('.jpg', '_1.jpg')
         pngarchived_path   = os.path.join(pngarchived_dirname, pngarchived_fname)
 
         try:
