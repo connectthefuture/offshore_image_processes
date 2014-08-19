@@ -118,7 +118,7 @@ def ftp_download_all_files(returndir,remotepath):
             print "No files in this directory"
         else:
             raise
-    
+    print 'Filenames-->', filenames
     ## if filenames is a dir decend into dirand list again till there are files found then dload or fo straught to dload
     if len(filenames) == 1:
         dname = filenames.pop()
