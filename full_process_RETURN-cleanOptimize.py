@@ -712,7 +712,7 @@ def main():
     # 1 #  Download all files on remote dir via FTP trying dates within 5 day range
     #####################################################################################################################
     
-    remotepaths = formatted_delta_path(flag='ftpdirs', daysrange=18, textpre='Pick/ImagesToDo', textext='_Done')
+    remotepaths = formatted_delta_path(flag='ftpdirs', daysrange=4, textpre='Pick/ImagesToDo', textext='_Done')
     
     for remotepath in remotepaths:
         try:
@@ -763,7 +763,7 @@ def main():
         if os.path.isfile(hires_zoom):
             jpgarchivepath = pngarchived_path.replace('4_Archive/PNG','4_Archive/JPG')
             jpgarchivepath = jpgarchivepath.replace('.png','.jpg')
-            if jpgarchivepath.isfile():
+            if os.path.isfile(jpgarchivepath):
                 os.remove(jpgarchivepath)
                 shutil.move(img, jpgarchivepath)
             else:
