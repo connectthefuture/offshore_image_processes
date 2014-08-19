@@ -749,6 +749,7 @@ def main():
         pngarchived_fname  = img.split('/')[-1].replace('.png', '_1.png')
         pngarchived_fname  = img.split('/')[-1].replace('.jpg', '_1.jpg')
         pngarchived_path   = os.path.join(pngarchived_dirname, pngarchived_fname)
+        jpgarchivepath     = os.path.join(pathed_jpgs_arch,filename)
 
         try:
             os.makedirs(pngarchived_dirname)
@@ -761,8 +762,6 @@ def main():
         #subproc_multithumbs_4_2(pngarchived_path,listpagedir)
         hires_zoom = subproc_magick_png(img,listpagedir)
         if os.path.isfile(hires_zoom):
-            jpgarchivepath = pngarchived_path.replace('4_Archive/PNG','4_Archive/JPG')
-            jpgarchivepath = jpgarchivepath.replace('.png','.jpg')
             if os.path.isfile(jpgarchivepath):
                 os.remove(jpgarchivepath)
                 shutil.move(img, jpgarchivepath)
@@ -792,6 +791,7 @@ def main():
 
     ### 5a ## Move the copy of the png from the LIST PAGE LOADED dir used only to upload, stored as _1.png
     uploaded_jpgs_arch  = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive/JPG/LIST_PAGE_LOADED'
+    pathed_jpgs_arch  = '/mnt/Post_Complete/Complete_Archive/SendReceive_BGRemoval/4_Archive/JPG/'
 
     # try:
     #     os.makedirs(archivedir)
