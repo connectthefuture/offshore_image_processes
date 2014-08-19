@@ -772,7 +772,6 @@ def main():
         subproc_pad_to_x480(hires_zoom,listpagedir)
         subproc_pad_to_x240(hires_zoom,listpagedir)
         shutil.copy(hires_zoom, pngarchived_path) #os.path.join(listpagedir, filename))
-        shutil.move(hires_zoom, listpagedir)  # os.path.join(listpagedir, filename))
 
     ## Remove empty dir after padding etc
     if parentdir:
