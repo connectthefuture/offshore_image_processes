@@ -181,7 +181,7 @@ def unzip_dir_savefiles(zipin, extractdir):
 # 3 and 4 # Magick Crop and save as 400x480 _m.jpg ##################################################################
 #####################################################################################################################
 @memoize
-def subproc_magick_png(img, destdir=None, dimensions=None):
+def subproc_magick_png(img, destdir, dimensions=None):
     import subprocess,re,os
     regex_coded = re.compile(r'^.+?/[1-9][0-9]{8}_[1-6]\.jpg$')
     regex_alt = re.compile(r'^.+?/[1-9][0-9]{8}_\w+?0[1-6]\.[JjPpNnGg]{3}$')
@@ -759,7 +759,7 @@ def main():
         count -= 1
         print "Creating Jpgs for--> {0}\v{1} Files Remaining".format(img,count)
         #subproc_multithumbs_4_2(pngarchived_path,listpagedir)
-        hires_zoom = subproc_magick_png(img,destdir=listpagedir)
+        hires_zoom = subproc_magick_png(img,listpagedir)
         if os.path.isfile(hires_zoom):
             jpgarchivepath = pngarchived_path.replace('4_Archive/PNG','4_Archive/JPG')
             jpgarchivepath = jpgarchivepath.replace('.png','.jpg')
