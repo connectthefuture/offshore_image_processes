@@ -92,7 +92,7 @@ def get_batches_sent():
     return sorted(sentbatches)
 
 @memoize
-def ftp_download_all_files(returndir, styles_not_downloaded=None, batch_list=None, remotepath=None):
+def ftp_download_all_files(returndir,remotepath=None):
     import ftplib
     import os,sys,re
     #colorstyle = filepath.split('/')[-1][:9]
@@ -109,8 +109,7 @@ def ftp_download_all_files(returndir, styles_not_downloaded=None, batch_list=Non
     ftp.cwd(remotepath)
 
     filenames = []
-    if not styles_not_downloaded or batch_list:
-        styles_not_downloaded, batch_list = styles_awaiting_return()
+    styles_not_downloaded, batch_list = styles_awaiting_return()
     try:
         ftp.retrlines('NLST', filenames.append)
     except ftplib.error_perm, resp:
