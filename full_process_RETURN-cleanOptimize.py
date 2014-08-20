@@ -714,7 +714,8 @@ def main():
     #####################################################################################################################
     # 1 #  Download all files on remote dir via FTP trying dates within 5 day range
     #####################################################################################################################
-    
+    #from __main__ import ftp_download_all_files as ftpfunc
+
     remotepaths = formatted_delta_path(flag='ftpdirs', daysrange=9, textpre='Pick/ImagesToDo', textext='_Done')
     
     for remotepath in remotepaths:
@@ -760,7 +761,7 @@ def main():
         try:
             os.makedirs(pngarchived_dirname)
         except:
-            print "Failed makedirs"
+            pass # print "Failed makedirs"
 
         #else:
         count -= 1
