@@ -714,11 +714,11 @@ def main():
     #####################################################################################################################
     # 1 #  Download all files on remote dir via FTP trying dates within 5 day range
     #####################################################################################################################
-    from __main__ import ftp_download_all_files as ftpfunc
-
+    
     remotepaths = formatted_delta_path(flag='ftpdirs', daysrange=19, textpre='Pick/ImagesToDo', textext='_Done')
     
     ### Do ftp download as multiproc
+    #from __main__ import ftp_download_all_files as ftpfunc
     # import multiprocessing
 
     # pool = multiprocessing.Pool(4)
