@@ -714,18 +714,31 @@ def main():
     #####################################################################################################################
     # 1 #  Download all files on remote dir via FTP trying dates within 5 day range
     #####################################################################################################################
-    #from __main__ import ftp_download_all_files as ftpfunc
+    from __main__ import ftp_download_all_files as ftpfunc
 
-    remotepaths = formatted_delta_path(flag='ftpdirs', daysrange=9, textpre='Pick/ImagesToDo', textext='_Done')
+    remotepaths = formatted_delta_path(flag='ftpdirs', daysrange=19, textpre='Pick/ImagesToDo', textext='_Done')
     
-    for remotepath in remotepaths:
+    import multiprocessing
+
+    pool = multiprocessing.Pool(4)
+    pool.map(ftpfunc,remotepaths)
+
+    print results
+    
+    # close the pool and wait for the work to finish
+    pool.close()
+    print 'PoolClose'
+    pool.join()
+    print 'PoolJoin'
+
+    # for remotepath in remotepaths:
         
-        try:
-            ftp_download_all_files(returndir,remotepath)
-            print 'Path in Pick Does Exist--> ', remotepath
-        except ftplib.error_perm:
-            print 'Remote Path in Pick Doesnt Exist--> ', remotepath
-            pass
+    #     try:
+    #         ftp_download_all_files(returndir,remotepath)
+    #         print 'Path in Pick Does Exist--> ', remotepath
+    #     except ftplib.error_perm:
+    #         print 'Remote Path in Pick Doesnt Exist--> ', remotepath
+    #         pass
 
     #####################################################################################################################
     # 3 # After unzip of complete PNGs Archive and Create new List page image
