@@ -716,7 +716,7 @@ def main():
     #####################################################################################################################
     #from __main__ import ftp_download_all_files as ftpfunc
 
-    remotepaths = formatted_delta_path(flag='ftpdirs', daysrange=9, textpre='Pick/ImagesToDo', textext='_Done')
+    remotepaths = formatted_delta_path(flag='ftpdirs', daysrange=28, textpre='Pick/ImagesToDo', textext='_Done')
     
     for remotepath in remotepaths:
         
