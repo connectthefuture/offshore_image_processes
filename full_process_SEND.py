@@ -74,7 +74,7 @@ def upload_to_india(file):
 ## Download via FTP
 def getbinary_ftp_netsrv101(remote_pathtofile, outfile=None):
     # fetch a binary file
-    import ftplib
+    import ftplib,sys
     session = ftplib.FTP("netsrv101.l3.bluefly.com", "imagedrop", "imagedrop0")
     if outfile is None:
         outfile = sys.stdout
